@@ -19,6 +19,8 @@ public class MainDashboard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JLayeredPane layeredPane;
+	private JPanel panelHome, panelStores, panelPurchaseHistory, panelSegmentation, panelDemographics, panelGeographics, panelTransactionHistory;
 
 	/**
 	 * Launch the application.
@@ -68,6 +70,21 @@ public class MainDashboard extends JFrame {
 		panelDashboardMenu.add(lblAppleLogo);
 		
 		JPanel panelHomeMenu = new JPanel();
+		panelHomeMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelHome);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelHomeMenu.setBounds(0, 92, 198, 35);
 		panelDashboardMenu.add(panelHomeMenu);
 		panelHomeMenu.setLayout(null);
@@ -83,6 +100,21 @@ public class MainDashboard extends JFrame {
 		panelHomeMenu.add(lblHomeLogo);
 		
 		JPanel panelStoreMenu = new JPanel();
+		panelStoreMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelStores);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelStoreMenu.setBackground(new Color(0, 0, 0));
 		panelStoreMenu.setLayout(null);
 		panelStoreMenu.setBounds(0, 127, 198, 35);
@@ -100,6 +132,21 @@ public class MainDashboard extends JFrame {
 		panelStoreMenu.add(lblStoreLogo);
 		
 		JPanel panelPurchaseMenu = new JPanel();
+		panelPurchaseMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelPurchaseHistory);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelPurchaseMenu.setBackground(new Color(0, 0, 0));
 		panelPurchaseMenu.setLayout(null);
 		panelPurchaseMenu.setBounds(0, 162, 198, 35);
@@ -117,6 +164,21 @@ public class MainDashboard extends JFrame {
 		panelPurchaseMenu.add(lblPurchaseLogo);
 		
 		JPanel panelSegmentMenu = new JPanel();
+		panelSegmentMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelSegmentation);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelSegmentMenu.setBackground(new Color(0, 0, 0));
 		panelSegmentMenu.setLayout(null);
 		panelSegmentMenu.setBounds(0, 197, 198, 35);
@@ -134,6 +196,21 @@ public class MainDashboard extends JFrame {
 		panelSegmentMenu.add(lblSegmentLogo);
 		
 		JPanel panelDemographicsMenu = new JPanel();
+		panelDemographicsMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelDemographics);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelDemographicsMenu.setBackground(new Color(0, 0, 0));
 		panelDemographicsMenu.setLayout(null);
 		panelDemographicsMenu.setBounds(0, 232, 198, 35);
@@ -151,6 +228,21 @@ public class MainDashboard extends JFrame {
 		panelDemographicsMenu.add(lblDemographicsLogo);
 		
 		JPanel panelGeographicMenu = new JPanel();
+		panelGeographicMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelGeographics);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelGeographicMenu.setBackground(new Color(0, 0, 0));
 		panelGeographicMenu.setLayout(null);
 		panelGeographicMenu.setBounds(0, 267, 198, 35);
@@ -168,6 +260,21 @@ public class MainDashboard extends JFrame {
 		panelGeographicMenu.add(lblGeographicLogo);
 		
 		JPanel panelTransactionMenu = new JPanel();
+		panelTransactionMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				layeredPane.removeAll();
+				layeredPane.add(panelTransactionHistory);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
 		panelTransactionMenu.setBackground(new Color(0, 0, 0));
 		panelTransactionMenu.setLayout(null);
 		panelTransactionMenu.setBounds(0, 302, 198, 35);
@@ -184,41 +291,21 @@ public class MainDashboard extends JFrame {
 		lblTransactionLogo.setBounds(5, 0, 35, 35);
 		panelTransactionMenu.add(lblTransactionLogo);
 		
-		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane = new JLayeredPane();
 		layeredPane.setBounds(198, 0, 1153, 755);
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(new CardLayout(0, 0));
 		
-		JPanel panelDashboard = new JPanel();
-		panelDashboard.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
-		layeredPane.add(panelDashboard, "name_1237592797291700");
-		panelDashboard.setLayout(null);
+		panelHome = new JPanel();
+		layeredPane.add(panelHome, "name_1237592797291700");
+		panelHome.setLayout(null);
 		
 		JLabel lblDashboardTitle = new JLabel("Dashboard");
 		lblDashboardTitle.setFont(new Font("Poppins", Font.BOLD, 40));
 		lblDashboardTitle.setBounds(35, 36, 263, 56);
-		panelDashboard.add(lblDashboardTitle);
+		panelHome.add(lblDashboardTitle);
 		
-		JPanel panelStores = new JPanel();
-		panelStores.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
+		panelStores = new JPanel();
 		layeredPane.add(panelStores, "name_1237607726469500");
 		panelStores.setLayout(null);
 		
@@ -227,17 +314,7 @@ public class MainDashboard extends JFrame {
 		lblStoreTitle.setBounds(35, 36, 263, 56);
 		panelStores.add(lblStoreTitle);
 		
-		JPanel panelPurchaseHistory = new JPanel();
-		panelPurchaseHistory.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
+		panelPurchaseHistory = new JPanel();
 		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
 		panelPurchaseHistory.setLayout(null);
 		
@@ -246,17 +323,7 @@ public class MainDashboard extends JFrame {
 		lblStoresTitle.setBounds(35, 36, 263, 56);
 		panelPurchaseHistory.add(lblStoresTitle);
 		
-		JPanel panelSegmentation = new JPanel();
-		panelSegmentation.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
+		panelSegmentation = new JPanel();
 		layeredPane.add(panelSegmentation, "name_1237637193320800");
 		panelSegmentation.setLayout(null);
 		
@@ -265,17 +332,7 @@ public class MainDashboard extends JFrame {
 		lblCustomerSegment1.setBounds(35, 36, 609, 56);
 		panelSegmentation.add(lblCustomerSegment1);
 		
-		JPanel panelDemographics = new JPanel();
-		panelDemographics.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
+		panelDemographics = new JPanel();
 		layeredPane.add(panelDemographics, "name_1237649696174600");
 		panelDemographics.setLayout(null);
 		
@@ -284,17 +341,7 @@ public class MainDashboard extends JFrame {
 		lblCustomerSegment2.setBounds(35, 36, 609, 56);
 		panelDemographics.add(lblCustomerSegment2);
 		
-		JPanel panelGeographics = new JPanel();
-		panelGeographics.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
+		panelGeographics = new JPanel();
 		layeredPane.add(panelGeographics, "name_1237653177687600");
 		panelGeographics.setLayout(null);
 		
@@ -303,17 +350,7 @@ public class MainDashboard extends JFrame {
 		lblCustomerSegment3.setBounds(35, 36, 609, 56);
 		panelGeographics.add(lblCustomerSegment3);
 		
-		JPanel panelTransactionHistory = new JPanel();
-		panelTransactionHistory.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				
-			}
-		});
+		panelTransactionHistory = new JPanel();
 		layeredPane.add(panelTransactionHistory, "name_1237656709540000");
 		panelTransactionHistory.setLayout(null);
 		
