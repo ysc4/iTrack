@@ -200,24 +200,54 @@ public class MainDashboard extends JFrame {
 		layeredPane.add(panelStores, "name_1237607726469500");
 		panelStores.setLayout(null);
 		
+		JLabel lblStoreTitle = new JLabel("Stores");
+		lblStoreTitle.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblStoreTitle.setBounds(35, 36, 263, 56);
+		panelStores.add(lblStoreTitle);
+		
 		JPanel panelPurchaseHistory = new JPanel();
 		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
 		panelPurchaseHistory.setLayout(null);
+		
+		JLabel lblStoresTitle = new JLabel("Stores");
+		lblStoresTitle.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblStoresTitle.setBounds(35, 36, 263, 56);
+		panelPurchaseHistory.add(lblStoresTitle);
 		
 		JPanel panelSegmentation = new JPanel();
 		layeredPane.add(panelSegmentation, "name_1237637193320800");
 		panelSegmentation.setLayout(null);
 		
+		JLabel lblCustomerSegment1 = new JLabel("Customer Segmentation");
+		lblCustomerSegment1.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment1.setBounds(35, 36, 609, 56);
+		panelSegmentation.add(lblCustomerSegment1);
+		
 		JPanel panelDemographics = new JPanel();
 		layeredPane.add(panelDemographics, "name_1237649696174600");
 		panelDemographics.setLayout(null);
+		
+		JLabel lblCustomerSegment2 = new JLabel("Customer Segmentation");
+		lblCustomerSegment2.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment2.setBounds(35, 36, 609, 56);
+		panelDemographics.add(lblCustomerSegment2);
 		
 		JPanel panelGeographics = new JPanel();
 		layeredPane.add(panelGeographics, "name_1237653177687600");
 		panelGeographics.setLayout(null);
 		
+		JLabel lblCustomerSegment3 = new JLabel("Customer Segmentation");
+		lblCustomerSegment3.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment3.setBounds(35, 36, 609, 56);
+		panelGeographics.add(lblCustomerSegment3);
+		
 		JPanel panelTransactionHistory = new JPanel();
 		layeredPane.add(panelTransactionHistory, "name_1237656709540000");
 		panelTransactionHistory.setLayout(null);
+		
+		JLabel lblCustomerSegment4 = new JLabel("Customer Segmentation");
+		lblCustomerSegment4.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment4.setBounds(35, 36, 609, 56);
+		panelTransactionHistory.add(lblCustomerSegment4);
 	}
 }
