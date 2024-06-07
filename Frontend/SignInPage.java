@@ -120,5 +120,11 @@ public class SignInPage extends JFrame {
 		lblPassword.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblPassword.setBounds(86, 220, 150, 13);
 		panel.add(lblPassword);
+		
+		ImageIcon logo = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\apple.png");
+		JLabel lblAppleLogo = new JLabel("");
+		lblAppleLogo.setIcon(logo);
+		lblAppleLogo.setBounds(110, 36, 80, 70);
+		panel.add(lblAppleLogo);
 	}
 }
