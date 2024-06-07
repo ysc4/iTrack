@@ -30,7 +30,7 @@ public class MainDashboard extends JFrame {
 	ImageIcon purchaseBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-black.png");
 	ImageIcon segmentWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-white.png");
 	ImageIcon segmentBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-black.png");
-	ImageIcon demoWhiteIcom = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-white.png");
+	ImageIcon demoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-white.png");
 	ImageIcon demoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-black.png");
 	ImageIcon geoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-white.png");
 	ImageIcon geoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-black.png");
@@ -43,6 +43,9 @@ public class MainDashboard extends JFrame {
 	private JLayeredPane layeredPane;
 	private JPanel panelHome, panelStores, panelPurchaseHistory, panelSegmentation, panelDemographics, panelGeographics, panelTransactionHistory;
 	private JLabel lblSales, lblCustomer;
+	private JPanel panelHomeMenu, panelStoreMenu, panelPurchaseMenu, panelSegmentMenu, panelDemographicsMenu, panelGeographicMenu, panelTransactionMenu;
+	private JLabel lblDashHome, lblDashStore, lblPurchaseHistory, lblDashSegment, lblDashDemographics, lblDashGeographic, lblDashTransaction;
+	private JLabel lblHomeLogo, lblStoreLogo, lblPurchaseLogo, lblSegmentLogo, lblDemographicsLogo, lblGeographicLogo, lblTransactionLogo;
 	
 	/**
 	 * Launch the application.
@@ -92,16 +95,18 @@ public class MainDashboard extends JFrame {
 		lblAppleLogo.setBounds(15, 10, 68, 72);
 		panelDashboardMenu.add(lblAppleLogo);
 		
-		JPanel panelHomeMenu = new JPanel();
+		panelHomeMenu = new JPanel();
 		panelHomeMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				lightMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeBlackIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelHome);
 				layeredPane.repaint();
@@ -111,28 +116,30 @@ public class MainDashboard extends JFrame {
 		panelHomeMenu.setBounds(0, 92, 198, 35);
 		panelDashboardMenu.add(panelHomeMenu);
 		panelHomeMenu.setLayout(null);
-		
-		JLabel lblDashHome = new JLabel("Home");
+	
+		lblDashHome = new JLabel("Home");
 		lblDashHome.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashHome.setBounds(53, 0, 145, 38);
 		panelHomeMenu.add(lblDashHome);
 		
-		JLabel lblHomeLogo = new JLabel("");
+		lblHomeLogo = new JLabel("");
 		lblHomeLogo.setIcon(homeBlackIcon);
 		lblHomeLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHomeLogo.setBounds(5, 0, 35, 35);
 		panelHomeMenu.add(lblHomeLogo);
 		
-		JPanel panelStoreMenu = new JPanel();
+		panelStoreMenu = new JPanel();
 		panelStoreMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				lightMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeBlackIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelStores);
 				layeredPane.repaint();
@@ -144,28 +151,30 @@ public class MainDashboard extends JFrame {
 		panelStoreMenu.setBounds(0, 127, 198, 35);
 		panelDashboardMenu.add(panelStoreMenu);
 		
-		JLabel lblDashStore = new JLabel("Stores");
+		lblDashStore = new JLabel("Stores");
 		lblDashStore.setForeground(new Color(255, 255, 255));
 		lblDashStore.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashStore.setBounds(53, 0, 145, 38);
 		panelStoreMenu.add(lblDashStore);
 		
-		JLabel lblStoreLogo = new JLabel("");
+		lblStoreLogo = new JLabel("");
 		lblStoreLogo.setIcon(storeWhiteIcon);
 		lblStoreLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStoreLogo.setBounds(5, 0, 35, 35);
 		panelStoreMenu.add(lblStoreLogo);
 		
-		JPanel panelPurchaseMenu = new JPanel();
+		panelPurchaseMenu = new JPanel();
 		panelPurchaseMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				lightMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseBlackIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelPurchaseHistory);
 				layeredPane.repaint();
@@ -177,28 +186,30 @@ public class MainDashboard extends JFrame {
 		panelPurchaseMenu.setBounds(0, 162, 198, 35);
 		panelDashboardMenu.add(panelPurchaseMenu);
 		
-		JLabel lblPurchaseHistory = new JLabel("Purchase History");
+		lblPurchaseHistory = new JLabel("Purchase History");
 		lblPurchaseHistory.setForeground(new Color(255, 255, 255));
 		lblPurchaseHistory.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblPurchaseHistory.setBounds(53, 0, 145, 38);
 		panelPurchaseMenu.add(lblPurchaseHistory);
 		
-		JLabel lblPurchaseLogo = new JLabel("");
+		lblPurchaseLogo = new JLabel("");
 		lblPurchaseLogo.setIcon(purchaseWhiteIcon);
 		lblPurchaseLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPurchaseLogo.setBounds(5, 0, 35, 35);
 		panelPurchaseMenu.add(lblPurchaseLogo);
 		
-		JPanel panelSegmentMenu = new JPanel();
+		panelSegmentMenu = new JPanel();
 		panelSegmentMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				lightMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentBlackIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelSegmentation);
 				layeredPane.repaint();
@@ -210,28 +221,30 @@ public class MainDashboard extends JFrame {
 		panelSegmentMenu.setBounds(0, 197, 198, 35);
 		panelDashboardMenu.add(panelSegmentMenu);
 		
-		JLabel lblDashSegment = new JLabel("Segmentation");
+		lblDashSegment = new JLabel("Segmentation");
 		lblDashSegment.setForeground(new Color(255, 255, 255));
 		lblDashSegment.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashSegment.setBounds(53, 0, 145, 38);
 		panelSegmentMenu.add(lblDashSegment);
 		
-		JLabel lblSegmentLogo = new JLabel("");
+		lblSegmentLogo = new JLabel("");
 		lblSegmentLogo.setIcon(segmentWhiteIcon);
 		lblSegmentLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentLogo.setBounds(5, 0, 35, 35);
 		panelSegmentMenu.add(lblSegmentLogo);
 		
-		JPanel panelDemographicsMenu = new JPanel();
+		panelDemographicsMenu = new JPanel();
 		panelDemographicsMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				lightMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoBlackIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelDemographics);
 				layeredPane.repaint();
@@ -243,28 +256,30 @@ public class MainDashboard extends JFrame {
 		panelDemographicsMenu.setBounds(0, 232, 198, 35);
 		panelDashboardMenu.add(panelDemographicsMenu);
 		
-		JLabel lblDashDemographics = new JLabel("Demographics");
+		lblDashDemographics = new JLabel("Demographics");
 		lblDashDemographics.setForeground(new Color(255, 255, 255));
 		lblDashDemographics.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashDemographics.setBounds(53, 0, 145, 38);
 		panelDemographicsMenu.add(lblDashDemographics);
 		
-		JLabel lblDemographicsLogo = new JLabel("");
-		lblDemographicsLogo.setIcon(demoWhiteIcom);
+		lblDemographicsLogo = new JLabel("");
+		lblDemographicsLogo.setIcon(demoWhiteIcon);
 		lblDemographicsLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDemographicsLogo.setBounds(5, 0, 35, 35);
 		panelDemographicsMenu.add(lblDemographicsLogo);
 		
-		JPanel panelGeographicMenu = new JPanel();
+		panelGeographicMenu = new JPanel();
 		panelGeographicMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				lightMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoBlackIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelGeographics);
 				layeredPane.repaint();
@@ -276,28 +291,30 @@ public class MainDashboard extends JFrame {
 		panelGeographicMenu.setBounds(0, 267, 198, 35);
 		panelDashboardMenu.add(panelGeographicMenu);
 		
-		JLabel lblDashGeographic = new JLabel("Geographic");
+		lblDashGeographic = new JLabel("Geographic");
 		lblDashGeographic.setForeground(new Color(255, 255, 255));
 		lblDashGeographic.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashGeographic.setBounds(53, 0, 145, 38);
 		panelGeographicMenu.add(lblDashGeographic);
 		
-		JLabel lblGeographicLogo = new JLabel("");
+		lblGeographicLogo = new JLabel("");
 		lblGeographicLogo.setIcon(geoWhiteIcon);
 		lblGeographicLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGeographicLogo.setBounds(5, 0, 35, 35);
 		panelGeographicMenu.add(lblGeographicLogo);
 		
-		JPanel panelTransactionMenu = new JPanel();
+		panelTransactionMenu = new JPanel();
 		panelTransactionMenu.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
 			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				lightMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactBlackIcon);
+				
 				layeredPane.removeAll();
 				layeredPane.add(panelTransactionHistory);
 				layeredPane.repaint();
@@ -309,13 +326,13 @@ public class MainDashboard extends JFrame {
 		panelTransactionMenu.setBounds(0, 302, 198, 35);
 		panelDashboardMenu.add(panelTransactionMenu);
 		
-		JLabel lblDashTransaction = new JLabel("Transaction History");
+		lblDashTransaction = new JLabel("Transaction History");
 		lblDashTransaction.setForeground(new Color(255, 255, 255));
 		lblDashTransaction.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashTransaction.setBounds(53, 0, 145, 38);
 		panelTransactionMenu.add(lblDashTransaction);
 		
-		JLabel lblTransactionLogo = new JLabel("");
+		lblTransactionLogo = new JLabel("");
 		lblTransactionLogo.setIcon(transactWhiteIcon);
 		lblTransactionLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTransactionLogo.setBounds(5, 0, 35, 35);
@@ -432,7 +449,15 @@ public class MainDashboard extends JFrame {
 		unlined.setBorder(new MatteBorder(0, 0, 0, 0, Color.BLACK));
 	}
 	
-	public void lightMenuColor() {
-		
+	public void lightMenuColor(JPanel panel1, JLabel menu1, JLabel logo1, ImageIcon icon1) {
+		panel1.setBackground(new Color(240, 240, 240));
+		menu1.setForeground(Color.black);
+		logo1.setIcon(icon1);;
+	}
+	
+	public void darkMenuColor(JPanel panel1, JLabel menu1, JLabel logo1, ImageIcon icon1) {
+		panel1.setBackground(Color.black);
+		menu1.setForeground(Color.white);
+		logo1.setIcon(icon1);
 	}
 }
