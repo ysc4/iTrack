@@ -2,9 +2,12 @@ package iTrack;
 
 import java.awt.EventQueue;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+
 import java.awt.Color;
 import javax.swing.JSeparator;
 import java.awt.CardLayout;
@@ -18,10 +21,29 @@ import java.awt.event.MouseEvent;
 public class MainDashboard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private ImageIcon appleIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\apple-dash.png");
+	ImageIcon homeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-white.png");
+	ImageIcon homeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-black.png");
+	ImageIcon storeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-white.png");
+	ImageIcon storeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-black.png");
+	ImageIcon purchaseWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-white.png");
+	ImageIcon purchaseBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-black.png");
+	ImageIcon segmentWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-white.png");
+	ImageIcon segmentBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-black.png");
+	ImageIcon demoWhiteIcom = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-white.png");
+	ImageIcon demoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-black.png");
+	ImageIcon geoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-white.png");
+	ImageIcon geoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-black.png");
+	ImageIcon transactWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-white.png");
+	ImageIcon transactBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-black.png");
+	ImageIcon accountIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\account.png");
+	ImageIcon exitIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
+	
 	private JPanel contentPane;
 	private JLayeredPane layeredPane;
 	private JPanel panelHome, panelStores, panelPurchaseHistory, panelSegmentation, panelDemographics, panelGeographics, panelTransactionHistory;
-
+	private JLabel lblSales, lblCustomer;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -60,13 +82,14 @@ public class MainDashboard extends JFrame {
 		lblAppName.setForeground(new Color(255, 255, 255));
 		lblAppName.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAppName.setFont(new Font("Hardner", Font.PLAIN, 35));
-		lblAppName.setBounds(76, 10, 112, 72);
+		lblAppName.setBounds(72, 10, 104, 72);
 		panelDashboardMenu.add(lblAppName);
 		
-		JLabel lblAppleLogo = new JLabel("logo");
+		JLabel lblAppleLogo = new JLabel("");
+		lblAppleLogo.setIcon(appleIcon);
 		lblAppleLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAppleLogo.setForeground(new Color(255, 255, 255));
-		lblAppleLogo.setBounds(10, 10, 68, 72);
+		lblAppleLogo.setBounds(15, 10, 68, 72);
 		panelDashboardMenu.add(lblAppleLogo);
 		
 		JPanel panelHomeMenu = new JPanel();
@@ -94,7 +117,8 @@ public class MainDashboard extends JFrame {
 		lblDashHome.setBounds(53, 0, 145, 38);
 		panelHomeMenu.add(lblDashHome);
 		
-		JLabel lblHomeLogo = new JLabel("L");
+		JLabel lblHomeLogo = new JLabel("");
+		lblHomeLogo.setIcon(homeBlackIcon);
 		lblHomeLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHomeLogo.setBounds(5, 0, 35, 35);
 		panelHomeMenu.add(lblHomeLogo);
@@ -126,7 +150,8 @@ public class MainDashboard extends JFrame {
 		lblDashStore.setBounds(53, 0, 145, 38);
 		panelStoreMenu.add(lblDashStore);
 		
-		JLabel lblStoreLogo = new JLabel("L");
+		JLabel lblStoreLogo = new JLabel("");
+		lblStoreLogo.setIcon(storeWhiteIcon);
 		lblStoreLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStoreLogo.setBounds(5, 0, 35, 35);
 		panelStoreMenu.add(lblStoreLogo);
@@ -158,7 +183,8 @@ public class MainDashboard extends JFrame {
 		lblPurchaseHistory.setBounds(53, 0, 145, 38);
 		panelPurchaseMenu.add(lblPurchaseHistory);
 		
-		JLabel lblPurchaseLogo = new JLabel("L");
+		JLabel lblPurchaseLogo = new JLabel("");
+		lblPurchaseLogo.setIcon(purchaseWhiteIcon);
 		lblPurchaseLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPurchaseLogo.setBounds(5, 0, 35, 35);
 		panelPurchaseMenu.add(lblPurchaseLogo);
@@ -190,7 +216,8 @@ public class MainDashboard extends JFrame {
 		lblDashSegment.setBounds(53, 0, 145, 38);
 		panelSegmentMenu.add(lblDashSegment);
 		
-		JLabel lblSegmentLogo = new JLabel("L");
+		JLabel lblSegmentLogo = new JLabel("");
+		lblSegmentLogo.setIcon(segmentWhiteIcon);
 		lblSegmentLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentLogo.setBounds(5, 0, 35, 35);
 		panelSegmentMenu.add(lblSegmentLogo);
@@ -222,7 +249,8 @@ public class MainDashboard extends JFrame {
 		lblDashDemographics.setBounds(53, 0, 145, 38);
 		panelDemographicsMenu.add(lblDashDemographics);
 		
-		JLabel lblDemographicsLogo = new JLabel("L");
+		JLabel lblDemographicsLogo = new JLabel("");
+		lblDemographicsLogo.setIcon(demoWhiteIcom);
 		lblDemographicsLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDemographicsLogo.setBounds(5, 0, 35, 35);
 		panelDemographicsMenu.add(lblDemographicsLogo);
@@ -254,7 +282,8 @@ public class MainDashboard extends JFrame {
 		lblDashGeographic.setBounds(53, 0, 145, 38);
 		panelGeographicMenu.add(lblDashGeographic);
 		
-		JLabel lblGeographicLogo = new JLabel("L");
+		JLabel lblGeographicLogo = new JLabel("");
+		lblGeographicLogo.setIcon(geoWhiteIcon);
 		lblGeographicLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGeographicLogo.setBounds(5, 0, 35, 35);
 		panelGeographicMenu.add(lblGeographicLogo);
@@ -286,10 +315,23 @@ public class MainDashboard extends JFrame {
 		lblDashTransaction.setBounds(53, 0, 145, 38);
 		panelTransactionMenu.add(lblDashTransaction);
 		
-		JLabel lblTransactionLogo = new JLabel("L");
+		JLabel lblTransactionLogo = new JLabel("");
+		lblTransactionLogo.setIcon(transactWhiteIcon);
 		lblTransactionLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTransactionLogo.setBounds(5, 0, 35, 35);
 		panelTransactionMenu.add(lblTransactionLogo);
+		
+		ImageIcon logOutIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
+		JLabel lblLogOut = new JLabel("New label");
+		lblLogOut.setIcon(logOutIcon);
+		lblLogOut.setBounds(0, 695, 50, 40);
+		panelDashboardMenu.add(lblLogOut);
+		
+		ImageIcon accountIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\account.png");
+		JLabel lblAccount = new JLabel("New label");
+		lblAccount.setIcon(accountIcon);
+		lblAccount.setBounds(130, 690, 50, 40);
+		panelDashboardMenu.add(lblAccount);
 		
 		layeredPane = new JLayeredPane();
 		layeredPane.setBounds(198, 0, 1153, 755);
@@ -304,6 +346,31 @@ public class MainDashboard extends JFrame {
 		lblDashboardTitle.setFont(new Font("Poppins", Font.BOLD, 40));
 		lblDashboardTitle.setBounds(35, 36, 263, 56);
 		panelHome.add(lblDashboardTitle);
+		
+		lblSales = new JLabel("Sales");
+		lblSales.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				underlineBorder(lblSales, lblCustomer);
+			}
+		});
+		lblSales.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		lblSales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSales.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblSales.setBounds(308, 58, 80, 25);
+		panelHome.add(lblSales);
+		
+		lblCustomer = new JLabel("Customer");
+		lblCustomer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				underlineBorder(lblCustomer, lblSales);
+			}
+		});
+		lblCustomer.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomer.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblCustomer.setBounds(398, 58, 100, 25);
+		panelHome.add(lblCustomer);
 		
 		panelStores = new JPanel();
 		layeredPane.add(panelStores, "name_1237607726469500");
@@ -358,5 +425,14 @@ public class MainDashboard extends JFrame {
 		lblCustomerSegment4.setFont(new Font("Poppins", Font.BOLD, 40));
 		lblCustomerSegment4.setBounds(35, 36, 609, 56);
 		panelTransactionHistory.add(lblCustomerSegment4);
+	}
+	
+	public void underlineBorder(JLabel lined, JLabel unlined) {
+		lined.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		unlined.setBorder(new MatteBorder(0, 0, 0, 0, Color.BLACK));
+	}
+	
+	public void lightMenuColor() {
+		
 	}
 }
