@@ -12,6 +12,7 @@ import java.awt.Color;
 import javax.swing.JSeparator;
 import java.awt.CardLayout;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -69,6 +70,41 @@ public class MainDashboard extends JFrame {
 	private JLabel lblTopTenStoresBySales;
 	private JLabel lblExport;
 	private JLabel lblRefresh;
+	private JPanel panelTotalActiveCustomers;
+	private JLabel lblTotalActive;
+	private JLabel lblNumberOfCustomers;
+	private JLabel lblCustomerGrowthPercentage;
+	private JLabel lblActiveCustomers;
+	private JPanel panelTotalActiveCustomers_1;
+	private JLabel lblTotalNew;
+	private JLabel lblNumberOfCustomers_1;
+	private JLabel lblCustomerGrowthPercentage_1;
+	private JLabel lblActiveCustomers_1;
+	private JPanel panelTotalActiveCustomers_2;
+	private JLabel lblCustomerGrowth;
+	private JLabel lblNumberOfCustomers_2;
+	private JLabel lblCustomerGrowthPercentage_2;
+	private JLabel lblActiveCustomers_2;
+	private JPanel panelCustomerTrend;
+	private JLabel lblNewVsCurrent;
+	private JPanel panelCustomerSegmentationGraphs;
+	private JLabel lblCustomerSegmentation;
+	private JPanel panelCustomerVolumeByCountry;
+	private JLabel lblCustomerVolumeByCountry;
+	private JLayeredPane layeredPaneStores;
+	private JPanel panelStoreSummary;
+	private JPanel panelStoresSales;
+	private JPanel panelStoreInformation;
+	private JLabel lblStoreInformation;
+	private JPanel panelTopStoresBySales;
+	private JLabel lblTopStoresBySales;
+	private JLabel lblRefreshSales;
+	private JPanel panelPurchaseHistoryTable;
+	private JLabel lblPurchaseHistoryTable;
+	private JLabel lblStoresBySales;
+	private JPanel panelStoresSales_1;
+	private JLabel lblPurchaseHistorySummary;
+	private JLabel lblRefreshPurchase;
 	
 	/**
 	 * Launch the application.
@@ -363,6 +399,14 @@ public class MainDashboard extends JFrame {
 		
 		ImageIcon logOutIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
 		JLabel lblLogOut = new JLabel("New label");
+		lblLogOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				SignInPage logOut = new SignInPage();
+				logOut.setVisible(true);
+				dispose();
+			}
+		});
 		lblLogOut.setIcon(logOutIcon);
 		lblLogOut.setBounds(0, 695, 50, 40);
 		panelDashboardMenu.add(lblLogOut);
@@ -392,6 +436,11 @@ public class MainDashboard extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				underlineBorder(lblSales, lblCustomer);
+				
+				layeredPaneHomePage.removeAll();
+				layeredPaneHomePage.add(panelSales);
+				layeredPaneHomePage.repaint();
+				layeredPaneHomePage.revalidate();
 			}
 		});
 		lblSales.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -405,6 +454,11 @@ public class MainDashboard extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				underlineBorder(lblCustomer, lblSales);
+				
+				layeredPaneHomePage.removeAll();
+				layeredPaneHomePage.add(panelCustomer);
+				layeredPaneHomePage.repaint();
+				layeredPaneHomePage.revalidate();
 			}
 		});
 		lblCustomer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -548,6 +602,135 @@ public class MainDashboard extends JFrame {
 		layeredPaneHomePage.add(panelCustomer, "name_1304958910393200");
 		panelCustomer.setLayout(null);
 		
+		panelTotalActiveCustomers = new JPanel();
+		panelTotalActiveCustomers.setLayout(null);
+		panelTotalActiveCustomers.setBackground(Color.WHITE);
+		panelTotalActiveCustomers.setBounds(0, 0, 220, 150);
+		panelCustomer.add(panelTotalActiveCustomers);
+		
+		lblTotalActive = new JLabel("TOTAL ACTIVE");
+		lblTotalActive.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalActive.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblTotalActive.setBounds(0, 0, 220, 40);
+		panelTotalActiveCustomers.add(lblTotalActive);
+		
+		lblNumberOfCustomers = new JLabel("240M");
+		lblNumberOfCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfCustomers.setBounds(0, 55, 220, 60);
+		panelTotalActiveCustomers.add(lblNumberOfCustomers);
+		
+		lblCustomerGrowthPercentage = new JLabel("(+2.31%)");
+		lblCustomerGrowthPercentage.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerGrowthPercentage.setForeground(Color.GREEN);
+		lblCustomerGrowthPercentage.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblCustomerGrowthPercentage.setBounds(0, 105, 220, 40);
+		panelTotalActiveCustomers.add(lblCustomerGrowthPercentage);
+		
+		lblActiveCustomers = new JLabel("CUSTOMERS");
+		lblActiveCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblActiveCustomers.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblActiveCustomers.setBounds(0, 20, 220, 40);
+		panelTotalActiveCustomers.add(lblActiveCustomers);
+		
+		panelTotalActiveCustomers_1 = new JPanel();
+		panelTotalActiveCustomers_1.setLayout(null);
+		panelTotalActiveCustomers_1.setBackground(Color.WHITE);
+		panelTotalActiveCustomers_1.setBounds(230, 0, 220, 150);
+		panelCustomer.add(panelTotalActiveCustomers_1);
+		
+		lblTotalNew = new JLabel("TOTAL NEW");
+		lblTotalNew.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalNew.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblTotalNew.setBounds(0, 0, 220, 40);
+		panelTotalActiveCustomers_1.add(lblTotalNew);
+		
+		lblNumberOfCustomers_1 = new JLabel("240M");
+		lblNumberOfCustomers_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfCustomers_1.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfCustomers_1.setBounds(0, 55, 220, 60);
+		panelTotalActiveCustomers_1.add(lblNumberOfCustomers_1);
+		
+		lblCustomerGrowthPercentage_1 = new JLabel("(+2.31%)");
+		lblCustomerGrowthPercentage_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerGrowthPercentage_1.setForeground(Color.GREEN);
+		lblCustomerGrowthPercentage_1.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblCustomerGrowthPercentage_1.setBounds(0, 105, 220, 40);
+		panelTotalActiveCustomers_1.add(lblCustomerGrowthPercentage_1);
+		
+		lblActiveCustomers_1 = new JLabel("CUSTOMERS");
+		lblActiveCustomers_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblActiveCustomers_1.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblActiveCustomers_1.setBounds(0, 20, 220, 40);
+		panelTotalActiveCustomers_1.add(lblActiveCustomers_1);
+		
+		panelTotalActiveCustomers_2 = new JPanel();
+		panelTotalActiveCustomers_2.setLayout(null);
+		panelTotalActiveCustomers_2.setBackground(Color.WHITE);
+		panelTotalActiveCustomers_2.setBounds(460, 0, 220, 150);
+		panelCustomer.add(panelTotalActiveCustomers_2);
+		
+		lblCustomerGrowth = new JLabel("TOTAL ACTIVE");
+		lblCustomerGrowth.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerGrowth.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblCustomerGrowth.setBounds(0, 0, 220, 40);
+		panelTotalActiveCustomers_2.add(lblCustomerGrowth);
+		
+		lblNumberOfCustomers_2 = new JLabel("24%");
+		lblNumberOfCustomers_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfCustomers_2.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfCustomers_2.setBounds(0, 55, 220, 60);
+		panelTotalActiveCustomers_2.add(lblNumberOfCustomers_2);
+		
+		lblCustomerGrowthPercentage_2 = new JLabel("(+2.31%)");
+		lblCustomerGrowthPercentage_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerGrowthPercentage_2.setForeground(Color.GREEN);
+		lblCustomerGrowthPercentage_2.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblCustomerGrowthPercentage_2.setBounds(0, 105, 220, 40);
+		panelTotalActiveCustomers_2.add(lblCustomerGrowthPercentage_2);
+		
+		lblActiveCustomers_2 = new JLabel("CUSTOMERS");
+		lblActiveCustomers_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblActiveCustomers_2.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblActiveCustomers_2.setBounds(0, 20, 220, 40);
+		panelTotalActiveCustomers_2.add(lblActiveCustomers_2);
+		
+		panelCustomerTrend = new JPanel();
+		panelCustomerTrend.setLayout(null);
+		panelCustomerTrend.setBackground(Color.WHITE);
+		panelCustomerTrend.setBounds(0, 160, 680, 215);
+		panelCustomer.add(panelCustomerTrend);
+		
+		lblNewVsCurrent = new JLabel("NEW VS. CURRENT CUSTOMERS TREND");
+		lblNewVsCurrent.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewVsCurrent.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblNewVsCurrent.setBounds(0, 10, 680, 40);
+		panelCustomerTrend.add(lblNewVsCurrent);
+		
+		panelCustomerSegmentationGraphs = new JPanel();
+		panelCustomerSegmentationGraphs.setLayout(null);
+		panelCustomerSegmentationGraphs.setBackground(Color.WHITE);
+		panelCustomerSegmentationGraphs.setBounds(0, 387, 1100, 215);
+		panelCustomer.add(panelCustomerSegmentationGraphs);
+		
+		lblCustomerSegmentation = new JLabel("CUSTOMER SEGMENTATION");
+		lblCustomerSegmentation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerSegmentation.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblCustomerSegmentation.setBounds(0, 10, 1100, 40);
+		panelCustomerSegmentationGraphs.add(lblCustomerSegmentation);
+		
+		panelCustomerVolumeByCountry = new JPanel();
+		panelCustomerVolumeByCountry.setLayout(null);
+		panelCustomerVolumeByCountry.setBackground(Color.WHITE);
+		panelCustomerVolumeByCountry.setBounds(700, 0, 400, 374);
+		panelCustomer.add(panelCustomerVolumeByCountry);
+		
+		lblCustomerVolumeByCountry = new JLabel("CUSTOMER VOLUME BY COUNTRY");
+		lblCustomerVolumeByCountry.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerVolumeByCountry.setFont(new Font("Poppins", Font.BOLD, 22));
+		lblCustomerVolumeByCountry.setBounds(0, 10, 400, 40);
+		panelCustomerVolumeByCountry.add(lblCustomerVolumeByCountry);
+		
 		lblExport = new JLabel("Export");
 		lblExport.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
 		lblExport.setHorizontalAlignment(SwingConstants.CENTER);
@@ -571,6 +754,69 @@ public class MainDashboard extends JFrame {
 		lblStoreTitle.setBounds(35, 36, 263, 56);
 		panelStores.add(lblStoreTitle);
 		
+		layeredPaneStores = new JLayeredPane();
+		layeredPaneStores.setBounds(35, 116, 1100, 630);
+		panelStores.add(layeredPaneStores);
+		layeredPaneStores.setLayout(new CardLayout(0, 0));
+		
+		panelStoreSummary = new JPanel();
+		layeredPaneStores.add(panelStoreSummary, "name_1311031875153600");
+		panelStoreSummary.setLayout(null);
+		
+		panelStoreInformation = new JPanel();
+		panelStoreInformation.setLayout(null);
+		panelStoreInformation.setBackground(Color.WHITE);
+		panelStoreInformation.setBounds(0, 0, 540, 300);
+		panelStoreSummary.add(panelStoreInformation);
+		
+		lblStoreInformation = new JLabel("STORE INFORMATION");
+		lblStoreInformation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStoreInformation.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblStoreInformation.setBounds(0, 10, 540, 40);
+		panelStoreInformation.add(lblStoreInformation);
+		
+		panelTopStoresBySales = new JPanel();
+		panelTopStoresBySales.setLayout(null);
+		panelTopStoresBySales.setBackground(Color.WHITE);
+		panelTopStoresBySales.setBounds(560, 0, 540, 300);
+		panelStoreSummary.add(panelTopStoresBySales);
+		
+		lblTopStoresBySales = new JLabel("TOP 10 STORES BY SALES");
+		lblTopStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopStoresBySales.setBounds(0, 10, 540, 40);
+		panelTopStoresBySales.add(lblTopStoresBySales);
+		
+		panelPurchaseHistoryTable = new JPanel();
+		panelPurchaseHistoryTable.setLayout(null);
+		panelPurchaseHistoryTable.setBackground(Color.WHITE);
+		panelPurchaseHistoryTable.setBounds(0, 310, 1100, 310);
+		panelStoreSummary.add(panelPurchaseHistoryTable);
+		
+		lblPurchaseHistoryTable = new JLabel("PURCHASE HISTORY");
+		lblPurchaseHistoryTable.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPurchaseHistoryTable.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblPurchaseHistoryTable.setBounds(0, 10, 1100, 40);
+		panelPurchaseHistoryTable.add(lblPurchaseHistoryTable);
+		
+		panelStoresSales = new JPanel();
+		panelStoresSales.setBackground(new Color(255, 255, 255));
+		layeredPaneStores.add(panelStoresSales, "name_1311043919383900");
+		panelStoresSales.setLayout(null);
+		
+		lblStoresBySales = new JLabel("STORES BY SALES");
+		lblStoresBySales.setHorizontalAlignment(SwingConstants.LEFT);
+		lblStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblStoresBySales.setBounds(10, 10, 540, 40);
+		panelStoresSales.add(lblStoresBySales);
+		
+		lblRefreshSales = new JLabel("Refresh");
+		lblRefreshSales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshSales.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshSales.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshSales.setBounds(1045, 58, 80, 20);
+		panelStores.add(lblRefreshSales);
+		
 		panelPurchaseHistory = new JPanel();
 		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
 		panelPurchaseHistory.setLayout(null);
@@ -579,6 +825,25 @@ public class MainDashboard extends JFrame {
 		lblStoresTitle.setFont(new Font("Poppins", Font.BOLD, 40));
 		lblStoresTitle.setBounds(35, 36, 263, 56);
 		panelPurchaseHistory.add(lblStoresTitle);
+		
+		panelStoresSales_1 = new JPanel();
+		panelStoresSales_1.setLayout(null);
+		panelStoresSales_1.setBackground(Color.WHITE);
+		panelStoresSales_1.setBounds(35, 115, 1100, 630);
+		panelPurchaseHistory.add(panelStoresSales_1);
+		
+		lblPurchaseHistorySummary = new JLabel("PURCHASE HISTORY");
+		lblPurchaseHistorySummary.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPurchaseHistorySummary.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblPurchaseHistorySummary.setBounds(10, 10, 540, 40);
+		panelStoresSales_1.add(lblPurchaseHistorySummary);
+		
+		lblRefreshPurchase = new JLabel("Refresh");
+		lblRefreshPurchase.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshPurchase.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshPurchase.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshPurchase.setBounds(1045, 58, 80, 20);
+		panelPurchaseHistory.add(lblRefreshPurchase);
 		
 		panelSegmentation = new JPanel();
 		layeredPane.add(panelSegmentation, "name_1237637193320800");
