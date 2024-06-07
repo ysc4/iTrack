@@ -46,6 +46,29 @@ public class MainDashboard extends JFrame {
 	private JPanel panelHomeMenu, panelStoreMenu, panelPurchaseMenu, panelSegmentMenu, panelDemographicsMenu, panelGeographicMenu, panelTransactionMenu;
 	private JLabel lblDashHome, lblDashStore, lblPurchaseHistory, lblDashSegment, lblDashDemographics, lblDashGeographic, lblDashTransaction;
 	private JLabel lblHomeLogo, lblStoreLogo, lblPurchaseLogo, lblSegmentLogo, lblDemographicsLogo, lblGeographicLogo, lblTransactionLogo;
+	private JLayeredPane layeredPaneHomePage;
+	private JPanel panelSales;
+	private JPanel panelCustomer;
+	private JPanel panelTotalSales;
+	private JPanel panelTotalProfit;
+	private JPanel panelProfitMargin;
+	private JPanel panelSalesAndProfitTrend;
+	private JPanel panelTopTenProducts;
+	private JPanel panelSalesVolumePerCountry;
+	private JPanel panelTopTenStoresBySales;
+	private JLabel lblSalesPercentIncrease;
+	private JLabel lblTotalProfit;
+	private JLabel lblProfitMargin;
+	private JLabel lblTotalSalesAmount_1;
+	private JLabel lblTotalSalesAmount_2;
+	private JLabel lblSalesPercentIncrease_1;
+	private JLabel lblSalesPercentIncrease_2;
+	private JLabel lblSalesAndProfitTrend;
+	private JLabel lblTopTenProductsBySales;
+	private JLabel lblSalesVolumeByCountry;
+	private JLabel lblTopTenStoresBySales;
+	private JLabel lblExport;
+	private JLabel lblRefresh;
 	
 	/**
 	 * Launch the application.
@@ -388,6 +411,156 @@ public class MainDashboard extends JFrame {
 		lblCustomer.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblCustomer.setBounds(398, 58, 100, 25);
 		panelHome.add(lblCustomer);
+		
+		layeredPaneHomePage = new JLayeredPane();
+		layeredPaneHomePage.setBounds(35, 116, 1100, 630);
+		panelHome.add(layeredPaneHomePage);
+		layeredPaneHomePage.setLayout(new CardLayout(0, 0));
+		
+		panelSales = new JPanel();
+		layeredPaneHomePage.add(panelSales, "name_1304946628987100");
+		panelSales.setLayout(null);
+		
+		panelTotalSales = new JPanel();
+		panelTotalSales.setBackground(new Color(255, 255, 255));
+		panelTotalSales.setBounds(0, 0, 220, 150);
+		panelSales.add(panelTotalSales);
+		panelTotalSales.setLayout(null);
+		
+		JLabel lblTotalSales = new JLabel("TOTAL SALES");
+		lblTotalSales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalSales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalSales.setBounds(0, 10, 220, 40);
+		panelTotalSales.add(lblTotalSales);
+		
+		JLabel lblTotalSalesAmount = new JLabel("$" + "240" + "M");
+		lblTotalSalesAmount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalSalesAmount.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblTotalSalesAmount.setBounds(0, 50, 220, 60);
+		panelTotalSales.add(lblTotalSalesAmount);
+		
+		lblSalesPercentIncrease = new JLabel("(+2.31%)");
+		lblSalesPercentIncrease.setForeground(new Color(0, 255, 0));
+		lblSalesPercentIncrease.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSalesPercentIncrease.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblSalesPercentIncrease.setBounds(0, 100, 220, 40);
+		panelTotalSales.add(lblSalesPercentIncrease);
+		
+		panelTotalProfit = new JPanel();
+		panelTotalProfit.setBackground(Color.WHITE);
+		panelTotalProfit.setBounds(230, 0, 220, 150);
+		panelSales.add(panelTotalProfit);
+		panelTotalProfit.setLayout(null);
+		
+		lblTotalProfit = new JLabel("TOTAL PROFIT");
+		lblTotalProfit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalProfit.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalProfit.setBounds(0, 10, 220, 40);
+		panelTotalProfit.add(lblTotalProfit);
+		
+		lblTotalSalesAmount_1 = new JLabel("$240M");
+		lblTotalSalesAmount_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalSalesAmount_1.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblTotalSalesAmount_1.setBounds(0, 50, 220, 60);
+		panelTotalProfit.add(lblTotalSalesAmount_1);
+		
+		lblSalesPercentIncrease_1 = new JLabel("(+2.31%)");
+		lblSalesPercentIncrease_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSalesPercentIncrease_1.setForeground(Color.GREEN);
+		lblSalesPercentIncrease_1.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblSalesPercentIncrease_1.setBounds(0, 100, 220, 40);
+		panelTotalProfit.add(lblSalesPercentIncrease_1);
+		
+		panelProfitMargin = new JPanel();
+		panelProfitMargin.setBackground(Color.WHITE);
+		panelProfitMargin.setBounds(460, 0, 220, 150);
+		panelSales.add(panelProfitMargin);
+		panelProfitMargin.setLayout(null);
+		
+		lblProfitMargin = new JLabel("PROFIT MARGIN");
+		lblProfitMargin.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProfitMargin.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblProfitMargin.setBounds(0, 10, 220, 40);
+		panelProfitMargin.add(lblProfitMargin);
+		
+		lblTotalSalesAmount_2 = new JLabel("$240M");
+		lblTotalSalesAmount_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalSalesAmount_2.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblTotalSalesAmount_2.setBounds(0, 50, 220, 60);
+		panelProfitMargin.add(lblTotalSalesAmount_2);
+		
+		lblSalesPercentIncrease_2 = new JLabel("(+2.31%)");
+		lblSalesPercentIncrease_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSalesPercentIncrease_2.setForeground(Color.GREEN);
+		lblSalesPercentIncrease_2.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblSalesPercentIncrease_2.setBounds(0, 100, 220, 40);
+		panelProfitMargin.add(lblSalesPercentIncrease_2);
+		
+		panelSalesAndProfitTrend = new JPanel();
+		panelSalesAndProfitTrend.setBackground(Color.WHITE);
+		panelSalesAndProfitTrend.setBounds(0, 160, 680, 215);
+		panelSales.add(panelSalesAndProfitTrend);
+		panelSalesAndProfitTrend.setLayout(null);
+		
+		lblSalesAndProfitTrend = new JLabel("SALES AND PROFIT TREND");
+		lblSalesAndProfitTrend.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSalesAndProfitTrend.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblSalesAndProfitTrend.setBounds(0, 10, 680, 40);
+		panelSalesAndProfitTrend.add(lblSalesAndProfitTrend);
+		
+		panelTopTenProducts = new JPanel();
+		panelTopTenProducts.setBackground(Color.WHITE);
+		panelTopTenProducts.setBounds(0, 385, 680, 215);
+		panelSales.add(panelTopTenProducts);
+		panelTopTenProducts.setLayout(null);
+		
+		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
+		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopTenProductsBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopTenProductsBySales.setBounds(0, 10, 680, 40);
+		panelTopTenProducts.add(lblTopTenProductsBySales);
+		
+		panelSalesVolumePerCountry = new JPanel();
+		panelSalesVolumePerCountry.setBackground(Color.WHITE);
+		panelSalesVolumePerCountry.setBounds(690, 0, 400, 295);
+		panelSales.add(panelSalesVolumePerCountry);
+		panelSalesVolumePerCountry.setLayout(null);
+		
+		lblSalesVolumeByCountry = new JLabel("SALES VOLUME BY COUNTRY");
+		lblSalesVolumeByCountry.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSalesVolumeByCountry.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblSalesVolumeByCountry.setBounds(0, 10, 400, 40);
+		panelSalesVolumePerCountry.add(lblSalesVolumeByCountry);
+		
+		panelTopTenStoresBySales = new JPanel();
+		panelTopTenStoresBySales.setBackground(Color.WHITE);
+		panelTopTenStoresBySales.setBounds(690, 305, 400, 295);
+		panelSales.add(panelTopTenStoresBySales);
+		panelTopTenStoresBySales.setLayout(null);
+		
+		lblTopTenStoresBySales = new JLabel("TOP 10 STORES BY SALES");
+		lblTopTenStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopTenStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopTenStoresBySales.setBounds(0, 10, 400, 40);
+		panelTopTenStoresBySales.add(lblTopTenStoresBySales);
+		
+		panelCustomer = new JPanel();
+		layeredPaneHomePage.add(panelCustomer, "name_1304958910393200");
+		panelCustomer.setLayout(null);
+		
+		lblExport = new JLabel("Export");
+		lblExport.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblExport.setHorizontalAlignment(SwingConstants.CENTER);
+		lblExport.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblExport.setBounds(1045, 58, 80, 20);
+		panelHome.add(lblExport);
+		
+		lblRefresh = new JLabel("Refresh");
+		lblRefresh.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefresh.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefresh.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefresh.setBounds(955, 58, 80, 20);
+		panelHome.add(lblRefresh);
 		
 		panelStores = new JPanel();
 		layeredPane.add(panelStores, "name_1237607726469500");
