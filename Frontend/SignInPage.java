@@ -96,7 +96,9 @@ public class SignInPage extends JFrame {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				MainDashboard goToDash = new MainDashboard();
+				goToDash.setVisible(true);
+				dispose();
 			}
 			
 			@Override
