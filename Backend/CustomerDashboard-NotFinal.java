@@ -34,9 +34,9 @@ public class CustomerDashboard extends JPanel {
 
         JFreeChart chart = createChart("NEW VS. CURRENT CUSTOMERS TREND", "CATEGORY", "FREQUENCY", customerTrend);
         ChartPanel customerTrendPanel = new ChartPanel(chart);
-        customerTrendPanel.setPreferredSize(new Dimension(660,190));
+        customerTrendPanel.setPreferredSize(new Dimension(670, 200));
         customerTrendPanel.setBackground(new Color(255, 255, 255));
-        customerTrendPanel.setBounds(0, 0, 680, 210);
+        customerTrendPanel.setBounds(5, 5, 670, 200);
         
         return customerTrendPanel;
     }
@@ -59,7 +59,7 @@ public class CustomerDashboard extends JPanel {
         JFreeChart chart = createChart("DEMOGRAPHIC SEGMENTATION", "AGE & SEX", "FREQUENCY", demographicData);
         
         ChartPanel demographicPanel = new ChartPanel(chart);
-        demographicPanel.setPreferredSize(new Dimension(350,190));
+        demographicPanel.setPreferredSize(new Dimension(350,210));
         demographicPanel.setBackground(new Color(255, 255, 255));
         demographicPanel.setBounds(10, 10, 350, 210);
         
@@ -82,7 +82,7 @@ public class CustomerDashboard extends JPanel {
         JFreeChart chart = createChart("GEOGRAPHIC SEGMENTATION", "COUNTRIES", "FREQUENCY", geographicData);
         
         ChartPanel geographicPanel = new ChartPanel(chart);
-        geographicPanel.setPreferredSize(new Dimension(350,190));
+        geographicPanel.setPreferredSize(new Dimension(350,210));
         geographicPanel.setBackground(new Color(255, 255, 255));
         geographicPanel.setBounds(380, 10, 350, 210);
         
@@ -103,7 +103,7 @@ public class CustomerDashboard extends JPanel {
         JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "PURCHASES", transactionalData);
         
         ChartPanel demographicPanel = new ChartPanel(chart);
-        demographicPanel.setPreferredSize(new Dimension(350,190));
+        demographicPanel.setPreferredSize(new Dimension(350,210));
         demographicPanel.setBackground(new Color(255, 255, 255));
         demographicPanel.setBounds(740, 10, 350, 210);
         
@@ -133,14 +133,17 @@ public class CustomerDashboard extends JPanel {
         domainAxis.setTickLabelInsets(new RectangleInsets(0.5, 0.5, 0.5, 0.5));
         domainAxis.setLowerMargin(0.01);
         domainAxis.setUpperMargin(0.01);
-        domainAxis.setLabelFont(domainAxis.getLabelFont().deriveFont(14f));
+        domainAxis.setCategoryMargin(0.1);
+        domainAxis.setLabelFont(domainAxis.getLabelFont().deriveFont(12f));
         
         ValueAxis rangeAxis = plot.getRangeAxis();
-        rangeAxis.setTickLabelFont(new Font("Poppins", Font.BOLD, 12));
+        rangeAxis.setTickLabelFont(new Font("Poppins", Font.BOLD, 10));
+        rangeAxis.setLabelFont(rangeAxis.getLabelFont().deriveFont(12f));
         
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
         renderer.setSeriesPaint(0, Color.black);
         renderer.setSeriesPaint(1, Color.DARK_GRAY);
+        renderer.setItemMargin(0);
         
         LegendTitle legend = chart.getLegend();
         legend.setItemFont(new Font("Poppins", Font.ITALIC, 10));
