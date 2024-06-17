@@ -2,20 +2,23 @@ package iTrack;
 
 import java.awt.EventQueue;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.jfree.chart.ChartPanel;
+
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JSeparator;
 import java.awt.CardLayout;
 import javax.swing.JLayeredPane;
@@ -25,40 +28,29 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JComboBox;
-import java.awt.Component;
-import java.awt.Dimension;
-
-import javax.swing.table.TableModel;
-import javax.swing.border.LineBorder;
-import java.awt.GridLayout;
 
 public class MainDashboard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private ImageIcon appleIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\apple-dash.png");
-	ImageIcon homeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-white.png");
-	ImageIcon homeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-black.png");
-	ImageIcon storeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-white.png");
-	ImageIcon storeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-black.png");
-	ImageIcon purchaseWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-white.png");
-	ImageIcon purchaseBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-black.png");
-	ImageIcon segmentWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-white.png");
-	ImageIcon segmentBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-black.png");
-	ImageIcon demoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-white.png");
-	ImageIcon demoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-black.png");
-	ImageIcon geoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-white.png");
-	ImageIcon geoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-black.png");
-	ImageIcon transactWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-white.png");
-	ImageIcon transactBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-black.png");
-	ImageIcon accountIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\account.png");
-	ImageIcon exitIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
+	private ImageIcon appleIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/apple-dash.png");
+	ImageIcon homeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-white.png");
+	ImageIcon homeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-black.png");
+	ImageIcon storeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-white.png");
+	ImageIcon storeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-black.png");
+	ImageIcon purchaseWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-white.png");
+	ImageIcon purchaseBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-black.png");
+	ImageIcon segmentWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-white.png");
+	ImageIcon segmentBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-black.png");
+	ImageIcon demoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-white.png");
+	ImageIcon demoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-black.png");
+	ImageIcon geoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-white.png");
+	ImageIcon geoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-black.png");
+	ImageIcon transactWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-white.png");
+	ImageIcon transactBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-black.png");
+	ImageIcon accountIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/account.png");
+	ImageIcon exitIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/exit.png");
 	
 	private JPanel contentPane;
 	private JLayeredPane layeredPane;
@@ -106,9 +98,7 @@ public class MainDashboard extends JFrame {
 	private JLabel lblCustomerGrowthPercentage_2;
 	private JLabel lblActiveCustomers_2;
 	private JPanel panelCustomerTrend;
-	private JLabel lblNewVsCurrent;
 	private JPanel panelCustomerSegmentationGraphs;
-	private JLabel lblCustomerSegmentation;
 	private JPanel panelCustomerVolumeByCountry;
 	private JLabel lblCustomerVolumeByCountry;
 	private JLayeredPane layeredPaneStores;
@@ -126,9 +116,9 @@ public class MainDashboard extends JFrame {
 	private JLabel lblPurchaseHistorySummary;
 	private JLabel lblRefreshPurchase;
 	private JPanel panelCustomerSegmentation;
-	private JPanel panel_1;
-	private JPanel panel_2;
-	private JPanel panel_3;
+	private JPanel demoPanel;
+	private JPanel geoPanel;
+	private JPanel transPanel;
 	private JLabel lblRefreshCS;
 	private JLabel lblExportCS;
 	private JTable tableGeographic;
@@ -457,8 +447,8 @@ public class MainDashboard extends JFrame {
 		lblTransactionLogo.setBounds(5, 0, 35, 35);
 		panelTransactionMenu.add(lblTransactionLogo);
 		
-		ImageIcon logOutIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
-		JLabel lblLogOut = new JLabel("New label");
+		JLabel lblLogOut = new JLabel("");
+		lblLogOut.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLogOut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -467,12 +457,13 @@ public class MainDashboard extends JFrame {
 				dispose();
 			}
 		});
-		lblLogOut.setIcon(logOutIcon);
+		lblLogOut.setIcon(exitIcon);
 		lblLogOut.setBounds(0, 695, 50, 40);
 		panelDashboardMenu.add(lblLogOut);
 		
-		ImageIcon accountIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\account.png");
-		JLabel lblAccount = new JLabel("New label");
+	
+		JLabel lblAccount = new JLabel("");
+		lblAccount.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAccount.setIcon(accountIcon);
 		lblAccount.setBounds(130, 690, 50, 40);
 		panelDashboardMenu.add(lblAccount);
@@ -616,17 +607,18 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelSalesAndProfitTrend);
 		panelSalesAndProfitTrend.setLayout(null);
 		
-		lblSalesAndProfitTrend = new JLabel("SALES AND PROFIT TREND");
-		lblSalesAndProfitTrend.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSalesAndProfitTrend.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblSalesAndProfitTrend.setBounds(0, 10, 680, 40);
-		panelSalesAndProfitTrend.add(lblSalesAndProfitTrend);
+		SalesDashboard salesDashboard = new SalesDashboard();
+		ChartPanel salesProfitTrend = salesDashboard.salesTrend();
+		panelSalesAndProfitTrend.add(salesProfitTrend);
 		
 		panelTopTenProducts = new JPanel();
 		panelTopTenProducts.setBackground(Color.WHITE);
 		panelTopTenProducts.setBounds(0, 385, 680, 215);
 		panelSales.add(panelTopTenProducts);
 		panelTopTenProducts.setLayout(null);
+		
+		ChartPanel productsTrend = salesDashboard.productsTrend();
+		panelTopTenProducts.add(productsTrend);
 		
 		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
 		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
@@ -794,23 +786,24 @@ public class MainDashboard extends JFrame {
 		panelCustomerTrend.setBounds(0, 160, 680, 215);
 		panelCustomer.add(panelCustomerTrend);
 		
-		lblNewVsCurrent = new JLabel("NEW VS. CURRENT CUSTOMERS TREND");
-		lblNewVsCurrent.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewVsCurrent.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblNewVsCurrent.setBounds(0, 10, 680, 40);
-		panelCustomerTrend.add(lblNewVsCurrent);
+		CustomerDashboard CustomerDashboard = new CustomerDashboard();
+		ChartPanel NewCurrentTrend = CustomerDashboard.customerTrend();
+		panelCustomerTrend.add(NewCurrentTrend);
 		
 		panelCustomerSegmentationGraphs = new JPanel();
 		panelCustomerSegmentationGraphs.setLayout(null);
 		panelCustomerSegmentationGraphs.setBackground(Color.WHITE);
-		panelCustomerSegmentationGraphs.setBounds(0, 387, 1100, 215);
+		panelCustomerSegmentationGraphs.setBounds(0, 387, 1100, 225);
 		panelCustomer.add(panelCustomerSegmentationGraphs);
 		
-		lblCustomerSegmentation = new JLabel("CUSTOMER SEGMENTATION");
-		lblCustomerSegmentation.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCustomerSegmentation.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblCustomerSegmentation.setBounds(0, 10, 1100, 40);
-		panelCustomerSegmentationGraphs.add(lblCustomerSegmentation);
+		ChartPanel DemographicPanel = CustomerDashboard.demographicChart();
+		panelCustomerSegmentationGraphs.add(DemographicPanel);
+		
+		ChartPanel GeographicPanel = CustomerDashboard.geographicChart();
+		panelCustomerSegmentationGraphs.add(GeographicPanel);
+		
+		ChartPanel TransactionalPanel = CustomerDashboard.transactionalChart();
+		panelCustomerSegmentationGraphs.add(TransactionalPanel);
 		
 		panelCustomerVolumeByCountry = new JPanel();
 		panelCustomerVolumeByCountry.setLayout(null);
@@ -834,7 +827,7 @@ public class MainDashboard extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"Country", "<html><center>Customer<br>Volume</html>", "Revenue", "Profit", "Profit Margin"
+				"Country", "<html><center>Customer<br>Volume</html>", "<html><center>New<br>Customers</html>", "<html><center>Active<br>Customers</html>"
 			}
 		));
 		tableCVBC.setFont(new Font("Poppins", Font.PLAIN, 7));
@@ -842,7 +835,7 @@ public class MainDashboard extends JFrame {
 		changeTableHeaderColor(tableCVBC, 9);
 		
 		lblExport = new JLabel("Export");
-		lblExport.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblExport.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
 		lblExport.setHorizontalAlignment(SwingConstants.CENTER);
 		lblExport.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblExport.setBounds(1045, 58, 80, 20);
@@ -1042,44 +1035,34 @@ public class MainDashboard extends JFrame {
 		layeredCustomerSegmentation.add(panelCustomerSegmentation, "name_9606951641900");
 		panelCustomerSegmentation.setLayout(null);
 		
-		panel_1 = new JPanel();
-		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(22, 24, 534, 285);
-		panelCustomerSegmentation.add(panel_1);
-		panel_1.setLayout(null);
+		demoPanel = new JPanel();
+		demoPanel.setBackground(Color.WHITE);
+		demoPanel.setBounds(22, 24, 534, 285);
+		panelCustomerSegmentation.add(demoPanel);
+		demoPanel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("DEMOGRAPHIC SEGMENTATION");
-		lblNewLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblNewLabel.setBounds(91, 11, 337, 24);
-		panel_1.add(lblNewLabel);
+		geoPanel = new JPanel();
+		geoPanel.setBackground(Color.WHITE);
+		geoPanel.setBounds(570, 24, 534, 285);
+		panelCustomerSegmentation.add(geoPanel);
+		geoPanel.setLayout(null);
 		
-		panel_2 = new JPanel();
-		panel_2.setBackground(Color.WHITE);
-		panel_2.setBounds(570, 24, 534, 285);
-		panelCustomerSegmentation.add(panel_2);
-		panel_2.setLayout(null);
+		transPanel = new JPanel();
+		transPanel.setBackground(Color.WHITE);
+		transPanel.setBounds(22, 320, 1082, 318);
+		panelCustomerSegmentation.add(transPanel);
+		transPanel.setLayout(null);
 		
-		JLabel lblNewLabel_1 = new JLabel("GEOGRAPHIC SEGMENTATION");
-		lblNewLabel_1.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblNewLabel_1.setBounds(125, 11, 295, 24);
-		panel_2.add(lblNewLabel_1);
+		CustomerSegmentation customerSegment = new CustomerSegmentation();
 		
-		panel_3 = new JPanel();
-		panel_3.setBackground(Color.WHITE);
-		panel_3.setBounds(22, 320, 1082, 318);
-		panelCustomerSegmentation.add(panel_3);
-		panel_3.setLayout(null);
+		ChartPanel DemographicPanel2 = customerSegment.demographicChart();
+		demoPanel.add(DemographicPanel2);
 		
-		JLabel lblNewLabel_2 = new JLabel("TRANSACTIONAL SEGMENTATION");
-		lblNewLabel_2.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblNewLabel_2.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setBounds(358, 11, 363, 30);
-		panel_3.add(lblNewLabel_2);
+		ChartPanel GeographicPanel2 = customerSegment.geographicChart();
+		geoPanel.add(GeographicPanel2);
+		
+		ChartPanel TransactionalPanel2 = customerSegment.transactionalChart();
+		transPanel.add(TransactionalPanel2);
 		
 		lblRefreshCS = new JLabel("Refresh");
 		lblRefreshCS.setHorizontalAlignment(SwingConstants.CENTER);
