@@ -73,16 +73,50 @@ public class SignInPage extends JFrame {
 		iTrackBanner.setBounds(194, 36, 246, 66);
 		panel.add(iTrackBanner);
 		
+		JPanel panelTypeUsername = new JPanel();
+		panelTypeUsername.setBackground(new Color(255, 255, 255));
+		panelTypeUsername.setBounds(86, 152, 346, 34);
+		panel.add(panelTypeUsername);
+		panelTypeUsername.setLayout(null);
+		
 		textFieldUsername = new JTextField();
+		textFieldUsername.setBounds(0, 0, 346, 34);
+		panelTypeUsername.add(textFieldUsername);
 		textFieldUsername.setFont(new Font("Poppins", Font.PLAIN, 12));
-		textFieldUsername.setBounds(86, 152, 346, 34);
-		panel.add(textFieldUsername);
 		textFieldUsername.setColumns(10);
 		
+		JPanel panelTypePassword = new JPanel();
+		panelTypePassword.setBackground(new Color(255, 255, 255));
+		panelTypePassword.setBounds(86, 237, 346, 34);
+		panel.add(panelTypePassword);
+		panelTypePassword.setLayout(null);
+		
 		passwordFieldPassword = new JPasswordField();
+		passwordFieldPassword.setEchoChar('*');
+		passwordFieldPassword.setBounds(0, 0, 307, 34);
+		panelTypePassword.add(passwordFieldPassword);
 		passwordFieldPassword.setFont(new Font("Poppins", Font.PLAIN, 12));
-		passwordFieldPassword.setBounds(86, 237, 346, 34);
-		panel.add(passwordFieldPassword);
+		
+		ImageIcon show = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\show.png");
+		ImageIcon hide = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\hide.png");
+		JLabel lblShowPass = new JLabel("");
+		
+		lblShowPass.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(lblShowPass.getIcon().equals(show)) {
+					passwordFieldPassword.setEchoChar('*');
+					lblShowPass.setIcon(hide);
+				} else {
+					lblShowPass.setIcon(show);
+					passwordFieldPassword.setEchoChar((char)0);
+				}
+			}
+		});
+		lblShowPass.setBackground(new Color(255, 255, 255));
+		lblShowPass.setIcon(show);
+		lblShowPass.setBounds(307, 0, 39, 34);
+		panelTypePassword.add(lblShowPass);
 		
 		JLabel lblLogIn = new JLabel("sign in");
 		lblLogIn.setBackground(Color.white);
@@ -96,9 +130,13 @@ public class SignInPage extends JFrame {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				MainDashboard goToDash = new MainDashboard();
-				goToDash.setVisible(true);
-				dispose();
+				if(textFieldUsername.getText().toString().equals("Admin") && passwordFieldPassword.getText().toString().equals("pass1234")) {
+					MainDashboard goToDash = new MainDashboard();
+					goToDash.setVisible(true);
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(lblLogIn, "Please input correct credentials. Try again.");
+				}
 			}
 			
 			@Override
