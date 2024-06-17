@@ -23,55 +23,103 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class CustomerDashboard extends JPanel {
+    public ChartPanel customerTrend() {
+    	DefaultCategoryDataset customerTrend = new DefaultCategoryDataset();
+    	addValue(customerTrend, 30, "New", "2022");
+        addValue(customerTrend, 50, "New", "2023");
+        addValue(customerTrend, 10, "New", "2024");
+        addValue(customerTrend, 70, "Current", "2022");
+        addValue(customerTrend, 50, "Current", "2023");
+        addValue(customerTrend, 90, "Current", "2024");
 
-    public CustomerDashboard() {
-        // Create dataset
-        CategoryDataset dataset = createDataset();
-
-        // Create chart
-        JFreeChart chart = createChart(dataset);
-
-        // Create Panel
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(660,190));
-        add(chartPanel);
+        JFreeChart chart = createChart("NEW VS. CURRENT CUSTOMERS TREND", "CATEGORY", "FREQUENCY", customerTrend);
+        ChartPanel customerTrendPanel = new ChartPanel(chart);
+        customerTrendPanel.setPreferredSize(new Dimension(660,190));
+        customerTrendPanel.setBackground(new Color(255, 255, 255));
+        customerTrendPanel.setBounds(0, 0, 680, 210);
+        
+        return customerTrendPanel;
     }
+    
+    public ChartPanel demographicChart() {
+    	DefaultCategoryDataset demographicData = new DefaultCategoryDataset();
+    	addValue(demographicData, 20, "Female", "<18");
+        addValue(demographicData, 50, "Female", "18-28");
+        addValue(demographicData, 55, "Female", "29-38");
+        addValue(demographicData, 40, "Female", "39-48");
+        addValue(demographicData, 90, "Female", "49-58");
+        addValue(demographicData, 15, "Female", ">59");
+        addValue(demographicData, 35, "Male", "<18");
+        addValue(demographicData, 60, "Male", "18-28");
+        addValue(demographicData, 65, "Male", "29-38");
+        addValue(demographicData, 70, "Male", "39-48");
+        addValue(demographicData, 25, "Male", "49-58");
+        addValue(demographicData, 10, "Male", ">59");
 
-    private CategoryDataset createDataset() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        JFreeChart chart = createChart("DEMOGRAPHIC SEGMENTATION", "AGE & SEX", "FREQUENCY", demographicData);
+        
+        ChartPanel demographicPanel = new ChartPanel(chart);
+        demographicPanel.setPreferredSize(new Dimension(350,190));
+        demographicPanel.setBackground(new Color(255, 255, 255));
+        demographicPanel.setBounds(10, 10, 350, 210);
+        
+        return demographicPanel;
+    }
+    
+    public ChartPanel geographicChart() {
+    	DefaultCategoryDataset geographicData = new DefaultCategoryDataset();
+    	addValue(geographicData, 20, "New", "Asia");
+        addValue(geographicData, 50, "New", "Australia");
+        addValue(geographicData, 55, "New", "Europe");
+        addValue(geographicData, 40, "New", "Canada");
+        addValue(geographicData, 90, "New", "USA");
+        addValue(geographicData, 35, "Current", "Asia");
+        addValue(geographicData, 60, "Current", "Australia");
+        addValue(geographicData, 65, "Current", "Europe");
+        addValue(geographicData, 70, "Current", "Canada");
+        addValue(geographicData, 25, "Current", "USA");
 
-        addValue(dataset, 30, "New", "2022");
-        addValue(dataset, 50, "New", "2023");
-        addValue(dataset, 10, "New", "2024");
-        addValue(dataset, 70, "Current", "2022");
-        addValue(dataset, 50, "Current", "2023");
-        addValue(dataset, 90, "Current", "2024");
+        JFreeChart chart = createChart("GEOGRAPHIC SEGMENTATION", "COUNTRIES", "FREQUENCY", geographicData);
+        
+        ChartPanel geographicPanel = new ChartPanel(chart);
+        geographicPanel.setPreferredSize(new Dimension(350,190));
+        geographicPanel.setBackground(new Color(255, 255, 255));
+        geographicPanel.setBounds(380, 10, 350, 210);
+        
+        return geographicPanel;
+    }
+    
+    public ChartPanel transactionalChart() {
+    	DefaultCategoryDataset transactionalData = new DefaultCategoryDataset();
+    	addValue(transactionalData, 20, "Customers", "iPhone");
+        addValue(transactionalData, 50, "Customers", "iPad");
+        addValue(transactionalData, 55, "Customers", "Watch");
+        addValue(transactionalData, 40, "Customers", "Macbook");
+        addValue(transactionalData, 90, "Customers", "TV & Home");
+        addValue(transactionalData, 15, "Customers", "AirPods");
+        addValue(transactionalData, 65, "Customers", "Vision");
+  
 
-        return dataset;
+        JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "PURCHASES", transactionalData);
+        
+        ChartPanel demographicPanel = new ChartPanel(chart);
+        demographicPanel.setPreferredSize(new Dimension(350,190));
+        demographicPanel.setBackground(new Color(255, 255, 255));
+        demographicPanel.setBounds(740, 10, 350, 210);
+        
+        return demographicPanel;
     }
     
     private void addValue(DefaultCategoryDataset dataset, double value, String categ, String column) {
     	dataset.addValue(value, categ, column);
     }
     
-    private JFreeChart createChart(CategoryDataset dataset) {
-        JFreeChart chart = ChartFactory.createBarChart(
-                "NEW VS. CURRENT CUSTOMERS TREND", // Chart title
-                "Customers",         // X-axis label
-                "Value",            // Y-axis label
-                dataset,            // Dataset
-                PlotOrientation.VERTICAL,
-                true,               // Show legend
-                true,
-                false
-        );
-
-        // Customization
+    private JFreeChart createChart(String title, String Xaxis, String Yaxis, DefaultCategoryDataset dataset) {
+        JFreeChart chart = ChartFactory.createBarChart(title, Xaxis, Yaxis, dataset, PlotOrientation.VERTICAL, true, true, false);
         chart.setBackgroundPaint(Color.white);
-        chart.setTitle(new TextTitle("NEW VS. CURRENT CUSTOMERS TREND", new Font("Poppins", Font.BOLD, 20)));
+        chart.setTitle(new TextTitle(title, new Font("Poppins", Font.BOLD, 16)));
         chart.getLegend().setPosition(RectangleEdge.RIGHT);
-        chart.getLegend().setMargin(2, 2, 2, 2);
-        
+
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setBackgroundPaint(Color.lightGray);
         plot.setDomainGridlinePaint(Color.white);
@@ -85,12 +133,11 @@ public class CustomerDashboard extends JPanel {
         domainAxis.setTickLabelInsets(new RectangleInsets(0.5, 0.5, 0.5, 0.5));
         domainAxis.setLowerMargin(0.01);
         domainAxis.setUpperMargin(0.01);
-        domainAxis.setLabelFont(domainAxis.getLabelFont().deriveFont(16f));
-       
+        domainAxis.setLabelFont(domainAxis.getLabelFont().deriveFont(14f));
+        
         ValueAxis rangeAxis = plot.getRangeAxis();
-        rangeAxis.setTickLabelFont(new Font("Poppins", Font.BOLD, 14));
-
-        // Customization of the bar chart
+        rangeAxis.setTickLabelFont(new Font("Poppins", Font.BOLD, 12));
+        
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
         renderer.setSeriesPaint(0, Color.black);
         renderer.setSeriesPaint(1, Color.DARK_GRAY);
@@ -100,7 +147,12 @@ public class CustomerDashboard extends JPanel {
         
         CategoryItemRenderer rendererCateg = plot.getRenderer();
         rendererCateg.setDefaultItemLabelFont(new Font("Poppins", Font.PLAIN, 10));
-
-        return chart;
+    	
+		return chart;
+    	
     }   
 }
+
+
+
+
