@@ -435,7 +435,7 @@ public class MainDashboard extends JFrame {
 		panelTransactionMenu.setBounds(0, 302, 198, 35);
 		panelDashboardMenu.add(panelTransactionMenu);
 		
-		lblDashTransaction = new JLabel("Transaction History");
+		lblDashTransaction = new JLabel("Transactional");
 		lblDashTransaction.setForeground(new Color(255, 255, 255));
 		lblDashTransaction.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblDashTransaction.setBounds(53, 0, 145, 38);
