@@ -1,6 +1,6 @@
 Link: https://simplifyingtechcode.wordpress.com/2020/08/24/how-to-connect-java-and-mongodb/
 
-Dependencies:
+Dependencies (insert in pom.xml):
 <dependencies>
     <dependency>
         <groupId>org.mongodb</groupId>
