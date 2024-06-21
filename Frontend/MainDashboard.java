@@ -34,23 +34,23 @@ import javax.swing.JTable;
 public class MainDashboard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private ImageIcon appleIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/apple-dash.png");
-	ImageIcon homeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-white.png");
-	ImageIcon homeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-black.png");
-	ImageIcon storeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-white.png");
-	ImageIcon storeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-black.png");
-	ImageIcon purchaseWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-white.png");
-	ImageIcon purchaseBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-black.png");
-	ImageIcon segmentWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-white.png");
-	ImageIcon segmentBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-black.png");
-	ImageIcon demoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-white.png");
-	ImageIcon demoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-black.png");
-	ImageIcon geoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-white.png");
-	ImageIcon geoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-black.png");
-	ImageIcon transactWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-white.png");
-	ImageIcon transactBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-black.png");
-	ImageIcon accountIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/account.png");
-	ImageIcon exitIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/exit.png");
+	ImageIcon appleIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\apple-dash.png");
+	ImageIcon homeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-white.png");
+	ImageIcon homeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-black.png");
+	ImageIcon storeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-white.png");
+	ImageIcon storeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-black.png");
+	ImageIcon purchaseWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-white.png");
+	ImageIcon purchaseBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-black.png");
+	ImageIcon segmentWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-white.png");
+	ImageIcon segmentBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-black.png");
+	ImageIcon demoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-white.png");
+	ImageIcon demoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-black.png");
+	ImageIcon geoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-white.png");
+	ImageIcon geoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-black.png");
+	ImageIcon transactWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-white.png");
+	ImageIcon transactBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-black.png");
+	ImageIcon accountIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\account.png");
+	ImageIcon exitIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
 	
 	private JPanel contentPane;
 	private JLayeredPane layeredPane;
@@ -538,7 +538,7 @@ public class MainDashboard extends JFrame {
 		lblTotalSales.setBounds(0, 10, 220, 40);
 		panelTotalSales.add(lblTotalSales);
 		
-		JLabel lblTotalSalesAmount = new JLabel("$" + "240" + "M");
+		JLabel lblTotalSalesAmount = new JLabel("$");
 		lblTotalSalesAmount.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTotalSalesAmount.setFont(new Font("Poppins", Font.PLAIN, 50));
 		lblTotalSalesAmount.setBounds(0, 50, 220, 60);
@@ -1263,6 +1263,8 @@ public class MainDashboard extends JFrame {
 
 	        scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
 	        scrollPaneTransactionalSegmentation.setVisible(true);
+	        
+	        SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
 	}
 	      
 	public void changeTableHeaderColor (JTable table, int fontSize) {
