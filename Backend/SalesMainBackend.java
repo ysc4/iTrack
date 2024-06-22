@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 
 public class SalesMainBackend {
 	
-	public static void TotalSalesDisplay(JLabel salesIncreaseAmount, JLabel salesIncreasePercentage) {
+	public static void TotalSalesDisplay(JLabel salesIncreaseAmount, JLabel salesIncreasePercentage) throws Exception {
 		// Get the current date
         LocalDate currentDate = LocalDate.now();
         
@@ -15,11 +15,16 @@ public class SalesMainBackend {
         int currentYear = currentDate.getYear();
         
         // Calculate the previous year
-        int previousYear = currentYear - 1;
+        int previousYear = currentDate.getYear()-1;
+        
+        int currentMonth = LocalDate.now().getMonthValue();
         
         SalesMongoDriver retrieve = new SalesMongoDriver();
-        int totalCurrentSale = retrieve.totalYearlySales(currentYear);
-        int totalPreviousSale = retrieve.totalYearlySales(previousYear);
+        int totalCurrentSale = retrieve.totalMonthlySales(currentYear, currentMonth);
+        int totalPreviousSale = retrieve.totalMonthlySales(previousYear, currentMonth);
+        
+        System.out.println(totalCurrentSale);
+        System.out.println(totalPreviousSale);
         
         double percentage = computeIncrease(totalCurrentSale, totalPreviousSale);
         
@@ -40,13 +45,14 @@ public class SalesMainBackend {
 	
 	private static double computeIncrease(double current, double previous) {
 		// Ensure previousYearSales is not zero to avoid division by zero error
-        if (previous != 0) {
-            // Calculate the increase percentage
-            double increasePercentage = ((current - previous) / previous);
-            return increasePercentage * 100;
+		if (previous != 0) {
+			// Calculate the increase percentage
+			double increasePercentage = ((current - previous) / previous);
+	        return increasePercentage * 100;
+        } else if (current == 0 || previous == 0) {
+        	return 0;
         } else {
-            // Handle case where previousYearSales is zero
-            throw new IllegalArgumentException("Previous year sales cannot be zero");
+        	return 100;
         }
 		
 	}
@@ -60,7 +66,7 @@ public class SalesMainBackend {
 		} else if (convert >= 1000 && convert < 100000) {
 			converted = String.format("%.1f", amount/1000) + "K";
 		} else if (convert >= 100000 && convert < 1000000) {
-			converted = String.format("%.1f", amount/100000) + "K";
+			converted = String.format("%.1f", amount/1000) + "K";
 		} else if (convert >= 1000000 && convert < 1000000000) {
 			converted = String.format("%.1f", amount/1000000) + "M";	
 		} else {
