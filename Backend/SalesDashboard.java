@@ -7,6 +7,7 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -17,12 +18,15 @@ import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class SalesDashboard extends JPanel {
 	LocalDate currentDate = LocalDate.now();
@@ -46,7 +50,7 @@ public class SalesDashboard extends JPanel {
         return salesTrendPanel;
     }
     
-    public ChartPanel productsTrend() {
+    public ChartPanel productsTrend() throws Exception {
     	SalesMongoDriver data = new SalesMongoDriver();
     	DefaultCategoryDataset productsTrendData = new DefaultCategoryDataset();
     	addValue(productsTrendData, data.inputTopTenSalesPrice(1), "Revenue", data.inputTopTenSalesProductName(1));
@@ -67,6 +71,27 @@ public class SalesDashboard extends JPanel {
         productsTrendPanel.setBounds(5, 5, 670, 200);
         
         return productsTrendPanel;
+    }
+    
+    public ChartPanel salesVolume() throws Exception {
+    	ArrayList<String> countries = new ArrayList<String>();
+    	ArrayList<Integer> sales = new ArrayList<Integer>();
+		SalesMongoDriver.displaySalesPerCountry(countries, sales);
+    	DefaultCategoryDataset salesTrendData = new DefaultCategoryDataset();
+    	
+   	 	// Add values from ArrayLists to the dataset
+        for (int i = 0; i < 10; i++) {
+            addValue(salesTrendData, sales.get(i), "Revenue", countries.get(i));
+        }
+        
+
+        JFreeChart chart = createChart("REVENUE BY COUNTRY", "COUNTRY", "TOTAL SALES", salesTrendData);
+        ChartPanel salesTrendPanel = new ChartPanel(chart);
+        salesTrendPanel.setPreferredSize(new Dimension(670,200));
+        salesTrendPanel.setBackground(new Color(255, 255, 255));
+        salesTrendPanel.setBounds(5, 5, 380, 270);
+        
+        return salesTrendPanel;
     }
   
     
@@ -115,6 +140,8 @@ public class SalesDashboard extends JPanel {
 		return chart;
     	
     }   
+    
+   
 }
 
 
