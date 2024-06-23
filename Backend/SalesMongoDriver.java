@@ -13,13 +13,22 @@ import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lte;
 import static com.mongodb.client.model.Sorts.descending;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -35,6 +44,7 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 
 public class SalesMongoDriver {
 	
@@ -178,13 +188,16 @@ public class SalesMongoDriver {
             return orderCount;
 	}
 	
-	public double inputTopTenSalesPrice(int displayRank) {
+	public double inputTopTenSalesPrice(int displayRank) throws Exception {
 		String uri = "mongodb://localhost:27017"; // Replace with your MongoDB connection string
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("iTrack"); // Replace with your database name
             MongoCollection<Document> transactionHistoryCollection = database.getCollection("TransactionHistory");
 
-            int year = 2023; // Specify the year
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+            
+            int year = currentDate.getYear(); // Specify the year
             int startMonth = 1; // Specify the start month
             int endMonth = LocalDate.now().getMonthValue(); // Specify the end month
 
@@ -252,8 +265,10 @@ public class SalesMongoDriver {
         MongoClient mongoClient = MongoClients.create(uri);
             MongoDatabase database = mongoClient.getDatabase("iTrack"); // Replace with your database name
             MongoCollection<Document> transactionHistoryCollection = database.getCollection("TransactionHistory");
-
-            int year = 2023; // Specify the year
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+            
+            int year = currentDate.getYear(); // Specify the year
             int startMonth = 1; // Specify the start month
             int endMonth = LocalDate.now().getMonthValue(); // Specify the end month
 
@@ -313,5 +328,109 @@ public class SalesMongoDriver {
             }
  
             return prodName;
+	}
+	
+	public static void displayTopTenStores(DefaultTableModel tableModel) {
+		// Connect to MongoDB
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+        MongoDatabase database = mongoClient.getDatabase("iTrack");
+
+        // Collections
+        MongoCollection<Document> purchaseHistoryCollection = database.getCollection("PurchaseHistory");
+        MongoCollection<Document> storeDataCollection = database.getCollection("StoreData");
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        int year = currentDate.getYear(); // Specify the year
+        String startDateStr = year + "-01-01T00:00:00Z";
+        String endDateStr = (year + 1) + "-01-01T00:00:00Z";
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        Date startDate = null;
+        Date endDate = null;
+
+        try {
+            startDate = dateFormat.parse(startDateStr);
+            endDate = dateFormat.parse(endDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // Aggregation pipeline
+        List<Document> pipeline = Arrays.asList(
+                new Document("$match", Filters.and(
+                        Filters.gte("Date and Time", startDate),
+                        Filters.lt("Date and Time", endDate)
+                )),
+                new Document("$group", new Document("_id", "$Store ID")
+                        .append("totalSales", new Document("$sum", "$Total Spent"))),
+                new Document("$sort", new Document("totalSales", -1)),
+                new Document("$limit", 15)
+        );
+
+        // Execute the aggregation
+        AggregateIterable<Document> topStores = purchaseHistoryCollection.aggregate(pipeline);
+
+        for (Document store : topStores) {
+            String storeId = store.getString("_id");
+            Number totalSales = store.get("totalSales", Number.class); // Get as Number
+
+            // Find store details from StoreData collection
+            Document storeDetails = storeDataCollection.find(new Document("Store ID", storeId)).first();
+
+            if (storeDetails != null) {
+                String storeName = storeDetails.getString("Store Name");
+                String country = storeDetails.getString("Country");
+
+                tableModel.addRow(new Object[] {storeName, country, totalSales.toString()});
+            }
+        }
+
+        // Close the MongoDB client
+        mongoClient.close();
+	}
+	
+	public static void displaySalesPerCountry(ArrayList<String> countries,  ArrayList<Integer> sumSales) {
+        countries.clear();
+        sumSales.clear();
+        
+		String uri = "mongodb://localhost:27017"; // Update with your MongoDB URI
+        MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("iTrack"); // Update with your database name
+            MongoCollection<Document> purchaseHistory = database.getCollection("PurchaseHistory");
+            MongoCollection<Document> storeData = database.getCollection("StoreData");
+
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+            
+            int year = currentDate.getYear(); // Specify the year
+
+            // Define the start and end date for the year
+            LocalDateTime startOfYear = LocalDateTime.of(year, 1, 1, 0, 0);
+            LocalDateTime endOfYear = LocalDateTime.of(year, 12, 31, 23, 59);
+
+         // Aggregation pipeline to get sales per country and sort by totalSales in descending order
+            AggregateIterable<Document> result = purchaseHistory.aggregate(Arrays.asList(
+                    Aggregates.match(Filters.and(
+                            Filters.gte("Date and Time", startOfYear.toInstant(ZoneOffset.UTC)),
+                            Filters.lte("Date and Time", endOfYear.toInstant(ZoneOffset.UTC))
+                    )),
+                    Aggregates.lookup("StoreData", "Store ID", "Store ID", "store_info"),
+                    Aggregates.unwind("$store_info"),
+                    Aggregates.group("$store_info.Country",
+                            Accumulators.sum("totalSales", "$Total Spent")
+                    ),
+                    Aggregates.sort(Sorts.descending("totalSales"))
+            ));
+            
+            for (Document doc : result) {
+                String country = doc.getString("_id");
+                Integer totalSales = doc.getInteger("totalSales");
+
+                countries.add(country);
+                sumSales.add(totalSales);
+            }
+            
 	}
 }
