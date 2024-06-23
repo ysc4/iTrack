@@ -22,16 +22,20 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
+import java.time.LocalDate;
 
 public class SalesDashboard extends JPanel {
-    public ChartPanel salesTrend() {
+	LocalDate currentDate = LocalDate.now();
+    public ChartPanel salesTrend() throws Exception {
+    	SalesMainBackend data = new SalesMainBackend();
+    	
     	DefaultCategoryDataset salesTrendData = new DefaultCategoryDataset();
-    	addValue(salesTrendData, 3.0, "Revenue", "2022");
-        addValue(salesTrendData, 5.0, "Revenue", "2023");
-        addValue(salesTrendData, 1.0, "Revenue", "2024");
-        addValue(salesTrendData, 7.0, "Profit", "2022");
-        addValue(salesTrendData, 5.0, "Profit", "2023");
-        addValue(salesTrendData, 9.0, "Profit", "2024");
+    	addValue(salesTrendData, data.inputSalesProfitGraph(currentDate.getYear()-2, LocalDate.now().getMonthValue()), "Revenue", "2022");
+        addValue(salesTrendData, data.inputSalesProfitGraph(currentDate.getYear()-1, LocalDate.now().getMonthValue()), "Revenue", "2023");
+        addValue(salesTrendData, data.inputSalesProfitGraph(currentDate.getYear(), LocalDate.now().getMonthValue()), "Revenue", "2024");
+        addValue(salesTrendData, data.inputSalesProfitGraph(currentDate.getYear()-2, LocalDate.now().getMonthValue()), "Profit", "2022");
+        addValue(salesTrendData, data.inputSalesProfitGraph(currentDate.getYear()-1, LocalDate.now().getMonthValue()), "Profit", "2023");
+        addValue(salesTrendData, data.inputSalesProfitGraph(currentDate.getYear(), LocalDate.now().getMonthValue()), "Profit", "2024");
 
         JFreeChart chart = createChart("SALES AND PROFIT TREND", "YEARS", "REVENUE/PROFIT ($M)", salesTrendData);
         ChartPanel salesTrendPanel = new ChartPanel(chart);
@@ -121,7 +125,6 @@ public class SalesDashboard extends JPanel {
     	
     }   
 }
-
 
 
 
