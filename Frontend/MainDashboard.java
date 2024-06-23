@@ -1266,6 +1266,7 @@ public class MainDashboard extends JFrame {
 	        scrollPaneTransactionalSegmentation.setVisible(true);
 	        
 	        SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
+	        SalesMainBackend.TotalSalesDisplay(lblSumProfit, lblProfitIncrease);
 	        SalesMainBackend.TotalOrdersDisplay(lblSumOrders, lblOrderIncrease);
 	}
 	      
