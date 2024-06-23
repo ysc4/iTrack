@@ -70,12 +70,12 @@ public class MainDashboard extends JFrame {
 	private JPanel panelSalesVolumePerCountry;
 	private JPanel panelTopTenStoresBySales;
 	private JLabel lblSalesPercentIncrease;
+	private JLabel lblTotalOrders;
 	private JLabel lblTotalProfit;
-	private JLabel lblProfitMargin;
-	private JLabel lblTotalSalesAmount_1;
-	private JLabel lblTotalSalesAmount_2;
-	private JLabel lblSalesPercentIncrease_1;
-	private JLabel lblSalesPercentIncrease_2;
+	private JLabel lblSumOrders;
+	private JLabel lblSumProfit;
+	private JLabel lblOrderIncrease;
+	private JLabel lblProfitIncrease;
 	private JLabel lblSalesAndProfitTrend;
 	private JLabel lblTopTenProductsBySales;
 	private JLabel lblSalesVolumeByCountry;
@@ -174,8 +174,9 @@ public class MainDashboard extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws Exception 
 	 */
-	public MainDashboard() {
+	public MainDashboard() throws Exception {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 786);
 		contentPane = new JPanel();
@@ -557,24 +558,24 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelTotalProfit);
 		panelTotalProfit.setLayout(null);
 		
-		lblTotalProfit = new JLabel("TOTAL PROFIT");
-		lblTotalProfit.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTotalProfit.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblTotalProfit.setBounds(0, 10, 220, 40);
-		panelTotalProfit.add(lblTotalProfit);
+		lblTotalOrders = new JLabel("TOTAL ORDERS");
+		lblTotalOrders.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalOrders.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalOrders.setBounds(0, 10, 220, 40);
+		panelTotalProfit.add(lblTotalOrders);
 		
-		lblTotalSalesAmount_1 = new JLabel("$240M");
-		lblTotalSalesAmount_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTotalSalesAmount_1.setFont(new Font("Poppins", Font.PLAIN, 50));
-		lblTotalSalesAmount_1.setBounds(0, 50, 220, 60);
-		panelTotalProfit.add(lblTotalSalesAmount_1);
+		lblSumOrders = new JLabel("$240M");
+		lblSumOrders.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSumOrders.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblSumOrders.setBounds(0, 50, 220, 60);
+		panelTotalProfit.add(lblSumOrders);
 		
-		lblSalesPercentIncrease_1 = new JLabel("(+2.31%)");
-		lblSalesPercentIncrease_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSalesPercentIncrease_1.setForeground(Color.GREEN);
-		lblSalesPercentIncrease_1.setFont(new Font("Poppins", Font.PLAIN, 16));
-		lblSalesPercentIncrease_1.setBounds(0, 100, 220, 40);
-		panelTotalProfit.add(lblSalesPercentIncrease_1);
+		lblOrderIncrease = new JLabel("(+2.31%)");
+		lblOrderIncrease.setHorizontalAlignment(SwingConstants.CENTER);
+		lblOrderIncrease.setForeground(Color.GREEN);
+		lblOrderIncrease.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblOrderIncrease.setBounds(0, 100, 220, 40);
+		panelTotalProfit.add(lblOrderIncrease);
 		
 		panelProfitMargin = new JPanel();
 		panelProfitMargin.setBackground(Color.WHITE);
@@ -582,24 +583,24 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelProfitMargin);
 		panelProfitMargin.setLayout(null);
 		
-		lblProfitMargin = new JLabel("PROFIT MARGIN");
-		lblProfitMargin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblProfitMargin.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblProfitMargin.setBounds(0, 10, 220, 40);
-		panelProfitMargin.add(lblProfitMargin);
+		lblTotalProfit = new JLabel("TOTAL PROFIT");
+		lblTotalProfit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalProfit.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalProfit.setBounds(0, 10, 220, 40);
+		panelProfitMargin.add(lblTotalProfit);
 		
-		lblTotalSalesAmount_2 = new JLabel("$240M");
-		lblTotalSalesAmount_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTotalSalesAmount_2.setFont(new Font("Poppins", Font.PLAIN, 50));
-		lblTotalSalesAmount_2.setBounds(0, 50, 220, 60);
-		panelProfitMargin.add(lblTotalSalesAmount_2);
+		lblSumProfit = new JLabel("$240M");
+		lblSumProfit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSumProfit.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblSumProfit.setBounds(0, 50, 220, 60);
+		panelProfitMargin.add(lblSumProfit);
 		
-		lblSalesPercentIncrease_2 = new JLabel("(+2.31%)");
-		lblSalesPercentIncrease_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSalesPercentIncrease_2.setForeground(Color.GREEN);
-		lblSalesPercentIncrease_2.setFont(new Font("Poppins", Font.PLAIN, 16));
-		lblSalesPercentIncrease_2.setBounds(0, 100, 220, 40);
-		panelProfitMargin.add(lblSalesPercentIncrease_2);
+		lblProfitIncrease = new JLabel("(+2.31%)");
+		lblProfitIncrease.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProfitIncrease.setForeground(Color.GREEN);
+		lblProfitIncrease.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblProfitIncrease.setBounds(0, 100, 220, 40);
+		panelProfitMargin.add(lblProfitIncrease);
 		
 		panelSalesAndProfitTrend = new JPanel();
 		panelSalesAndProfitTrend.setBackground(Color.WHITE);
@@ -1265,6 +1266,7 @@ public class MainDashboard extends JFrame {
 	        scrollPaneTransactionalSegmentation.setVisible(true);
 	        
 	        SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
+	        SalesMainBackend.TotalOrdersDisplay(lblSumOrders, lblOrderIncrease);
 	}
 	      
 	public void changeTableHeaderColor (JTable table, int fontSize) {
