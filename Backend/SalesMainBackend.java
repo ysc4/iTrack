@@ -74,6 +74,18 @@ public class SalesMainBackend {
         
 	}
 	
+	public double inputSalesProfitGraph(int retrieveYear, int retrieveMonth) throws Exception{
+		double graphValue = 0;
+        
+        SalesMongoDriver retrieve = new SalesMongoDriver();
+        
+        int totalSales = retrieve.totalMonthlySales(retrieveYear, retrieveMonth);
+        
+        graphValue = displayGraphNumber(totalSales);
+		
+		return graphValue;
+	}
+	
 	private static double computeIncrease(double current, double previous) {
 		// Ensure previousYearSales is not zero to avoid division by zero error
 		if (previous != 0) {
@@ -105,5 +117,20 @@ public class SalesMainBackend {
 		}
 		
 		return converted;
+	}
+	
+	private double displayGraphNumber(double num) {
+		String converted = "";
+		double convert = Math.abs(num);
+		
+		if (convert >= 0 && convert < 1000000000) {
+			converted = String.format("%.3f", num/1000000);
+		} else if (convert >= 1000000000){
+			converted = String.format("%.3f", num/1000000000);	
+		} else {
+			converted = "0.000";
+		}
+		
+		return Double.parseDouble(converted);
 	}
 }
