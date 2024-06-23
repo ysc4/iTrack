@@ -67,7 +67,7 @@ public class MainDashboard extends JFrame {
 	private JPanel panelProfitMargin;
 	private JPanel panelSalesAndProfitTrend;
 	private JPanel panelTopTenProducts;
-	private JPanel panelSalesVolumePerCountry;
+	private JPanel panelSalesPerCountry;
 	private JPanel panelTopTenStoresBySales;
 	private JLabel lblSalesPercentIncrease;
 	private JLabel lblTotalOrders;
@@ -78,8 +78,7 @@ public class MainDashboard extends JFrame {
 	private JLabel lblProfitIncrease;
 	private JLabel lblSalesAndProfitTrend;
 	private JLabel lblTopTenProductsBySales;
-	private JLabel lblSalesVolumeByCountry;
-	private JLabel lblTopTenStoresBySales;
+	private JLabel lblTopFifteenStoresBySales;
 	private JLabel lblExport;
 	private JLabel lblRefresh;
 	private JPanel panelTotalActiveCustomers;
@@ -141,8 +140,6 @@ public class MainDashboard extends JFrame {
 	private JScrollPane scrollPaneTransactionalSegmentation;
 	private JComboBox cmbAscDesc_1;
 	private JTable table;
-	private JTable tableSVBC1;
-	private JScrollPane scrollPaneSVBC1;
 	private JTable tableT10SBS;
 	private JScrollPane scrollPaneT10SBS;
 	private JTable tableCVBC;
@@ -627,34 +624,11 @@ public class MainDashboard extends JFrame {
 		lblTopTenProductsBySales.setBounds(0, 10, 680, 40);
 		panelTopTenProducts.add(lblTopTenProductsBySales);
 		
-		panelSalesVolumePerCountry = new JPanel();
-		panelSalesVolumePerCountry.setBackground(Color.WHITE);
-		panelSalesVolumePerCountry.setBounds(690, 0, 400, 295);
-		panelSales.add(panelSalesVolumePerCountry);
-		panelSalesVolumePerCountry.setLayout(null);
-		
-		lblSalesVolumeByCountry = new JLabel("SALES VOLUME BY COUNTRY");
-		lblSalesVolumeByCountry.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSalesVolumeByCountry.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblSalesVolumeByCountry.setBounds(0, 10, 400, 40);
-		panelSalesVolumePerCountry.add(lblSalesVolumeByCountry);
-		
-		scrollPaneSVBC1 = new JScrollPane();
-		scrollPaneSVBC1.setBounds(10, 50, 380, 230);
-		panelSalesVolumePerCountry.add(scrollPaneSVBC1);
-		
-		tableSVBC1 = new JTable();
-		scrollPaneSVBC1.setViewportView(tableSVBC1);
-		tableSVBC1.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Country", "Sales Volume", "Revenue", "Profit", "Profit Margin"
-			}
-		));
-		tableSVBC1.setFont(new Font("Poppins", Font.PLAIN, 9));
-		
-		changeTableHeaderColor(tableSVBC1, 9);
+		panelSalesPerCountry = new JPanel();
+		panelSalesPerCountry.setBackground(Color.WHITE);
+		panelSalesPerCountry.setBounds(690, 0, 400, 295);
+		panelSales.add(panelSalesPerCountry);
+		panelSalesPerCountry.setLayout(null);
 		
 		panelTopTenStoresBySales = new JPanel();
 		panelTopTenStoresBySales.setBackground(Color.WHITE);
@@ -662,25 +636,34 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelTopTenStoresBySales);
 		panelTopTenStoresBySales.setLayout(null);
 		
-		lblTopTenStoresBySales = new JLabel("TOP 10 STORES BY SALES");
-		lblTopTenStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTopTenStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblTopTenStoresBySales.setBounds(0, 10, 400, 40);
-		panelTopTenStoresBySales.add(lblTopTenStoresBySales);
+		lblTopFifteenStoresBySales = new JLabel("TOP 15 STORES BY SALES");
+		lblTopFifteenStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopFifteenStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopFifteenStoresBySales.setBounds(0, 10, 400, 40);
+		panelTopTenStoresBySales.add(lblTopFifteenStoresBySales);
 		
 		scrollPaneT10SBS = new JScrollPane();
 		scrollPaneT10SBS.setBounds(10, 50, 380, 230);
 		panelTopTenStoresBySales.add(scrollPaneT10SBS);
 		
+		
 		tableT10SBS = new JTable();
 		scrollPaneT10SBS.setViewportView(tableT10SBS);
-		tableT10SBS.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Store", "Sales Volume", "Revenue", "Profit", "Profit Margin"
-			}
-		));
+		DefaultTableModel tableModel = new DefaultTableModel(
+	            new Object[][] {},
+	            new String[] { "Store", "Region", "Revenue ($)" }  
+	        ){
+            /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make the table uneditable
+            }
+        };
+		tableT10SBS.setModel(tableModel);
 		tableT10SBS.setFont(new Font("Poppins", Font.PLAIN, 9));
 		changeTableHeaderColor(tableT10SBS, 9);
 		
@@ -1268,6 +1251,10 @@ public class MainDashboard extends JFrame {
 	        SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
 	        SalesMainBackend.TotalSalesDisplay(lblSumProfit, lblProfitIncrease);
 	        SalesMainBackend.TotalOrdersDisplay(lblSumOrders, lblOrderIncrease);
+	        SalesMongoDriver.displayTopTenStores(tableModel);
+	        
+	        ChartPanel salesProfitTrend1 = salesDashboard.salesVolume();
+			panelSalesPerCountry.add(salesProfitTrend1);
 	}
 	      
 	public void changeTableHeaderColor (JTable table, int fontSize) {
