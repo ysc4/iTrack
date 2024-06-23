@@ -23,9 +23,6 @@ public class SalesMainBackend {
         int totalCurrentSale = retrieve.totalMonthlySales(currentYear, currentMonth);
         int totalPreviousSale = retrieve.totalMonthlySales(previousYear, currentMonth);
         
-        System.out.println(totalCurrentSale);
-        System.out.println(totalPreviousSale);
-        
         double percentage = computeIncrease(totalCurrentSale, totalPreviousSale);
         
         if (percentage < 0) {
@@ -40,6 +37,40 @@ public class SalesMainBackend {
         }
         
         salesIncreaseAmount.setText("$" + displayNumber(totalCurrentSale));
+        
+	}
+	
+	public static void TotalOrdersDisplay(JLabel OrderNum, JLabel IncreasePercentage) throws Exception {
+		// Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        // Extract the current year
+        int currentYear = currentDate.getYear();
+        
+        // Calculate the previous year
+        int previousYear = currentDate.getYear()-1;
+        
+        int currentMonth = LocalDate.now().getMonthValue();
+        
+        SalesMongoDriver retrieve = new SalesMongoDriver();
+        
+        int totalCurrentOrders = retrieve.totalMonthlyTransactions(currentYear, currentMonth);
+        int totalPreviousOrders = retrieve.totalMonthlyTransactions(previousYear, currentMonth);
+        
+        double percentage = computeIncrease(totalCurrentOrders, totalPreviousOrders);
+        
+        if (percentage < 0) {
+        	IncreasePercentage.setText("(" + String.format("%.2f", percentage) + "%)");
+        	IncreasePercentage.setForeground(Color.red);
+        } else if (percentage == 0) {
+        	IncreasePercentage.setText("(" + String.format("%.2f", percentage) + "%)");
+        	IncreasePercentage.setForeground(Color.black);
+        } else {
+        	IncreasePercentage.setText("(+" + String.format("%.2f", percentage) + "%)");
+        	IncreasePercentage.setForeground(Color.green);
+        }
+        
+        OrderNum.setText(displayNumber(totalCurrentOrders));
         
 	}
 	
@@ -62,13 +93,13 @@ public class SalesMainBackend {
 		double convert = Math.abs(amount);
 		
 		if (convert >= 0 && convert < 1000) {
-			converted = String.format("%.1f", amount);	
+			converted = String.format("%.0f", amount);	
 		} else if (convert >= 1000 && convert < 100000) {
-			converted = String.format("%.1f", amount/1000) + "K";
+			converted = String.format("%.0f", amount/1000) + "K";
 		} else if (convert >= 100000 && convert < 1000000) {
-			converted = String.format("%.1f", amount/1000) + "K";
+			converted = String.format("%.0f", amount/1000) + "K";
 		} else if (convert >= 1000000 && convert < 1000000000) {
-			converted = String.format("%.1f", amount/1000000) + "M";	
+			converted = String.format("%.0f", amount/1000000) + "M";	
 		} else {
 			converted = "0.00";
 		}
