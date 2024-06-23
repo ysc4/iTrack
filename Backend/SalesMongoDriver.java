@@ -1,5 +1,7 @@
 package iTrack;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -129,5 +131,35 @@ public class SalesMongoDriver {
             } else {
             	return (int) Math.round(yearSalesMap.get(retrieveYear));
             }
+	}
+	
+	public int totalMonthlyTransactions(int retrieveYear, int retrieveMonth) throws Exception{
+		String uri = "mongodb://localhost:27017"; // Replace with your MongoDB connection string
+			
+		MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("iTrack"); // Replace with your database name
+            MongoCollection<Document> collection = database.getCollection("TransactionHistory");
+
+            int year = retrieveYear; // Specify the year
+            int startMonth = 1; // Specify the start month
+            int endMonth = retrieveMonth; // Specify the end month
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+            // Construct the start and end dates
+            String startDateStr = String.format("%d-%02d-01T00:00:00", year, startMonth);
+            String endDateStr = String.format("%d-%02d-01T00:00:00", year, endMonth + 1);
+            LocalDateTime startDate = LocalDateTime.parse(startDateStr, formatter);
+            LocalDateTime endDate = LocalDateTime.parse(endDateStr, formatter);
+
+            // Build the query
+            Document query = new Document("$and", List.of(
+                new Document("Date and Time", new Document("$gte", startDate)),
+                new Document("Date and Time", new Document("$lt", endDate))
+            ));
+
+            // Execute the query
+            int orderCount = (int) collection.countDocuments(query);
+            return orderCount;
 	}
 }
