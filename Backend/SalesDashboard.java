@@ -47,27 +47,18 @@ public class SalesDashboard extends JPanel {
     }
     
     public ChartPanel productsTrend() {
+    	SalesMongoDriver data = new SalesMongoDriver();
     	DefaultCategoryDataset productsTrendData = new DefaultCategoryDataset();
-    	addValue(productsTrendData, 10.0, "Revenue", "Macbook Air");
-        addValue(productsTrendData, 9.0, "Revenue", "AirPods Max");
-        addValue(productsTrendData, 8.0, "Revenue", "iPad Pro");
-        addValue(productsTrendData, 7.0, "Revenue", "Apple Vision Pro");
-        addValue(productsTrendData, 6.0, "Revenue", "Macbook Pro");
-        addValue(productsTrendData, 5.0, "Revenue", "iPhone 12 Pro");
-        addValue(productsTrendData, 4.0, "Revenue", "iPad mini");
-        addValue(productsTrendData, 3.0, "Revenue", "iPhone 11");
-        addValue(productsTrendData, 2.0, "Revenue", "Apple Watch SE");
-        addValue(productsTrendData, 1.0, "Revenue", "HomePod mini");
-        addValue(productsTrendData, 5.0, "Profit", "Macbook Air");
-        addValue(productsTrendData, 4.5, "Profit", "AirPods Max");
-        addValue(productsTrendData, 4.0, "Profit", "iPad Pro");
-        addValue(productsTrendData, 3.5, "Profit", "Apple Vision Pro");
-        addValue(productsTrendData, 3.0, "Profit", "Macbook Pro");
-        addValue(productsTrendData, 2.5, "Profit", "iPhone 12 Pro");
-        addValue(productsTrendData, 2.0, "Profit", "iPad mini");
-        addValue(productsTrendData, 1.5, "Profit", "iPhone 11");
-        addValue(productsTrendData, 1.0, "Profit", "Apple Watch SE");
-        addValue(productsTrendData, 0.5, "Profit", "HomePod mini");
+    	addValue(productsTrendData, data.inputTopTenSalesPrice(1), "Revenue", data.inputTopTenSalesProductName(1));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(2), "Revenue", data.inputTopTenSalesProductName(2));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(3), "Revenue", data.inputTopTenSalesProductName(3));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(4), "Revenue", data.inputTopTenSalesProductName(4));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(5), "Revenue", data.inputTopTenSalesProductName(5));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(6), "Revenue", data.inputTopTenSalesProductName(6));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(7), "Revenue", data.inputTopTenSalesProductName(7));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(8), "Revenue", data.inputTopTenSalesProductName(8));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(9), "Revenue", data.inputTopTenSalesProductName(9));
+        addValue(productsTrendData, data.inputTopTenSalesPrice(10), "Revenue", data.inputTopTenSalesProductName(10));
 
         JFreeChart chart = createChart("TOP 10 PRODUCTS (BY SALES)", "PRODUCTS", "REVENUE/PROFIT", productsTrendData);
         ChartPanel productsTrendPanel = new ChartPanel(chart);
