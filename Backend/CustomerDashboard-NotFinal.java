@@ -526,7 +526,7 @@ public class CustomerDashboard extends JPanel {
         addValue(transactionalData, productsVsCustomers("AirPods"), "Customers", "AirPods");
         addValue(transactionalData, productsVsCustomers("Vision"), "Customers", "Vision");
   
-        JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "PURCHASES", transactionalData);
+        JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "FREQUENCY", transactionalData);
         
         ChartPanel transactionalPanel = new ChartPanel(chart);
         transactionalPanel.setPreferredSize(new Dimension(350,210));
