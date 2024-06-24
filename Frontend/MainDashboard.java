@@ -30,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 
 public class MainDashboard extends JFrame {
 
@@ -105,8 +106,7 @@ public class MainDashboard extends JFrame {
 	private JPanel panelStoresSales;
 	private JPanel panelStoreInformation;
 	private JLabel lblStoreInformation;
-	private JPanel panelTopStoresBySales;
-	private JLabel lblTopStoresBySales;
+	private JPanel panelTopSalesOfStore;
 	private JLabel lblRefreshSales;
 	private JPanel panelPurchaseHistoryTable;
 	private JLabel lblPurchaseHistoryTable;
@@ -144,14 +144,23 @@ public class MainDashboard extends JFrame {
 	private JScrollPane scrollPaneT10SBS;
 	private JTable tableCVBC;
 	private JScrollPane scrollPaneCVBC;
-	private JTable tableT10SBS2;
-	private JScrollPane scrollPaneT10SBS2;
 	private JTable tablePurchaseHistory;
 	private JScrollPane scrollPanePurchaseHistory;
 	private JTable tableOverallSBS;
 	private JScrollPane scrollPaneOverallSBS;
 	private JTable tablePurchaseHistoryOverall;
 	private JScrollPane scrollPaneOverallPurchaseHistory;
+	private JLabel lblStoreName;
+	private JLabel lblStoreAddress;
+	private JLabel lblStoreCountry;
+	private JLabel lblStoreContactNumber;
+	private JLabel lblStoreType;
+	private JLabel lblStoreIDDetail;
+	private JLabel lblStoreNameDetail;
+	private JLabel lblStoreAddressDetail;
+	private JLabel lblStoreRegionDetail;
+	private JLabel lblStoreTypeDetail;
+	private JLabel lblStoreContactDetail;
 	
 	/**
 	 * Launch the application.
@@ -857,41 +866,80 @@ public class MainDashboard extends JFrame {
 		panelStoreSummary.add(panelStoreInformation);
 		
 		lblStoreInformation = new JLabel("STORE INFORMATION");
-		lblStoreInformation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStoreInformation.setHorizontalAlignment(SwingConstants.LEFT);
 		lblStoreInformation.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblStoreInformation.setBounds(0, 10, 540, 40);
+		lblStoreInformation.setBounds(40, 15, 270, 40);
 		panelStoreInformation.add(lblStoreInformation);
 		
-		panelTopStoresBySales = new JPanel();
-		panelTopStoresBySales.setLayout(null);
-		panelTopStoresBySales.setBackground(Color.WHITE);
-		panelTopStoresBySales.setBounds(560, 0, 540, 300);
-		panelStoreSummary.add(panelTopStoresBySales);
+		JLabel lblStoreID = new JLabel("STORE ID:");
+		lblStoreID.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreID.setBounds(40, 70, 100, 30);
+		panelStoreInformation.add(lblStoreID);
 		
-		lblTopStoresBySales = new JLabel("TOP 10 STORES BY SALES");
-		lblTopStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTopStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblTopStoresBySales.setBounds(0, 10, 540, 40);
-		panelTopStoresBySales.add(lblTopStoresBySales);
+		lblStoreName = new JLabel("STORE:");
+		lblStoreName.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreName.setBounds(40, 100, 100, 30);
+		panelStoreInformation.add(lblStoreName);
 		
-		scrollPaneT10SBS2 = new JScrollPane();
-		scrollPaneT10SBS2.setBounds(10, 50, 520, 235);
-		panelTopStoresBySales.add(scrollPaneT10SBS2);
+		lblStoreAddress = new JLabel("ADDRESS:");
+		lblStoreAddress.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreAddress.setBounds(40, 130, 100, 30);
+		panelStoreInformation.add(lblStoreAddress);
 		
-		tableT10SBS2 = new JTable();
-		scrollPaneT10SBS2.setViewportView(tableT10SBS2);
-		tableT10SBS2.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Rank", "Store", "Sales Volume", "Revenue", "Profit", "Profit Margin"
-			}
-		));
-		tableT10SBS2.setFont(new Font("Poppins", Font.PLAIN, 9));
-		TableColumnModel columnModel = tableT10SBS2.getColumnModel();
-	    TableColumn targetColumn = columnModel.getColumn(0);
-	    targetColumn.setPreferredWidth(10);
-		changeTableHeaderColor(tableT10SBS2, 9);
+		lblStoreCountry = new JLabel("COUNTRY:");
+		lblStoreCountry.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreCountry.setBounds(40, 160, 100, 30);
+		panelStoreInformation.add(lblStoreCountry);
+		
+		lblStoreContactNumber = new JLabel("CONTACT NUMBER:");
+		lblStoreContactNumber.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreContactNumber.setBounds(40, 190, 180, 30);
+		panelStoreInformation.add(lblStoreContactNumber);
+		
+		lblStoreType = new JLabel("TYPE:");
+		lblStoreType.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreType.setBounds(40, 220, 100, 30);
+		panelStoreInformation.add(lblStoreType);
+		
+		lblStoreIDDetail = new JLabel("123456789");
+		lblStoreIDDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreIDDetail.setBounds(134, 70, 370, 30);
+		panelStoreInformation.add(lblStoreIDDetail);
+		
+		lblStoreNameDetail = new JLabel("Store Name");
+		lblStoreNameDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreNameDetail.setBounds(113, 100, 370, 30);
+		panelStoreInformation.add(lblStoreNameDetail);
+		
+		lblStoreAddressDetail = new JLabel("Address");
+		lblStoreAddressDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreAddressDetail.setBounds(134, 130, 370, 30);
+		panelStoreInformation.add(lblStoreAddressDetail);
+		
+		lblStoreRegionDetail = new JLabel("Region");
+		lblStoreRegionDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreRegionDetail.setBounds(140, 160, 370, 30);
+		panelStoreInformation.add(lblStoreRegionDetail);
+		
+		lblStoreTypeDetail = new JLabel("Type");
+		lblStoreTypeDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreTypeDetail.setBounds(93, 220, 370, 30);
+		panelStoreInformation.add(lblStoreTypeDetail);
+		
+		lblStoreContactDetail = new JLabel("0912312313");
+		lblStoreContactDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreContactDetail.setBounds(219, 190, 300, 30);
+		panelStoreInformation.add(lblStoreContactDetail);
+		
+		JComboBox<String> comboBoxStores = new JComboBox<String>();
+		comboBoxStores.setBounds(320, 20, 190, 25);
+		panelStoreInformation.add(comboBoxStores);
+		
+		panelTopSalesOfStore = new JPanel();
+		panelTopSalesOfStore.setLayout(null);
+		panelTopSalesOfStore.setBackground(Color.WHITE);
+		panelTopSalesOfStore.setBounds(560, 0, 540, 300);
+		panelStoreSummary.add(panelTopSalesOfStore);
 		
 		panelPurchaseHistoryTable = new JPanel();
 		panelPurchaseHistoryTable.setLayout(null);
