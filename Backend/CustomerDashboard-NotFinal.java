@@ -5,6 +5,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -439,8 +440,8 @@ public class CustomerDashboard extends JPanel {
                         .append("as", "customerPurchases")
                 ),
                 new Document("$match", new Document("customerPurchases.Date and Time", new Document()
-                        .append("$gte", "2022-01-01T00:00:00Z")
-                        .append("$lt", "2025-01-01T00:00:00Z")
+                        .append("$gte", new Date(122, 0, 1))
+                        .append("$lt", new Date(125, 0, 1))
                 )),
                 new Document("$group", new Document()
                         .append("_id", "$City/Country")
@@ -452,12 +453,13 @@ public class CustomerDashboard extends JPanel {
 
         ArrayList<String> top10 = new ArrayList<>();
         for (Document doc : results) {
+            System.out.println("Document: " + doc.toJson());  // Debug print
             String country = doc.getString("_id"); // Extract country name from the document
             top10.add(country); // Add country name to the ArrayList
         }
         System.out.println(top10);
-    	
-    	return top10;
+
+        return top10;
     }
     
     public ChartPanel geographicChart() {
@@ -465,20 +467,11 @@ public class CustomerDashboard extends JPanel {
     	
         for (String country : top10Countries()) {           
             int newCustomers = newCustomersPerCountry(country);
+            int allCustomers = CustomersPerCountry(country);
             addValue(geographicData, newCustomers, "New", country);
+            addValue(geographicData, allCustomers, "All", country);
         }
-        
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(0)), "New", top10Countries().get(0));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(1)), "New", top10Countries().get(1));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(2)), "New", top10Countries().get(2));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(3)), "New", top10Countries().get(3));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(4)), "New", top10Countries().get(4));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(5)), "New", top10Countries().get(5));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(6)), "New", top10Countries().get(6));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(7)), "New", top10Countries().get(7));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(8)), "New", top10Countries().get(8));
-//        addValue(geographicData, newCustomersPerCountry(top10Countries().get(9)), "New", top10Countries().get(9));
-
+             
         JFreeChart chart = createChart("GEOGRAPHIC SEGMENTATION", "COUNTRIES", "FREQUENCY", geographicData);
         
         ChartPanel geographicPanel = new ChartPanel(chart);
@@ -489,24 +482,58 @@ public class CustomerDashboard extends JPanel {
         return geographicPanel;
     }
     
+    public int productsVsCustomers(String category) {
+    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
+    	MongoDatabase db = mongo.getDatabase("iTrack");
+        MongoCollection<Document> transacs = db.getCollection("transactions");
+        
+        AggregateIterable<Document> results = transacs.aggregate(Arrays.asList(
+                new Document("$lookup", new Document()
+                    .append("from", "purchases")
+                    .append("localField", "Purchase ID")
+                    .append("foreignField", "Purchase ID")
+                    .append("as", "purchaseDetails")
+                ),
+                new Document("$unwind", "$purchaseDetails"),
+                new Document("$lookup", new Document()
+                    .append("from", "products")
+                    .append("localField", "Product ID")
+                    .append("foreignField", "Product ID")
+                    .append("as", "productDetails")
+                ),
+                new Document("$unwind", "$productDetails"),
+                new Document("$match", new Document("productDetails.Category", category)), // Change this to the desired category
+                new Document("$group", new Document()
+                    .append("_id", "$purchaseDetails.Customer ID")
+                ),
+                new Document("$count", "uniqueCustomers")
+            ));
+
+        	int customerCount = 0;
+            for (Document doc : results) {
+                customerCount = doc.getInteger("uniqueCustomers");
+            }
+            return customerCount;
+    }
+    
     public ChartPanel transactionalChart() {
     	DefaultCategoryDataset transactionalData = new DefaultCategoryDataset();
-    	addValue(transactionalData, 20, "Customers", "iPhone");
-        addValue(transactionalData, 50, "Customers", "iPad");
-        addValue(transactionalData, 55, "Customers", "Watch");
-        addValue(transactionalData, 40, "Customers", "Macbook");
-        addValue(transactionalData, 90, "Customers", "TV & Home");
-        addValue(transactionalData, 15, "Customers", "AirPods");
-        addValue(transactionalData, 65, "Customers", "Vision");
+    	addValue(transactionalData, productsVsCustomers("iPhone"), "Customers", "iPhone");
+        addValue(transactionalData, productsVsCustomers("iPad"), "Customers", "iPad");
+        addValue(transactionalData, productsVsCustomers("Watch"), "Customers", "Watch");
+        addValue(transactionalData, productsVsCustomers("Macbook"), "Customers", "Macbook");
+        addValue(transactionalData, productsVsCustomers("TV & Home"), "Customers", "TV & Home");
+        addValue(transactionalData, productsVsCustomers("AirPods"), "Customers", "AirPods");
+        addValue(transactionalData, productsVsCustomers("Vision"), "Customers", "Vision");
   
         JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "PURCHASES", transactionalData);
         
-        ChartPanel demographicPanel = new ChartPanel(chart);
-        demographicPanel.setPreferredSize(new Dimension(350,210));
-        demographicPanel.setBackground(new Color(255, 255, 255));
-        demographicPanel.setBounds(740, 10, 350, 210);
+        ChartPanel transactionalPanel = new ChartPanel(chart);
+        transactionalPanel.setPreferredSize(new Dimension(350,210));
+        transactionalPanel.setBackground(new Color(255, 255, 255));
+        transactionalPanel.setBounds(740, 10, 350, 210);
         
-        return demographicPanel;
+        return transactionalPanel;
     }
     
     private void addValue(DefaultCategoryDataset dataset, double value, String categ, String column) {
@@ -534,6 +561,7 @@ public class CustomerDashboard extends JPanel {
         domainAxis.setUpperMargin(0.01);
         domainAxis.setCategoryMargin(0.1);
         domainAxis.setLabelFont(domainAxis.getLabelFont().deriveFont(12f));
+        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         
         ValueAxis rangeAxis = plot.getRangeAxis();
         rangeAxis.setTickLabelFont(new Font("Poppins", Font.BOLD, 10));
