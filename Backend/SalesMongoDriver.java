@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -39,6 +42,7 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -47,6 +51,9 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 
 public class SalesMongoDriver {
+	
+	private static Map<String, String> storeIdMap = new HashMap<>();
+	private static DefaultTableModel tableModel;
 	
 	public int totalMonthlySales(int retrieveYear, int retrieveMonth) {
 		// MongoDB connection string
@@ -431,6 +438,159 @@ public class SalesMongoDriver {
                 countries.add(country);
                 sumSales.add(totalSales);
             }
-            
 	}
+	
+	public static void populateStoreNames(JComboBox<String> storeNamesComboBox) {
+        String uri = "mongodb://localhost:27017"; // Update with your MongoDB URI
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("iTrack"); // Update with your database name
+            MongoCollection<Document> storeData = database.getCollection("StoreData");
+
+            // Retrieve all store names and IDs from the StoreData collection
+            MongoCursor<Document> cursor = storeData.find().iterator();
+            try {
+                while (cursor.hasNext()) {
+                    Document doc = cursor.next();
+                    String storeID = doc.getString("Store ID");
+                    String storeName = doc.getString("Store Name");
+
+                    storeIdMap.put(storeName, storeID);
+                    storeNamesComboBox.addItem(storeName);
+                }
+            } finally {
+                cursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void retrieveAndDisplayStoreInfo(String storeName, JLabel sID, JLabel sName, JLabel sAddress, JLabel sCountry, JLabel sContact, JLabel sType ) {
+        String uri = "mongodb://localhost:27017"; // Update with your MongoDB URI
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("iTrack"); // Update with your database name
+            MongoCollection<Document> storeData = database.getCollection("StoreData");
+
+            String storeID = storeIdMap.get(storeName);
+            Document query = new Document("Store ID", storeID);
+            Document storeDoc = storeData.find(query).first();
+
+            if (storeDoc != null) {
+                String address = storeDoc.getString("Address");
+                String contactNumber = storeDoc.getString("Contact Number");
+                String country = storeDoc.getString("Country");
+                String type = storeDoc.getString("Type");
+                
+                sID.setText(storeID);
+                sName.setText(storeName);
+                sAddress.setText(address);
+                sCountry.setText(country);
+                sContact.setText(contactNumber);
+                sType.setText(type);
+            } else {
+            	 sID.setText("");
+                 sName.setText("");
+                 sAddress.setText("");
+                 sCountry.setText("");
+                 sContact.setText("");
+                 sType.setText("");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void retrieveAndDisplayStorePurchaseHistory(String storeName, DefaultTableModel tableModel) {
+        String uri = "mongodb://localhost:27017"; // Update with your MongoDB URI
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("iTrack"); // Update with your database name
+            MongoCollection<Document> storeData = database.getCollection("StoreData");
+            MongoCollection<Document> purchaseHistory = database.getCollection("PurchaseHistory");
+
+            String storeID = storeIdMap.get(storeName);
+            Document query = new Document("Store ID", storeID);
+            Document storeDoc = storeData.find(query).first();
+            if (storeDoc != null) {
+                // Clear the previous data in the table
+                tableModel.setRowCount(0);
+
+                // Retrieve the purchase history for the store
+                MongoCursor<Document> cursor = purchaseHistory.find(query).iterator();
+                try {
+                    while (cursor.hasNext()) {
+                        Document purchaseDoc = cursor.next();
+                        String purchaseID = purchaseDoc.getString("Purchase ID");
+                        String customerID = purchaseDoc.getString("Customer ID");
+                        String dateTime = purchaseDoc.getDate("Date and Time").toString();
+                        String totalSpent = Integer.toString(purchaseDoc.getInteger("Total Spent"));
+
+                        // Add a new row to the table model
+                        tableModel.addRow(new Object[]{purchaseID, customerID, dateTime, totalSpent});
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void getStoreTopSellingProducts(String storeID, ArrayList<String> productNames, ArrayList<Integer> totalSales) {
+    	productNames.clear();
+    	totalSales.clear();
+        String uri = "mongodb://localhost:27017"; // Update with your MongoDB URI
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("iTrack"); // Update with your database name
+            MongoCollection<Document> productsData = database.getCollection("ProductsData");
+            MongoCollection<Document> transactionHistory = database.getCollection("TransactionHistory");
+            MongoCollection<Document> purchaseHistory = database.getCollection("PurchaseHistory");
+
+            // Aggregation pipeline to get the top 5 best selling products
+            AggregateIterable<Document> result = transactionHistory.aggregate(Arrays.asList(
+                    // Join with PurchaseHistory to filter by storeID
+                    new Document("$lookup", new Document("from", "PurchaseHistory")
+                            .append("localField", "Purchase ID")
+                            .append("foreignField", "Purchase ID")
+                            .append("as", "purchase_info")),
+                    new Document("$unwind", "$purchase_info"),
+                    new Document("$match", new Document("purchase_info.Store ID", storeID)),
+
+                    // Join with ProductsData to get product details
+                    new Document("$lookup", new Document("from", "ProductsData")
+                            .append("localField", "Product ID")
+                            .append("foreignField", "Product ID")
+                            .append("as", "product_info")),
+                    new Document("$unwind", "$product_info"),
+
+                    // Group by Product ID and calculate total sales
+                    new Document("$group", new Document("_id", "$Product ID")
+                            .append("totalSales", new Document("$sum", new Document("$multiply", Arrays.asList("$Quantity", "$Price"))))
+                            .append("productName", new Document("$first", "$product_info.Product Name"))),
+
+                    // Sort by total sales in descending order
+                    new Document("$sort", new Document("totalSales", -1)),
+
+                    // Limit to top 5 products
+                    new Document("$limit", 10)
+            ));
+
+            if(result != null) {
+            	// Store the results in the array lists
+                for (Document doc : result) {
+                    String productName = doc.getString("productName");
+                    Integer totalSale = doc.getInteger("totalSales");
+                    productNames.add(productName);
+                    totalSales.add(totalSale);
+                }
+            } else {
+            	 for (int i = 0; i < 10; i++) {
+            		 productNames.add("");
+            		 totalSales.add(0);
+            	 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
