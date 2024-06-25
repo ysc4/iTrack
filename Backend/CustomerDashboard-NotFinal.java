@@ -17,6 +17,8 @@ import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -72,50 +74,50 @@ public class CustomerDashboard extends JPanel {
             )
         ));
 
-        Document result = results.first();
-        if (result != null) {
-            return result.getInteger("total_count", 0);
-        } else {
-            return 0;
-        }
+        int totalCount = 0;
+        for (Document doc : results) {
+            totalCount = doc.getInteger("total_count", 0);
+        } 
+        mongo.close();
+        return totalCount;
     }
 	
 	 public int totalNew2024() throws Exception {
-	        MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-	        MongoDatabase itrackDB = mongo.getDatabase("iTrack");
-	        MongoCollection<Document> customerPurchases = itrackDB.getCollection("purchases");
+	    MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
+	    MongoDatabase itrackDB = mongo.getDatabase("iTrack");
+	    MongoCollection<Document> customerPurchases = itrackDB.getCollection("purchases");
 
-	        AggregateIterable<Document> results = customerPurchases.aggregate(Arrays.asList(
-	            new Document("$facet", new Document()
-	                .append("customers2022_2023", Arrays.asList(
-	                    new Document("$match", new Document("Date and Time", new Document("$gte", new Date(122, 0, 1))
-	                            .append("$lt", new Date(124, 0, 1)))),
-	                    new Document("$group", new Document("_id", "$Customer ID"))
+	    AggregateIterable<Document> results = customerPurchases.aggregate(Arrays.asList(
+	        new Document("$facet", new Document()
+	            .append("customers2022_2023", Arrays.asList(
+	                new Document("$match", new Document("Date and Time", new Document("$gte", new Date(122, 0, 1))
+	                        .append("$lt", new Date(124, 0, 1)))),
+	                new Document("$group", new Document("_id", "$Customer ID"))
 	                ))
-	                .append("customers2024", Arrays.asList(
-	                    new Document("$match", new Document("Date and Time", new Document("$gte", new Date(124, 0, 1))
+	            .append("customers2024", Arrays.asList(
+	                new Document("$match", new Document("Date and Time", new Document("$gte", new Date(124, 0, 1))
 	                            .append("$lt", new Date(125, 0, 1)))),
-	                    new Document("$group", new Document("_id", "$Customer ID"))
-	                ))
-	            ),
-	            new Document("$project", new Document()
-	                .append("customers2022_2023", "$customers2022_2023._id")
-	                .append("customers2024", "$customers2024._id")
-	            ),
-	            new Document("$project", new Document()
-	                .append("newCustomers2024", new Document("$setDifference", Arrays.asList("$customers2024", "$customers2022_2023")))
-	            ),
-	            new Document("$project", new Document()
-	                .append("total_count", new Document("$size", "$newCustomers2024"))
-	            )
-	        ));
+	                new Document("$group", new Document("_id", "$Customer ID"))
+	            ))
+	        ),
+	        new Document("$project", new Document()
+	             .append("customers2022_2023", "$customers2022_2023._id")
+	             .append("customers2024", "$customers2024._id")
+	        ),
+	        new Document("$project", new Document()
+	            .append("newCustomers2024", new Document("$setDifference", Arrays.asList("$customers2024", "$customers2022_2023")))
+	        ),
+	        new Document("$project", new Document()
+	            .append("total_count", new Document("$size", "$newCustomers2024"))
+	        )
+	     ));
 
-	        Document result = results.first();
-	        if (result != null) {
-	            return result.getInteger("total_count", 0);
-	        } else {
-	            return 0;
-	        }
+	    int totalCount = 0;
+        for (Document doc : results) {
+            totalCount = doc.getInteger("total_count", 0);
+        } 
+        mongo.close();
+        return totalCount;
 	    }
 		    
 	
@@ -131,13 +133,12 @@ public class CustomerDashboard extends JPanel {
 			    Aggregates.group("$Customer ID", Accumulators.sum("count", 1)),
 			    Aggregates.group(null, Accumulators.sum("total_count", 1))));
 
-		Document resultCount = results.first();
-		if (resultCount != null) {
-            int totalActive = resultCount.getInteger("total_count");
-            return totalActive;
-        } else {
-            return 0; 
-        }
+		int totalCount = 0;
+        for (Document doc : results) {
+            totalCount = doc.getInteger("total_count", 0);
+        } 
+        mongo.close();
+        return totalCount;
 	}
 
 	
@@ -172,13 +173,13 @@ public class CustomerDashboard extends JPanel {
 	        )
 	    )));
 
-	    Document result = results.first();
-	    if (result != null) {
-	        double customerGrowth = result.getDouble("customergrowth");
-	        return customerGrowth;
-	    } else {
-	        return 0;
-	    }
+	    double totalGrowth = 0;
+        for (Document doc : results) {
+        	totalGrowth = doc.getInteger("total_count", 0);
+        } 
+        mongo.close();
+        return totalGrowth;
+	    
 	}
 	
 	public int CustomersPerCountry(String country) {
@@ -186,19 +187,28 @@ public class CustomerDashboard extends JPanel {
         MongoDatabase db = mongo.getDatabase("iTrack");
         MongoCollection<Document> customers = db.getCollection("customers");
 
-        Document match = new Document("$match", new Document("City/Country", country));
-
-        Document group = new Document("$group", new Document()
-                .append("_id", "$Customer ID")
-                .append("customerCount", new Document("$sum", 1)));
-
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(match, group));
+        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
+        	    new Document("$match", new Document("City/Country", country)),
+        	    new Document("$group", new Document()
+        	        .append("_id", "$Customer ID")
+        	        .append("LastName", new Document("$first", "$Last Name"))
+        	        .append("FirstName", new Document("$first", "$First Name"))
+        	        .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$Last Name", ", ", "$First Name"))))
+        	        .append("customerCount", new Document("$sum", 1))
+        	    )
+        	));
 
         int customerCount = 0;
         for (Document doc : results) {
-            customerCount++;
+        	String customerId = doc.getString("_id");
+        	String customerName = doc.getString("Customer Name");
+        	
+        	countries(country, customerId, customerName);
+            customerCount++;  
         }
+        mongo.close();
         return customerCount;
+
 	}
 	
 	public int activeCustomersPerCountry (String country) {
@@ -232,6 +242,7 @@ public class CustomerDashboard extends JPanel {
 	    for (Document doc : purchaseResults) {
 	        newCustomerCount++;
 	    }
+	    mongo.close();
 	    return newCustomerCount;
 	}
 	
@@ -263,38 +274,25 @@ public class CustomerDashboard extends JPanel {
         for (Document doc : results) {
             newCustomerCount = doc.getInteger("newCustomerCount");
         }
+        mongo.close();
         return newCustomerCount;
 	}
 
-	public DefaultTableModel customerPerCountry() throws Exception {
+	public DefaultTableModel customerPerCountryTable() throws Exception {
 		DefaultTableModel customerPerCountry = new DefaultTableModel(
 				new Object[][] {
 				},
 				new String[] {
 					"Country", "Customer Count", "New Customers", "Active Customers"
 				}
-			);
+			);		
 		
-		customerPerCountry.addRow(new Object[]{"Brussels", CustomersPerCountry("Brussels"), newCustomersPerCountry("Brussels"), activeCustomersPerCountry("Brussels")});
-		customerPerCountry.addRow(new Object[]{"Vienna", CustomersPerCountry("Vienna"), newCustomersPerCountry("Vienna"), activeCustomersPerCountry("Vienna")});
-		customerPerCountry.addRow(new Object[]{"New South Wales", CustomersPerCountry("New South Wales"), newCustomersPerCountry("New South Wales"), activeCustomersPerCountry("New South Wales")});
-		customerPerCountry.addRow(new Object[]{"Amsterdam", CustomersPerCountry("Amsterdam"), newCustomersPerCountry("Amsterdam"), activeCustomersPerCountry("Amsterdam")});
-		customerPerCountry.addRow(new Object[]{"Cambridge", CustomersPerCountry("Cambridge"), newCustomersPerCountry("Cambridge"), activeCustomersPerCountry("Cambridge")});
-		customerPerCountry.addRow(new Object[]{"Los Angeles", CustomersPerCountry("Los Angeles"), newCustomersPerCountry("Los Angeles"), activeCustomersPerCountry("Los Angeles")});
-		customerPerCountry.addRow(new Object[]{"China", CustomersPerCountry("China"), newCustomersPerCountry("China"), activeCustomersPerCountry("China")});
-		customerPerCountry.addRow(new Object[]{"Australian Capital Territory", CustomersPerCountry("Australian Capital Territory"), newCustomersPerCountry("Australian Capital Territory"), activeCustomersPerCountry("Australian Capital Territory")});
-		customerPerCountry.addRow(new Object[]{"Victoria", CustomersPerCountry("Victoria"), newCustomersPerCountry("Victoria"), activeCustomersPerCountry("Victoria")});
-		customerPerCountry.addRow(new Object[]{"Japan", CustomersPerCountry("Japan"), newCustomersPerCountry("Japan"), activeCustomersPerCountry("Japan")});
-		customerPerCountry.addRow(new Object[]{"Philippines", CustomersPerCountry("Philippines"), newCustomersPerCountry("Philippines"), activeCustomersPerCountry("Philippines")});
-		customerPerCountry.addRow(new Object[]{"Taiwan", CustomersPerCountry("Taiwan"), newCustomersPerCountry("Taiwan"), activeCustomersPerCountry("Taiwan")});
-		customerPerCountry.addRow(new Object[]{"Alberta", CustomersPerCountry("Alberta"), newCustomersPerCountry("Alberta"), activeCustomersPerCountry("Alberta")});
-		customerPerCountry.addRow(new Object[]{"UAE", CustomersPerCountry("UAE"), newCustomersPerCountry("UAE"), activeCustomersPerCountry("UAE")});
-		customerPerCountry.addRow(new Object[]{"Paris", CustomersPerCountry("Paris"), newCustomersPerCountry("Paris"), activeCustomersPerCountry("UParisS")});
-		customerPerCountry.addRow(new Object[]{"Malaysia", CustomersPerCountry("Malaysia"), newCustomersPerCountry("Malaysia"), activeCustomersPerCountry("Malaysia")});
-		customerPerCountry.addRow(new Object[]{"Michigan", CustomersPerCountry("Michigan"), newCustomersPerCountry("Michigan"), activeCustomersPerCountry("Michigan")});
-		customerPerCountry.addRow(new Object[]{"Berlin", CustomersPerCountry("Berlin"), newCustomersPerCountry("Berlin"), activeCustomersPerCountry("Berlin")});
-		customerPerCountry.addRow(new Object[]{"Queensland", CustomersPerCountry("Queensland"), newCustomersPerCountry("Queensland"), activeCustomersPerCountry("Queensland")});
-		customerPerCountry.addRow(new Object[]{"Macau", CustomersPerCountry("Macau"), newCustomersPerCountry("Macau"), activeCustomersPerCountry("Macau")});
+		String[] countries = {"Brussels", "Vienna", "New South Wales", "Amsterdam", "Cambridge", "Los Angeles", "China", "Australian Capital Territory", "Victoria", "Japan", "Philippines", "Taiwan", "Alberta", "UAE", "Paris", 
+				"Malaysia", "Michigan", "Berlin", "Queensland", "Macau"};
+		
+		for (int i = 0; i < countries.length; i++) {
+			customerPerCountry.addRow(new Object[]{countries[i], CustomersPerCountry(countries[i]), newCustomersPerCountry(countries[i]), activeCustomersPerCountry(countries[i])});
+		}
 		
 		return customerPerCountry;	
 	}
@@ -320,6 +318,7 @@ public class CustomerDashboard extends JPanel {
             customerCount = doc.getInteger("customerCount");
         }
         return customerCount;
+	
 	}
 	
     public ChartPanel customerTrend() {
@@ -357,14 +356,23 @@ public class CustomerDashboard extends JPanel {
 
         Document group = new Document("$group", new Document()
                 .append("_id", "$Customer ID")
+                .append("LastName", new Document("$first", "$Last Name"))
+                .append("FirstName", new Document("$first", "$First Name"))
+                .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$Last Name", ", ", "$First Name"))))
         );
-
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(match, group));
         
+        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(match, group));
+
         int customerCount = 0;
         for (Document doc : results) {
+        	String customerId = doc.getString("_id");
+        	String customerName = doc.getString("Customer Name");
+        	
+        	addSegment("APSEG001", "Demographic - Female", customerId, customerName);
+        	ageGroups(startAge, endAge, customerId, customerName);
         	customerCount++;
         }
+        mongo.close();
         return customerCount;
     }
     
@@ -373,7 +381,6 @@ public class CustomerDashboard extends JPanel {
     	MongoDatabase db = mongo.getDatabase("iTrack");
         MongoCollection<Document> customers = db.getCollection("customers");
 
-        // Calculate birthdate range
         LocalDate currentDate = LocalDate.now();
         LocalDate startBirthDate = currentDate.minusYears(endAge + 1).plusDays(1);
         LocalDate endBirthDate = currentDate.minusYears(startAge);
@@ -381,27 +388,101 @@ public class CustomerDashboard extends JPanel {
         Date startBirthDateAsDate = Date.from(startBirthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endBirthDateAsDate = Date.from(endBirthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        // Match stage
         Document match = new Document("$match", new Document()
                 .append("Sex", "M")
                 .append("Birthday", new Document("$gte", startBirthDateAsDate)
                         .append("$lt", endBirthDateAsDate))
         );
 
-        // Group stage
         Document group = new Document("$group", new Document()
                 .append("_id", "$Customer ID")
+                .append("LastName", new Document("$first", "$Last Name"))
+                .append("FirstName", new Document("$first", "$First Name"))
+                .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$Last Name", ", ", "$First Name"))))
         );
-
+        
         AggregateIterable<Document> results = customers.aggregate(Arrays.asList(match, group));
         
         int customerCount = 0;
         for (Document doc : results) {
+        	String customerId = doc.getString("_id");
+        	String customerName = doc.getString("Customer Name");
+        	
+        	addSegment("APSEG002", "Demographic - Male", customerId, customerName);
+        	ageGroups(startAge, endAge, customerId, customerName);
         	customerCount++;
         }
+        mongo.close();
         return customerCount;
+    }   
+    
+    public void ageGroups(int startAge, int endAge, String customerId, String customerName) {
+    	String segmentId;
+        if (startAge < 18) {
+            segmentId = "APSEG003";          
+        } else if (startAge >= 18 && endAge <= 28) {
+            segmentId = "APSEG004";
+        } else if (startAge >= 29 && endAge <= 38) {
+            segmentId = "APSEG005";
+        } else if (startAge >= 39 && endAge <= 48) {
+            segmentId = "APSEG006";
+        } else if (startAge >= 49 && endAge <= 58) {
+            segmentId = "APSEG007";
+        } else {
+            segmentId = "APSEG008";
+        }
+        String segmentType = getSegmentType(segmentId);
+        addSegment(segmentId, segmentType, customerId, customerName);
     }
     
+    public void countries(String country, String customerId, String customerName) {
+    	String[] Asia = {"China", "Hong Kong", "India", "Japan", "Macau", "Singapore", "South Korea", "Taiwan", "Thailand", "UAE", "Philippines", "Malaysia"};
+    	String[] Europe = {"Vienna", "Brussels", "Paris", "Berlin", "Amsterdam"};
+    	String[] US = {"Los Angeles", "Washington", "California", "Michigan", "New York"};
+    	String[] Canada = {"Ontario", "Alberta"};
+    	String[] Australia = {"Australian Capital Territory", "Queensland", "Victoria", "Victora", "New South Wales"};
+    	
+        String segmentId = "";
+        String[][] countries = {Asia, Europe, US, Canada, Australia};
+        
+        // Iterate through each array of countries
+        for (int i = 0; i < countries.length; i++) {
+            String[] locations = countries[i];
+            if (isInCountry(locations, country)) {
+                // Assign segment ID based on the index
+                switch (i) {
+                    case 0:
+                        segmentId = "APSEG009"; // Geographic - Asia
+                        break;
+                    case 1:
+                        segmentId = "APSEG010"; // Geographic - Europe
+                        break;
+                    case 2:
+                        segmentId = "APSEG011"; // Geographic - US
+                        break;
+                    case 3:
+                        segmentId = "APSEG012"; // Geographic - Canada
+                        break;
+                    case 4:
+                        segmentId = "APSEG013"; // Geographic - Australia
+                        break;
+                }
+                break; 
+            }
+        }
+        String segmentType = getSegmentType(segmentId);
+        addSegment(segmentId, segmentType, customerId, customerName);
+    }
+
+    public boolean isInCountry(String[] array, String country) {
+        for (String location : array) {
+            if (location.equalsIgnoreCase(country)) {
+                return true;
+            }
+        }
+        return false;
+    }
+       
     public ChartPanel demographicChart() {
     	DefaultCategoryDataset demographicData = new DefaultCategoryDataset();
     	addValue(demographicData, femaleCustomers(0, 17), "Female", "<18");
@@ -453,14 +534,14 @@ public class CustomerDashboard extends JPanel {
 
         ArrayList<String> top10 = new ArrayList<>();
         for (Document doc : results) {
-            System.out.println("Document: " + doc.toJson());  // Debug print
-            String country = doc.getString("_id"); // Extract country name from the document
-            top10.add(country); // Add country name to the ArrayList
+            String country = doc.getString("_id"); 
+            top10.add(country); 
         }
-        System.out.println(top10);
 
+        mongo.close();
         return top10;
     }
+    
     
     public ChartPanel geographicChart() {
     	DefaultCategoryDataset geographicData = new DefaultCategoryDataset(); 	
@@ -469,7 +550,7 @@ public class CustomerDashboard extends JPanel {
             int newCustomers = newCustomersPerCountry(country);
             int allCustomers = CustomersPerCountry(country);
             addValue(geographicData, newCustomers, "New", country);
-            addValue(geographicData, allCustomers, "All", country);
+            addValue(geographicData, allCustomers, "All", country);   
         }
              
         JFreeChart chart = createChart("GEOGRAPHIC SEGMENTATION", "COUNTRIES", "FREQUENCY", geographicData);
@@ -485,43 +566,95 @@ public class CustomerDashboard extends JPanel {
     public int productsVsCustomers(String category) {
     	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
     	MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> transacs = db.getCollection("transactions");
-        
-        AggregateIterable<Document> results = transacs.aggregate(Arrays.asList(
-                new Document("$lookup", new Document()
-                    .append("from", "purchases")
-                    .append("localField", "Purchase ID")
-                    .append("foreignField", "Purchase ID")
-                    .append("as", "purchaseDetails")
-                ),
-                new Document("$unwind", "$purchaseDetails"),
-                new Document("$lookup", new Document()
-                    .append("from", "products")
-                    .append("localField", "Product ID")
-                    .append("foreignField", "Product ID")
-                    .append("as", "productDetails")
-                ),
-                new Document("$unwind", "$productDetails"),
-                new Document("$match", new Document("productDetails.Category", category)), // Change this to the desired category
-                new Document("$group", new Document()
-                    .append("_id", "$purchaseDetails.Customer ID")
-                ),
-                new Document("$count", "uniqueCustomers")
-            ));
+    	MongoCollection<Document> purchases = db.getCollection("purchases");
+    	MongoCollection<Document> products = db.getCollection("products");
 
-        	int customerCount = 0;
-            for (Document doc : results) {
-                customerCount = doc.getInteger("uniqueCustomers");
-            }
-            return customerCount;
+    	Document matchProducts = new Document("$match", new Document("Category", category));
+
+	    Document lookupTransactions = new Document("$lookup", new Document()
+	            .append("from", "transactions")
+	            .append("localField", "Product ID")
+	            .append("foreignField", "Product ID")
+	            .append("as", "productTransactions")
+	    );
+
+	    Document unwindTransactions = new Document("$unwind", "$productTransactions");
+
+	    Document lookupPurchases = new Document("$lookup", new Document()
+	            .append("from", "purchases")
+	            .append("localField", "productTransactions.Purchase ID")
+	            .append("foreignField", "Purchase ID")
+	            .append("as", "transactionPurchases")
+	    );
+
+	    Document unwindPurchases = new Document("$unwind", "$transactionPurchases");
+
+	    Document lookupCustomerDetails = new Document("$lookup", new Document()
+	            .append("from", "customers")
+	            .append("localField", "transactionPurchases.Customer ID")
+	            .append("foreignField", "Customer ID")
+	            .append("as", "customerDetails")
+	    );
+
+	    Document unwindCustomerDetails = new Document("$unwind", "$customerDetails");
+
+	    Document groupCustomers = new Document("$group", new Document()
+	            .append("_id", "$transactionPurchases.Customer ID")
+	            .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$customerDetails.Last Name", ", ", "$customerDetails.First Name"))))
+	    );
+	    
+	  AggregateIterable<Document> results = products.aggregate(Arrays.asList(matchProducts, lookupTransactions, unwindTransactions,lookupPurchases, unwindPurchases, lookupCustomerDetails, unwindCustomerDetails, groupCustomers));
+
+      int customerCount = 0;
+      for (Document doc : results) {
+    	      String customerId = doc.getString("_id");
+    	      String customerName = doc.getString("Customer Name");
+    	      String segmentId = productCategory(category);
+    	      String segmentType = getSegmentType(segmentId);
+    	      addSegment(segmentId, segmentType, customerId, customerName);
+    	      customerCount++;
+    	  }
+    	  mongo.close();
+    	  return customerCount;
+     }
+    
+    public String productCategory(String product) { 
+    	String segmentId = "";
+    	switch (product) {
+    		case "iPhone":
+    			segmentId = "APSEG017";
+    			break;
+    		case "iPad":
+    			segmentId = "APSEG018";
+    			break;
+    		case "Mac":
+    			segmentId = "APSEG019";
+    			break;
+    		case "Watch":
+    			segmentId = "APSEG020";
+    			break;
+    		case "TV & Home":
+    			segmentId = "APSEG021";
+    			break;
+    		case "AirPods":
+    			segmentId = "APSEG022";
+    			break;
+    		case "Vision":
+    			segmentId = "APSEG023";
+    			break;
+    		default:
+    			segmentId = "null";
+    	}
+    	return segmentId;
     }
+    
     
     public ChartPanel transactionalChart() {
     	DefaultCategoryDataset transactionalData = new DefaultCategoryDataset();
     	addValue(transactionalData, productsVsCustomers("iPhone"), "Customers", "iPhone");
         addValue(transactionalData, productsVsCustomers("iPad"), "Customers", "iPad");
         addValue(transactionalData, productsVsCustomers("Watch"), "Customers", "Watch");
-        addValue(transactionalData, productsVsCustomers("Macbook"), "Customers", "Macbook");
+        addValue(transactionalData, productsVsCustomers("Mac"), "Customers", "Mac");
         addValue(transactionalData, productsVsCustomers("TV & Home"), "Customers", "TV & Home");
         addValue(transactionalData, productsVsCustomers("AirPods"), "Customers", "AirPods");
         addValue(transactionalData, productsVsCustomers("Vision"), "Customers", "Vision");
@@ -534,6 +667,35 @@ public class CustomerDashboard extends JPanel {
         transactionalPanel.setBounds(740, 10, 350, 210);
         
         return transactionalPanel;
+    }
+    
+    public String getSegmentType(String segmentId) {
+    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
+    	MongoDatabase db = mongo.getDatabase("iTrack");
+        MongoCollection<Document> segments = db.getCollection("segment");
+        
+        Document segmentDoc = segments.find(Filters.eq("Segment ID", segmentId)).first();
+        if (segmentDoc != null) {
+        	mongo.close();
+            return segmentDoc.getString("Segment Type");
+        } else {
+        	mongo.close();
+            return "Unknown";
+        }
+    }
+    
+    public void addSegment(String segmentID, String type, String customerID, String name) {
+    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
+        MongoDatabase db = mongo.getDatabase("iTrack");
+        MongoCollection<Document> customerSegment = db.getCollection("customersegment");
+        
+        Document newCustomerSegment = new Document("Segment ID", segmentID)
+                .append("Segment Type", type)
+                .append("Customer ID", customerID)  
+                .append("Customer Name", name);
+        
+        customerSegment.insertOne(newCustomerSegment);
+        mongo.close();
     }
     
     private void addValue(DefaultCategoryDataset dataset, double value, String categ, String column) {
@@ -578,8 +740,7 @@ public class CustomerDashboard extends JPanel {
         CategoryItemRenderer rendererCateg = plot.getRenderer();
         rendererCateg.setDefaultItemLabelFont(new Font("Poppins", Font.PLAIN, 10));
     	
-		return chart;
-    	
+		return chart;  	
     }   
 }
 
