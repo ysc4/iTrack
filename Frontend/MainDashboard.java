@@ -31,6 +31,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainDashboard extends JFrame {
 
@@ -158,7 +160,7 @@ public class MainDashboard extends JFrame {
 	private JLabel lblStoreIDDetail;
 	private JLabel lblStoreNameDetail;
 	private JLabel lblStoreAddressDetail;
-	private JLabel lblStoreRegionDetail;
+	private JLabel lblStoreCountryDetail;
 	private JLabel lblStoreTypeDetail;
 	private JLabel lblStoreContactDetail;
 	
@@ -658,7 +660,7 @@ public class MainDashboard extends JFrame {
 		
 		tableT10SBS = new JTable();
 		scrollPaneT10SBS.setViewportView(tableT10SBS);
-		DefaultTableModel tableModel = new DefaultTableModel(
+		DefaultTableModel tableModelT20SBS = new DefaultTableModel(
 	            new Object[][] {},
 	            new String[] { "Store", "Region", "Revenue ($)" }  
 	        ){
@@ -672,7 +674,7 @@ public class MainDashboard extends JFrame {
                 return false; // Make the table uneditable
             }
         };
-		tableT10SBS.setModel(tableModel);
+		tableT10SBS.setModel(tableModelT20SBS);
 		tableT10SBS.setFont(new Font("Poppins", Font.PLAIN, 9));
 		changeTableHeaderColor(tableT10SBS, 9);
 		
@@ -901,37 +903,79 @@ public class MainDashboard extends JFrame {
 		lblStoreType.setBounds(40, 220, 100, 30);
 		panelStoreInformation.add(lblStoreType);
 		
-		lblStoreIDDetail = new JLabel("123456789");
+		lblStoreIDDetail = new JLabel("");
 		lblStoreIDDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
 		lblStoreIDDetail.setBounds(134, 70, 370, 30);
 		panelStoreInformation.add(lblStoreIDDetail);
 		
-		lblStoreNameDetail = new JLabel("Store Name");
+		lblStoreNameDetail = new JLabel("");
 		lblStoreNameDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
 		lblStoreNameDetail.setBounds(113, 100, 370, 30);
 		panelStoreInformation.add(lblStoreNameDetail);
 		
-		lblStoreAddressDetail = new JLabel("Address");
+		lblStoreAddressDetail = new JLabel("");
 		lblStoreAddressDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
 		lblStoreAddressDetail.setBounds(134, 130, 370, 30);
 		panelStoreInformation.add(lblStoreAddressDetail);
 		
-		lblStoreRegionDetail = new JLabel("Region");
-		lblStoreRegionDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
-		lblStoreRegionDetail.setBounds(140, 160, 370, 30);
-		panelStoreInformation.add(lblStoreRegionDetail);
+		lblStoreCountryDetail = new JLabel("");
+		lblStoreCountryDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreCountryDetail.setBounds(140, 160, 370, 30);
+		panelStoreInformation.add(lblStoreCountryDetail);
 		
-		lblStoreTypeDetail = new JLabel("Type");
+		lblStoreTypeDetail = new JLabel("");
 		lblStoreTypeDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
 		lblStoreTypeDetail.setBounds(93, 220, 370, 30);
 		panelStoreInformation.add(lblStoreTypeDetail);
 		
-		lblStoreContactDetail = new JLabel("0912312313");
+		lblStoreContactDetail = new JLabel("");
 		lblStoreContactDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
 		lblStoreContactDetail.setBounds(219, 190, 300, 30);
 		panelStoreInformation.add(lblStoreContactDetail);
 		
+		
 		JComboBox<String> comboBoxStores = new JComboBox<String>();
+		comboBoxStores.addItem("");
+		SalesMongoDriver.populateStoreNames(comboBoxStores);
+		comboBoxStores.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedItem = (String) comboBoxStores.getSelectedItem();
+                if (selectedItem != null) {
+                	SalesMongoDriver.retrieveAndDisplayStoreInfo(selectedItem, lblStoreIDDetail, lblStoreNameDetail, lblStoreAddressDetail, lblStoreCountryDetail, lblStoreContactDetail, lblStoreTypeDetail);
+                	
+                	ChartPanel salesProfitTrend2;
+					try {
+						salesProfitTrend2 = salesDashboard.StoreTopProducts(lblStoreIDDetail.getText().toString());
+						panelTopSalesOfStore.add(salesProfitTrend2);
+						panelTopSalesOfStore.removeAll(); // Clear existing chart panel contents
+			            panelTopSalesOfStore.add(salesProfitTrend2);
+			            panelTopSalesOfStore.revalidate(); // Refresh the panel
+			            panelTopSalesOfStore.repaint(); // Repaint the panel
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                	
+                	DefaultTableModel tableModelTPH = new DefaultTableModel(
+            	            new Object[][] {},
+            	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
+            }  
+            	        ){
+                        /**
+            				 * 
+            				 */
+            				private static final long serialVersionUID = 1L;
+
+            			@Override
+                        public boolean isCellEditable(int row, int column) {
+                            return false; // Make the table uneditable
+                        }
+                    };
+                    tablePurchaseHistory.setModel(tableModelTPH);
+                    SalesMongoDriver.retrieveAndDisplayStorePurchaseHistory(selectedItem, tableModelTPH);
+                }
+			}
+		});
 		comboBoxStores.setBounds(320, 20, 190, 25);
 		panelStoreInformation.add(comboBoxStores);
 		
@@ -959,13 +1003,23 @@ public class MainDashboard extends JFrame {
 		
 		tablePurchaseHistory = new JTable();
 		scrollPanePurchaseHistory.setViewportView(tablePurchaseHistory);
-		tablePurchaseHistory.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Purchase ID", "Store ID", "Customer ID", "Date", "Time", "Total Spent"
-			}
-		));
+		DefaultTableModel tableModelTPH = new DefaultTableModel(
+	            new Object[][] {},
+	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
+}  
+	        ){
+            /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make the table uneditable
+            }
+        };
+        tablePurchaseHistory.setModel(tableModelTPH);
+        
 		tablePurchaseHistory.setFont(new Font("Poppins", Font.PLAIN, 9));
 		changeTableHeaderColor(tablePurchaseHistory, 9);
 		
@@ -1299,10 +1353,10 @@ public class MainDashboard extends JFrame {
 	        SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
 	        SalesMainBackend.TotalSalesDisplay(lblSumProfit, lblProfitIncrease);
 	        SalesMainBackend.TotalOrdersDisplay(lblSumOrders, lblOrderIncrease);
-	        SalesMongoDriver.displayTopTenStores(tableModel);
+	        SalesMongoDriver.displayTopTenStores(tableModelT20SBS);
 	        
 	        ChartPanel salesProfitTrend1 = salesDashboard.salesVolume();
-			panelSalesPerCountry.add(salesProfitTrend1);
+			panelSalesPerCountry.add(salesProfitTrend1);	
 	}
 	      
 	public void changeTableHeaderColor (JTable table, int fontSize) {
