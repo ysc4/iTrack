@@ -78,11 +78,15 @@ public class SalesDashboard extends JPanel {
     	ArrayList<Integer> sales = new ArrayList<Integer>();
 		SalesMongoDriver.displaySalesPerCountry(countries, sales);
     	DefaultCategoryDataset salesTrendData = new DefaultCategoryDataset();
+    	int size = Math.min(10, sales.size());
     	
-   	 	// Add values from ArrayLists to the dataset
-        for (int i = 0; i < 10; i++) {
-            addValue(salesTrendData, sales.get(i), "Revenue", countries.get(i));
-        }
+    	if(!sales.isEmpty()) {
+    		// Add values from ArrayLists to the dataset
+            for (int i = 0; i < size|| i < 10; i++) {
+                addValue(salesTrendData, sales.get(i), "Revenue", countries.get(i));
+            }
+    	} 
+   	 	
         
 
         JFreeChart chart = createChart("REVENUE BY COUNTRY", "COUNTRY", "TOTAL SALES", salesTrendData);
@@ -90,6 +94,29 @@ public class SalesDashboard extends JPanel {
         salesTrendPanel.setPreferredSize(new Dimension(670,200));
         salesTrendPanel.setBackground(new Color(255, 255, 255));
         salesTrendPanel.setBounds(5, 5, 380, 270);
+        
+        return salesTrendPanel;
+    }
+    
+    public ChartPanel StoreTopProducts(String id) throws Exception {
+    	ArrayList<String> product = new ArrayList<String>();
+    	ArrayList<Integer> sales = new ArrayList<Integer>();
+		SalesMongoDriver.getStoreTopSellingProducts(id, product, sales);
+    	DefaultCategoryDataset salesTrendData = new DefaultCategoryDataset();
+    	int size = Math.min(10, product.size());
+    	
+    	if(!(product.isEmpty())) {
+    		// Add values from ArrayLists to the dataset
+            for (int i = 0; i < size; i++) {
+                addValue(salesTrendData, sales.get(i), "Revenue", product.get(i));
+            }
+    	}
+
+        JFreeChart chart = createChart("STORE'S TOP PRODUCTS", "STORE", "TOTAL SALES", salesTrendData);
+        ChartPanel salesTrendPanel = new ChartPanel(chart);
+        salesTrendPanel.setPreferredSize(new Dimension(670,200));
+        salesTrendPanel.setBackground(new Color(255, 255, 255));
+        salesTrendPanel.setBounds(10, 10, 520, 270);
         
         return salesTrendPanel;
     }
