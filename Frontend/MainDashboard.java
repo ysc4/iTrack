@@ -163,6 +163,7 @@ public class MainDashboard extends JFrame {
 	private JLabel lblStoreCountryDetail;
 	private JLabel lblStoreTypeDetail;
 	private JLabel lblStoreContactDetail;
+	private JLabel lblOverall;
 	
 	/**
 	 * Launch the application.
@@ -849,7 +850,7 @@ public class MainDashboard extends JFrame {
 		
 		JLabel lblStoreTitle = new JLabel("Stores");
 		lblStoreTitle.setFont(new Font("Poppins", Font.BOLD, 40));
-		lblStoreTitle.setBounds(35, 36, 263, 56);
+		lblStoreTitle.setBounds(35, 36, 150, 56);
 		panelStores.add(lblStoreTitle);
 		
 		layeredPaneStores = new JLayeredPane();
@@ -936,6 +937,7 @@ public class MainDashboard extends JFrame {
 		
 		JComboBox<String> comboBoxStores = new JComboBox<String>();
 		comboBoxStores.addItem("");
+		comboBoxStores.setSelectedIndex(0);
 		SalesMongoDriver.populateStoreNames(comboBoxStores);
 		comboBoxStores.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1057,6 +1059,41 @@ public class MainDashboard extends JFrame {
 		lblRefreshSales.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
 		lblRefreshSales.setBounds(1045, 58, 80, 20);
 		panelStores.add(lblRefreshSales);
+		
+		JLabel lblStoresInfo = new JLabel("Stores");
+		lblStoresInfo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				underlineBorder(lblStoresInfo, lblOverall);
+				
+				layeredPaneStores.removeAll();
+				layeredPaneStores.add(panelStoreSummary);
+				layeredPaneStores.repaint();
+				layeredPaneStores.revalidate();
+			}
+		});
+		lblStoresInfo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStoresInfo.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblStoresInfo.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		lblStoresInfo.setBounds(206, 53, 80, 25);
+		panelStores.add(lblStoresInfo);
+		
+		lblOverall = new JLabel("Overall");
+		lblOverall.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				underlineBorder(lblOverall, lblStoresInfo);
+				
+				layeredPaneStores.removeAll();
+				layeredPaneStores.add(panelStoresSales);
+				layeredPaneStores.repaint();
+				layeredPaneStores.revalidate();
+			}
+		});
+		lblOverall.setHorizontalAlignment(SwingConstants.CENTER);
+		lblOverall.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblOverall.setBounds(296, 53, 100, 25);
+		panelStores.add(lblOverall);
 		
 		panelPurchaseHistory = new JPanel();
 		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
