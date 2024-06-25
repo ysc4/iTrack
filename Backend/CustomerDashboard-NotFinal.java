@@ -698,6 +698,19 @@ public class CustomerDashboard extends JPanel {
         mongo.close();
     }
     
+    private static double computeIncrease(double current, double previous) {
+		if (previous != 0) {
+			// Calculate the increase percentage
+			double increasePercentage = ((current - previous) / previous);
+	        return increasePercentage * 100;
+        } else if (current == 0 || previous == 0) {
+        	return 0;
+        } else {
+        	return 100;
+        }
+		
+	}
+    
     private void addValue(DefaultCategoryDataset dataset, double value, String categ, String column) {
     	dataset.addValue(value, categ, column);
     }
