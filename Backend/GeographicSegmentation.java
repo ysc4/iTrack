@@ -1,67 +1,81 @@
 package iTrack;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
+import javax.swing.table.DefaultTableModel;
+
 import org.bson.Document;
-import com.mongodb.MongoException;
+
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
 import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-public class GeographicSegmentation {
-    public List<Object[]> fetchData() {
-        List<Object[]> geographicData = new ArrayList<>();
+public class DemographicSegmentation {
+	public  List<Document> fetchData() throws Exception {
+        List<Document> demographicData = new ArrayList<>();
 
-        try (MongoClient mongo = MongoClients.create("mongodb://localhost:27017")) {
-            MongoDatabase db = mongo.getDatabase("iTrack");
-            MongoCollection<Document> customers = db.getCollection("customers");
+        MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
+        MongoDatabase db = mongo.getDatabase("iTrack");
+        MongoCollection<Document> customers = db.getCollection("customers");
 
-            AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
-                new Document("$group", new Document()
-                        .append("_id", "$Customer ID")
-                        .append("fullName", new Document("$first", new Document("$concat", Arrays.asList(
-                                "$First Name", " ", "$Last Name"
-                        ))))
-                        .append("address", new Document("$first", "$Address"))
-                        .append("country", new Document("$first", "$Country"))
-                        .append("region", new Document("$first", "$Region"))
-                ),
-                new Document("$project", new Document()
-                        .append("_id", 0)
-                        .append("customerID", "$_id")
-                        .append("customerName", "$fullName")
-                        .append("address", 1)
-                        .append("country", "$country")
-                        .append("region", "$region")
-                )
-            ));
+        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
+            new Document("$group", new Document()
+                .append("_id", "$Customer ID")
+                .append("fullName", new Document("$first", new Document("$concat", Arrays.asList(
+                    "$First Name", " ", "$Last Name"
+                ))))
+                .append("birthday", new Document("$first", "$Birthday"))
+                .append("sex", new Document("$first", "$Sex"))
+                .append("contactNumber", new Document("$first", "$Contact Number"))
+            ),
+            new Document("$project", new Document()
+                .append("_id", 0)
+                .append("customerID", "$_id")
+                .append("fullName", 1)
+                .append("birthday", 1)
+                .append("sex", 1)
+                .append("contactNumber", 1)
+            )
+        ));
 
-            for (Document doc : results) {
-                geographicData.add(new Object[]{
-                    doc.getString("customerID"),
-                    doc.getString("customerName"),
-                    doc.getString("address"),
-                    doc.getString("country"),
-                    doc.getString("region")
-                });
-            }
-        } catch (MongoException e) {
-            System.err.println("MongoDB Exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("Exception: " + e.getMessage());
-            e.printStackTrace();
+        for (Document doc : results) {
+            demographicData.add(doc);
         }
 
-        return geographicData;
+        return demographicData;
     }
+	
+	public  DefaultTableModel addToTable() throws Exception {
+		 DefaultTableModel demographic = new DefaultTableModel(
+	                new Object[][] {},
+	                new String[] {
+	                		"Customer ID", "Customer Name", "Birthday", "Sex", "Contact Number"
+	                }
+	        );
+		 
+		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static void main(String[] args) {
-        GeographicSegmentation segmentation = new GeographicSegmentation();
-        List<Object[]> data = segmentation.fetchData();
-        data.forEach(row -> System.out.println(Arrays.toString(row)));
-    }
+	        for (Document doc : fetchData()) {
+	            String customerId = doc.getString("customerID");
+	            String customerName = doc.getString("fullName");
+	            Date birthday = doc.getDate("birthday");
+	            String sex = doc.getString("sex");
+	            String contactNum = doc.getString("contactNumber");
+	            
+	            String birthdate = dateFormat.format(birthday);
+	            
+
+	            demographic.addRow(new Object[] {customerId, customerName, birthdate, sex, contactNum});
+	        }
+
+	        return demographic;
+	    }
+	
 }
