@@ -24,21 +24,23 @@ import java.awt.*;
 
 public class CustomerSegmentation extends JPanel {
 	
+	CustomerDashboard customerGraphs = new CustomerDashboard();
+	
     
     public ChartPanel demographicChart() {
     	DefaultCategoryDataset demographicData = new DefaultCategoryDataset();
-    	addValue(demographicData, 20, "Female", "<18");
-        addValue(demographicData, 50, "Female", "18-28");
-        addValue(demographicData, 55, "Female", "29-38");
-        addValue(demographicData, 40, "Female", "39-48");
-        addValue(demographicData, 90, "Female", "49-58");
-        addValue(demographicData, 15, "Female", ">59");
-        addValue(demographicData, 35, "Male", "<18");
-        addValue(demographicData, 60, "Male", "18-28");
-        addValue(demographicData, 65, "Male", "29-38");
-        addValue(demographicData, 70, "Male", "39-48");
-        addValue(demographicData, 25, "Male", "49-58");
-        addValue(demographicData, 10, "Male", ">59");
+    	addValue(demographicData, customerGraphs.femaleCustomers(0, 17), "Female", "<18");
+        addValue(demographicData, customerGraphs.femaleCustomers(18, 28), "Female", "18-28");
+        addValue(demographicData, customerGraphs.femaleCustomers(29, 38), "Female", "29-38");
+        addValue(demographicData, customerGraphs.femaleCustomers(39, 48), "Female", "39-48");
+        addValue(demographicData, customerGraphs.femaleCustomers(49, 58), "Female", "49-58");
+        addValue(demographicData, customerGraphs.femaleCustomers(59, 150), "Female", ">58");
+        addValue(demographicData, customerGraphs.maleCustomers(0, 17), "Male", "<18");
+        addValue(demographicData, customerGraphs.maleCustomers(18, 28), "Male", "18-28");
+        addValue(demographicData, customerGraphs.maleCustomers(29, 38), "Male", "29-38");
+        addValue(demographicData, customerGraphs.maleCustomers(39, 48), "Male", "39-48");
+        addValue(demographicData, customerGraphs.maleCustomers(49, 58), "Male", "49-58");
+        addValue(demographicData, customerGraphs.maleCustomers(59, 150), "Male", ">58");
 
         JFreeChart chart = createChart("DEMOGRAPHIC SEGMENTATION", "AGE & SEX", "FREQUENCY", demographicData);
         
@@ -52,16 +54,12 @@ public class CustomerSegmentation extends JPanel {
     
     public ChartPanel geographicChart() {
     	DefaultCategoryDataset geographicData = new DefaultCategoryDataset();
-    	addValue(geographicData, 20, "New", "Asia");
-        addValue(geographicData, 50, "New", "Australia");
-        addValue(geographicData, 55, "New", "Europe");
-        addValue(geographicData, 40, "New", "Canada");
-        addValue(geographicData, 90, "New", "USA");
-        addValue(geographicData, 35, "Current", "Asia");
-        addValue(geographicData, 60, "Current", "Australia");
-        addValue(geographicData, 65, "Current", "Europe");
-        addValue(geographicData, 70, "Current", "Canada");
-        addValue(geographicData, 25, "Current", "USA");
+    	for (String country : customerGraphs.top10Countries()) {           
+            int newCustomers = customerGraphs.newCustomersPerCountry(country);
+            int allCustomers = customerGraphs.CustomersPerCountry(country);
+            addValue(geographicData, newCustomers, "New", country);
+            addValue(geographicData, allCustomers, "All", country);   
+        }
 
         JFreeChart chart = createChart("GEOGRAPHIC SEGMENTATION", "COUNTRIES", "FREQUENCY", geographicData);
         
@@ -75,23 +73,23 @@ public class CustomerSegmentation extends JPanel {
     
     public ChartPanel transactionalChart() {
     	DefaultCategoryDataset transactionalData = new DefaultCategoryDataset();
-    	addValue(transactionalData, 20, "Customers", "iPhone");
-        addValue(transactionalData, 50, "Customers", "iPad");
-        addValue(transactionalData, 55, "Customers", "Watch");
-        addValue(transactionalData, 40, "Customers", "Macbook");
-        addValue(transactionalData, 90, "Customers", "TV & Home");
-        addValue(transactionalData, 15, "Customers", "AirPods");
-        addValue(transactionalData, 65, "Customers", "Vision");
+    	addValue(transactionalData, customerGraphs.productsVsCustomers("iPhone"), "Customers", "iPhone");
+        addValue(transactionalData, customerGraphs.productsVsCustomers("iPad"), "Customers", "iPad");
+        addValue(transactionalData, customerGraphs.productsVsCustomers("Watch"), "Customers", "Watch");
+        addValue(transactionalData, customerGraphs.productsVsCustomers("Mac"), "Customers", "Mac");
+        addValue(transactionalData, customerGraphs.productsVsCustomers("TV & Home"), "Customers", "TV & Home");
+        addValue(transactionalData, customerGraphs.productsVsCustomers("AirPods"), "Customers", "AirPods");
+        addValue(transactionalData, customerGraphs.productsVsCustomers("Vision"), "Customers", "Vision");
   
 
         JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "PURCHASES", transactionalData);
         
-        ChartPanel demographicPanel = new ChartPanel(chart);
-        demographicPanel.setPreferredSize(new Dimension(1068, 305));
-        demographicPanel.setBackground(new Color(255, 255, 255));
-        demographicPanel.setBounds(10, 10, 1068, 305);
+        ChartPanel transactionalPanel = new ChartPanel(chart);
+        transactionalPanel.setPreferredSize(new Dimension(1068, 305));
+        transactionalPanel.setBackground(new Color(255, 255, 255));
+        transactionalPanel.setBounds(10, 10, 1068, 305);
         
-        return demographicPanel;
+        return transactionalPanel;
     }
     
     private void addValue(DefaultCategoryDataset dataset, double value, String categ, String column) {
