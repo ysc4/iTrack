@@ -16,12 +16,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class TransactionalSegmentation {
-	public DefaultTableModel transactional() {
+	public DefaultTableModel transactional(boolean sort) {
 		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase db = mongo.getDatabase("iTrack");
         MongoCollection<Document> transacs = db.getCollection("transactions");
 		
-        AggregateIterable<Document> results = transacs.aggregate(Arrays.asList(
+        ArrayList<Document> pipeline = new ArrayList<>(Arrays.asList(
                 new Document("$lookup", new Document()
                         .append("from", "purchases")
                         .append("localField", "Purchase ID")
@@ -55,10 +55,13 @@ public class TransactionalSegmentation {
                 )
         ));
 
+        // Sort stage based on ascending or descending order of Total Amount Spent
+        pipeline.add(new Document("$sort", new Document("totalAmountSpent", sort ? 1 : -1)));
+
+        AggregateIterable<Document> results = transacs.aggregate(pipeline);
 
         ArrayList<Document> transactions = new ArrayList<>();
         for (Document doc : results) {
-        	System.out.println(doc.toJson());
             transactions.add(doc);
         }
 
