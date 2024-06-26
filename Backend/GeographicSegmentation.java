@@ -9,73 +9,70 @@ import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 import org.bson.Document;
-
-import com.mongodb.client.*;
-import com.mongodb.client.model.*;
+import com.mongodb.MongoException;
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-public class DemographicSegmentation {
+public class GeographicSegmentation {
 	public  List<Document> fetchData() throws Exception {
-        List<Document> demographicData = new ArrayList<>();
+        List<Document> geographicData = new ArrayList<>();
 
         MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase db = mongo.getDatabase("iTrack");
         MongoCollection<Document> customers = db.getCollection("customers");
 
         AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
-            new Document("$group", new Document()
-                .append("_id", "$Customer ID")
-                .append("fullName", new Document("$first", new Document("$concat", Arrays.asList(
-                    "$First Name", " ", "$Last Name"
-                ))))
-                .append("birthday", new Document("$first", "$Birthday"))
-                .append("sex", new Document("$first", "$Sex"))
-                .append("contactNumber", new Document("$first", "$Contact Number"))
-            ),
-            new Document("$project", new Document()
-                .append("_id", 0)
-                .append("customerID", "$_id")
-                .append("fullName", 1)
-                .append("birthday", 1)
-                .append("sex", 1)
-                .append("contactNumber", 1)
-            )
-        ));
+                new Document("$group", new Document()
+                        .append("_id", "$Customer ID")
+                        .append("fullName", new Document("$first", new Document("$concat", Arrays.asList(
+                                "$First Name", " ", "$Last Name"
+                        ))))
+                        .append("address", new Document("$first", "$Street #"))
+                        .append("country", new Document("$first", "$City/Country"))
+                        .append("region", new Document("$first", "$Region"))
+                ),
+                new Document("$project", new Document()
+                        .append("_id", 0)
+                        .append("customerID", "$_id")
+                        .append("customerName", "$fullName")
+                        .append("address", 1)
+                        .append("country", "$country")
+                        .append("region", "$region")
+                )
+            ));
 
-        for (Document doc : results) {
-            demographicData.add(doc);
-        }
+            for (Document doc : results) {
+                geographicData.add(doc);;
+            }
 
-        return demographicData;
+        return geographicData;
     }
 	
-	public  DefaultTableModel addToTable() throws Exception {
-		 DefaultTableModel demographic = new DefaultTableModel(
+	public DefaultTableModel addToTable() throws Exception {
+		 DefaultTableModel geographic = new DefaultTableModel(
 	                new Object[][] {},
 	                new String[] {
-	                		"Customer ID", "Customer Name", "Birthday", "Sex", "Contact Number"
+	                		"Customer ID", "Customer Name","Address", "Country", "Region"
 	                }
 	        );
-		 
-		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	        for (Document doc : fetchData()) {
 	            String customerId = doc.getString("customerID");
-	            String customerName = doc.getString("fullName");
-	            Date birthday = doc.getDate("birthday");
-	            String sex = doc.getString("sex");
-	            String contactNum = doc.getString("contactNumber");
-	            
-	            String birthdate = dateFormat.format(birthday);
-	            
+	            String customerName = doc.getString("customerName");
+	            String address = doc.getString("address");
+	            String country = doc.getString("country");
+	            String region = doc.getString("region");
+	          	         
 
-	            demographic.addRow(new Object[] {customerId, customerName, birthdate, sex, contactNum});
+	            geographic.addRow(new Object[] {customerId, customerName, address, country, region});
 	        }
 
-	        return demographic;
+	        return geographic;
 	    }
 	
 }
+
+
