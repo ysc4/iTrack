@@ -1,762 +1,1482 @@
 package iTrack;
 
-import org.bson.Document;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.chart.title.LegendTitle;
-import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.data.category.DefaultCategoryDataset;
+import java.awt.EventQueue;
 
-import com.mongodb.client.*;
-import com.mongodb.client.model.*;
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
 
-import java.awt.*;
-import java.lang.reflect.Array;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-public class CustomerDashboard extends JPanel {
+import org.jfree.chart.ChartPanel;
+
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.JSeparator;
+import java.awt.CardLayout;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+public class MainDashboard extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private ImageIcon appleIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/apple-dash.png");
+	ImageIcon homeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-white.png");
+	ImageIcon homeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-black.png");
+	ImageIcon storeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-white.png");
+	ImageIcon storeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-black.png");
+	ImageIcon purchaseWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-white.png");
+	ImageIcon purchaseBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-black.png");
+	ImageIcon segmentWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-white.png");
+	ImageIcon segmentBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-black.png");
+	ImageIcon demoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-white.png");
+	ImageIcon demoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-black.png");
+	ImageIcon geoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-white.png");
+	ImageIcon geoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-black.png");
+	ImageIcon transactWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-white.png");
+	ImageIcon transactBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-black.png");
+	ImageIcon accountIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/account.png");
+	ImageIcon exitIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/exit.png");
 	
-
-	public int totalNew2023() throws Exception {
-		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase itrackDB = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customerPurchases = itrackDB.getCollection("purchases");
-
-        AggregateIterable<Document> results = customerPurchases.aggregate(Arrays.asList(
-            new Document("$facet", new Document()
-                .append("customers2022", Arrays.asList(
-                    new Document("$match", new Document("Date and Time", new Document("$gte", new Date(122, 0, 1))
-                            .append("$lt", new Date(123, 0, 1)))),
-                    new Document("$group", new Document("_id", "$Customer ID"))
-                ))
-                .append("customers2023", Arrays.asList(
-                    new Document("$match", new Document("Date and Time", new Document("$gte", new Date(123, 0, 1))
-                            .append("$lt", new Date(124, 0, 1)))),
-                    new Document("$group", new Document("_id", "$Customer ID"))
-                ))
-            ),
-            new Document("$project", new Document()
-                .append("customers2022", "$customers2022._id")
-                .append("customers2023", "$customers2023._id")
-            ),
-            new Document("$project", new Document()
-                .append("newCustomers2023", new Document("$setDifference", Arrays.asList("$customers2023", "$customers2022")))
-            ),
-            new Document("$project", new Document()
-                .append("total_count", new Document("$size", "$newCustomers2023"))
-            )
-        ));
-
-        int totalCount = 0;
-        for (Document doc : results) {
-            totalCount = doc.getInteger("total_count", 0);
-        } 
-        mongo.close();
-        return totalCount;
-    }
+	CustomerDashboard customerDash = new CustomerDashboard();
+	PurchaseHistory purchaseHistory = new PurchaseHistory();
+	TransactionalSegmentation transacSegment = new TransactionalSegmentation();
 	
-	 public int totalNew2024() throws Exception {
-	    MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-	    MongoDatabase itrackDB = mongo.getDatabase("iTrack");
-	    MongoCollection<Document> customerPurchases = itrackDB.getCollection("purchases");
-
-	    AggregateIterable<Document> results = customerPurchases.aggregate(Arrays.asList(
-	        new Document("$facet", new Document()
-	            .append("customers2022_2023", Arrays.asList(
-	                new Document("$match", new Document("Date and Time", new Document("$gte", new Date(122, 0, 1))
-	                        .append("$lt", new Date(124, 0, 1)))),
-	                new Document("$group", new Document("_id", "$Customer ID"))
-	                ))
-	            .append("customers2024", Arrays.asList(
-	                new Document("$match", new Document("Date and Time", new Document("$gte", new Date(124, 0, 1))
-	                            .append("$lt", new Date(125, 0, 1)))),
-	                new Document("$group", new Document("_id", "$Customer ID"))
-	            ))
-	        ),
-	        new Document("$project", new Document()
-	             .append("customers2022_2023", "$customers2022_2023._id")
-	             .append("customers2024", "$customers2024._id")
-	        ),
-	        new Document("$project", new Document()
-	            .append("newCustomers2024", new Document("$setDifference", Arrays.asList("$customers2024", "$customers2022_2023")))
-	        ),
-	        new Document("$project", new Document()
-	            .append("total_count", new Document("$size", "$newCustomers2024"))
-	        )
-	     ));
-
-	    int totalCount = 0;
-        for (Document doc : results) {
-            totalCount = doc.getInteger("total_count", 0);
-        } 
-        mongo.close();
-        return totalCount;
-	    }
-		    
+	private JPanel contentPane;
+	private JLayeredPane layeredPane;
+	private JPanel panelHome, panelStores, panelPurchaseHistory, panelSegmentation, panelDemographics, panelGeographics, panelTransactionHistory;
+	private JLabel lblSales, lblCustomer;
+	private JPanel panelHomeMenu, panelStoreMenu, panelPurchaseMenu, panelSegmentMenu, panelDemographicsMenu, panelGeographicMenu, panelTransactionMenu;
+	private JLabel lblDashHome, lblDashStore, lblPurchaseHistory, lblDashSegment, lblDashDemographics, lblDashGeographic, lblDashTransaction;
+	private JLabel lblHomeLogo, lblStoreLogo, lblPurchaseLogo, lblSegmentLogo, lblDemographicsLogo, lblGeographicLogo, lblTransactionLogo;
+	private JLayeredPane layeredPaneHomePage;
+	private JPanel panelSales;
+	private JPanel panelCustomer;
+	private JPanel panelTotalSales;
+	private JPanel panelTotalProfit;
+	private JPanel panelProfitMargin;
+	private JPanel panelSalesAndProfitTrend;
+	private JPanel panelTopTenProducts;
+	private JPanel panelSalesPerCountry;
+	private JPanel panelTopTenStoresBySales;
+	private JLabel lblSalesPercentIncrease;
+	private JLabel lblTotalOrders;
+	private JLabel lblTotalProfit;
+	private JLabel lblSumOrders;
+	private JLabel lblSumProfit;
+	private JLabel lblOrderIncrease;
+	private JLabel lblProfitIncrease;
+	private JLabel lblSalesAndProfitTrend;
+	private JLabel lblTopTenProductsBySales;
+	private JLabel lblTopFifteenStoresBySales;
+	private JLabel lblExport;
+	private JLabel lblRefresh;
+	private JPanel panelTotalActiveCustomers;
+	private JLabel lblTotalActive;
+	private JLabel lblNumberOfCustomers;
+	private JLabel lblCustomerGrowthPercentage;
+	private JLabel lblActiveCustomers;
+	private JPanel panelTotalActiveCustomers_1;
+	private JLabel lblTotalNew;
+	private JLabel lblNumberOfCustomers_1;
+	private JLabel lblCustomerGrowthPercentage_1;
+	private JLabel lblActiveCustomers_1;
+	private JPanel panelTotalActiveCustomers_2;
+	private JLabel lblCustomerGrowth;
+	private JLabel lblNumberOfCustomers_2;
+	private JLabel lblCustomerGrowthPercentage_2;
+	private JLabel lblActiveCustomers_2;
+	private JPanel panelCustomerTrend;
+	private JPanel panelCustomerSegmentationGraphs;
+	private JPanel panelCustomerVolumeByCountry;
+	private JLabel lblCustomerVolumeByCountry;
+	private JLayeredPane layeredPaneStores;
+	private JPanel panelStoreSummary;
+	private JPanel panelStoresSales;
+	private JPanel panelStoreInformation;
+	private JLabel lblStoreInformation;
+	private JPanel panelTopSalesOfStore;
+	private JLabel lblRefreshSales;
+	private JPanel panelPurchaseHistoryTable;
+	private JLabel lblPurchaseHistoryTable;
+	private JLabel lblStoresBySales;
+	private JPanel panelStoresSales_1;
+	private JLabel lblPurchaseHistorySummary;
+	private JLabel lblRefreshPurchase;
+	private JPanel panelCustomerSegmentation;
+	private JPanel demoPanel;
+	private JPanel geoPanel;
+	private JPanel transPanel;
+	private JLabel lblRefreshCS;
+	private JLabel lblExportCS;
+	private JTable tableGeographic;
+	private JTable tableDemoSegmentation;
+	private JScrollPane scrollPaneDemoSegmentation;
+	private JTable table_1;
+	private JPanel panel;
+	private JPanel panelGeographicSegmentation;
+	private JLabel lblGeographicSegmentation;
+	private JTable tableGeographicSegmentation;
+	private JScrollPane scrollPaneGeographicSegmentation;
+	private JLabel lblRefreshDS;
+	private JLabel lblRefreshGS;
+	private JComboBox cmbAscDesc;
+	private JLabel lblRefreshTS;
+	private JLayeredPane layeredPaneTransactionalSegmentation;
+	private JPanel panelTransactionalSegmentation;
+	private JLabel lblTransactionalSegmentation;
+	private JTable tableTransactionalSegmentation;
+	private JScrollPane scrollPaneTransactionalSegmentation;
+	private JComboBox cmbAscDesc_1;
+	private JTable table;
+	private JTable tableT10SBS;
+	private JScrollPane scrollPaneT10SBS;
+	private JTable tableCVBC;
+	private JScrollPane scrollPaneCVBC;
+	private JTable tablePurchaseHistory;
+	private JScrollPane scrollPanePurchaseHistory;
+	private JTable tableOverallSBS;
+	private JScrollPane scrollPaneOverallSBS;
+	private JTable tablePurchaseHistoryOverall;
+	private JScrollPane scrollPaneOverallPurchaseHistory;
+	private JLabel lblStoreName;
+	private JLabel lblStoreAddress;
+	private JLabel lblStoreCountry;
+	private JLabel lblStoreContactNumber;
+	private JLabel lblStoreType;
+	private JLabel lblStoreIDDetail;
+	private JLabel lblStoreNameDetail;
+	private JLabel lblStoreAddressDetail;
+	private JLabel lblStoreCountryDetail;
+	private JLabel lblStoreTypeDetail;
+	private JLabel lblStoreContactDetail;
+	private JLabel lblOverall;
+	private JLabel lblNumberOfActiveCustomers;
+	private JLabel lblNumberOfNewCustomers;
+	private JLabel lblNewPercentage;
+	private JLabel lblCustomers;
+	private JLabel lblPercentageCustomerGrowth;
+	private JPanel panelCustomerGrowth;
+	private JPanel panelTotalNew;
+	private JLabel lblTopStoresBySales;
+	private JPanel panelTopStoresBySales;
+	private JScrollPane scrollPaneT10SBS2;
+	private JTable tableT10SBS2;
 	
-	public int totalActive() throws Exception {
-		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-		MongoDatabase itrackDB = mongo.getDatabase("iTrack");
-		MongoCollection<Document> customerPurchases = itrackDB.getCollection("purchases");
-		
-		AggregateIterable<Document> results = customerPurchases.aggregate(Arrays.asList(
-			    Aggregates.match(Filters.and(
-			        Filters.gte("Date and Time", new Date(122, 0, 1)), 
-			        Filters.lt("Date and Time", new Date(125, 0, 1)))), 
-			    Aggregates.group("$Customer ID", Accumulators.sum("count", 1)),
-			    Aggregates.group(null, Accumulators.sum("total_count", 1))));
-
-		int totalCount = 0;
-        for (Document doc : results) {
-            totalCount = doc.getInteger("total_count", 0);
-        } 
-        mongo.close();
-        return totalCount;
-	}
-
-	
-	public static double customerGrowth() throws Exception {
-	    MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-	    MongoDatabase itrackDB = mongo.getDatabase("iTrack");
-	    MongoCollection<Document> customerPurchases = itrackDB.getCollection("purchases");
-
-	    AggregateIterable<Document> results = customerPurchases.aggregate(Arrays.asList(
-	        new Document("$facet", new Document()
-	            .append("customers2023", Arrays.asList(
-	                new Document("$match", new Document("Date and Time", new Document("$gte", new Date(123, 0, 1))
-	                        .append("$lt", new Date(124, 0, 1)))),
-	                new Document("$group", new Document("_id", "$Customer ID")),
-	                new Document("$group", new Document("_id", null).append("total_count", new Document("$sum", 1)))
-	            ))
-	            .append("customers2024", Arrays.asList(
-	                new Document("$match", new Document("Date and Time", new Document("$gte", new Date(124, 0, 1))
-	                        .append("$lt", new Date(125, 0, 1)))),
-	                new Document("$group", new Document("_id", "$Customer ID")),
-	                new Document("$group", new Document("_id", null).append("total_count", new Document("$sum", 1)))
-	            ))
-	        ),
-	        new Document("$project", new Document()
-	            .append("customers2023", new Document("$arrayElemAt", Arrays.asList("$customers2023.total_count", 0)))
-	            .append("customers2024", new Document("$arrayElemAt", Arrays.asList("$customers2024.total_count", 0)))
-	            .append("customergrowth", new Document("$cond", new Document("if", new Document("$eq", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$customers2023.total_count", 0)), 0)))
-	                .append("then", new Document("$cond", new Document("if", new Document("$gt", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$customers2024.total_count", 0)), 0)))
-	                    .append("then", 100)
-	                    .append("else", 0)))
-	                .append("else", new Document("$multiply", Arrays.asList(new Document("$divide", Arrays.asList(new Document("$subtract", Arrays.asList(new Document("$arrayElemAt", Arrays.asList("$customers2024.total_count", 0)), new Document("$arrayElemAt", Arrays.asList("$customers2023.total_count", 0)))), new Document("$arrayElemAt", Arrays.asList("$customers2023.total_count", 0)))), 100))))
-	        )
-	    )));
-
-	    double totalGrowth = 0;
-        for (Document doc : results) {
-        	totalGrowth = doc.getInteger("total_count", 0);
-        } 
-        mongo.close();
-        return totalGrowth;
-	    
-	}
-	
-	public int CustomersPerCountry(String country) {
-		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customers = db.getCollection("customers");
-
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
-        	    new Document("$match", new Document("City/Country", country)),
-        	    new Document("$group", new Document()
-        	        .append("_id", "$Customer ID")
-        	        .append("LastName", new Document("$first", "$Last Name"))
-        	        .append("FirstName", new Document("$first", "$First Name"))
-        	        .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$Last Name", ", ", "$First Name"))))
-        	        .append("customerCount", new Document("$sum", 1))
-        	    )
-        	));
-
-        int customerCount = 0;
-        for (Document doc : results) {
-        	String customerId = doc.getString("_id");
-        	String customerName = doc.getString("Customer Name");
-        	
-        	countries(country, customerId, customerName);
-            customerCount++;  
-        }
-        mongo.close();
-        return customerCount;
-
-	}
-	
-	public int activeCustomersPerCountry (String country) {
-		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-	    MongoDatabase db = mongo.getDatabase("iTrack");
-	    MongoCollection<Document> customers = db.getCollection("customers");
-	    MongoCollection<Document> purchases = db.getCollection("purchases");
-
-	    Document matchCustomers = new Document("$match", new Document("City/Country", country));
-
-	    Document groupCustomers = new Document("$group", new Document("_id", "$Customer ID"));
-
-	    AggregateIterable<Document> customerResults = customers.aggregate(Arrays.asList(matchCustomers, groupCustomers));
-
-	    Set<String> customerIds = new HashSet<>();
-	    for (Document doc : customerResults) {
-	        customerIds.add(doc.getString("_id"));
-	    }
-
-	    Document matchPurchases = new Document("$match", new Document()
-	            .append("Customer ID", new Document("$in", new ArrayList<>(customerIds)))
-	            .append("Date and Time", new Document("$gte", new Date(122, 0, 1)))
-	            .append("Date and Time", new Document("$lt", new Date(125, 0, 1)))
-	    );
-
-	    Document groupPurchases = new Document("$group", new Document("_id", "$Customer ID"));
-
-	    AggregateIterable<Document> purchaseResults = purchases.aggregate(Arrays.asList(matchPurchases, groupPurchases));
-
-	    int newCustomerCount = 0;
-	    for (Document doc : purchaseResults) {
-	        newCustomerCount++;
-	    }
-	    mongo.close();
-	    return newCustomerCount;
-	}
-	
-	public int newCustomersPerCountry(String country) {
-		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-		MongoDatabase database = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customers = database.getCollection("customers");
-        MongoCollection<Document> purchases = database.getCollection("purchases");
-
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
-        		new Document("$match", new Document("City/Country", country)), 
-                new Document("$lookup", new Document()
-                        .append("from", "purchases")
-                        .append("localField", "Customer ID")
-                        .append("foreignField", "Customer ID")
-                        .append("as", "customerPurchases")
-                ),
-                new Document("$unwind", "$customerPurchases"), 
-                new Document("$match", new Document("customerPurchases.Date and Time", new Document()
-                        .append("$gte", new Date(124, 0, 1)) 
-                        .append("$lt", new Date(125, 0, 1))  
-                )),
-                new Document("$group", new Document("_id", "$_id")), 
-                new Document("$count", "newCustomerCount") 
-        ));
-
-   
-        int newCustomerCount = 0;
-        for (Document doc : results) {
-            newCustomerCount = doc.getInteger("newCustomerCount");
-        }
-        mongo.close();
-        return newCustomerCount;
-	}
-
-	public DefaultTableModel customerPerCountryTable() throws Exception {
-		DefaultTableModel customerPerCountry = new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-					"Country", "Customer Count", "New Customers", "Active Customers"
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainDashboard frame = new MainDashboard();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			);		
-		
-		String[] countries = {"Brussels", "Vienna", "New South Wales", "Amsterdam", "Cambridge", "Los Angeles", "China", "Australian Capital Territory", "Victoria", "Japan", "Philippines", "Taiwan", "Alberta", "UAE", "Paris", 
-				"Malaysia", "Michigan", "Berlin", "Queensland", "Macau"};
-		
-		for (int i = 0; i < countries.length; i++) {
-			customerPerCountry.addRow(new Object[]{countries[i], CustomersPerCountry(countries[i]), newCustomersPerCountry(countries[i]), activeCustomersPerCountry(countries[i])});
-		}
-		
-		return customerPerCountry;	
+			}
+		});
 	}
+
+	/**
+	 * Create the frame.
+	 * @throws Exception 
+	 */
+	public MainDashboard() throws Exception {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1366, 786);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel panelDashboardMenu = new JPanel();
+		panelDashboardMenu.setBounds(0, 0, 198, 764);
+		panelDashboardMenu.setBackground(new Color(0, 0, 0));
+		contentPane.add(panelDashboardMenu);
+		panelDashboardMenu.setLayout(null);
+		
+		JLabel lblAppName = new JLabel("iTrack");
+		lblAppName.setForeground(new Color(255, 255, 255));
+		lblAppName.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAppName.setFont(new Font("Hardner", Font.PLAIN, 35));
+		lblAppName.setBounds(72, 10, 104, 72);
+		panelDashboardMenu.add(lblAppName);
+		
+		JLabel lblAppleLogo = new JLabel("");
+		lblAppleLogo.setIcon(appleIcon);
+		lblAppleLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAppleLogo.setForeground(new Color(255, 255, 255));
+		lblAppleLogo.setBounds(15, 10, 68, 72);
+		panelDashboardMenu.add(lblAppleLogo);
+		
+		panelHomeMenu = new JPanel();
+		panelHomeMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				lightMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeBlackIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelHome);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelHomeMenu.setBounds(0, 92, 198, 35);
+		panelDashboardMenu.add(panelHomeMenu);
+		panelHomeMenu.setLayout(null);
 	
-	public int activeCustomersPerYear(int startYear, int endYear) {
-		MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> purchases = db.getCollection("purchases");
-
-        Document match = new Document("$match", new Document()
-                .append("Date and Time", new Document("$gte", new Date(startYear - 1900, 0, 1))) 
-                .append("Date and Time", new Document("$lt", new Date(endYear - 1900, 0, 1))) 
-        );
-
-        Document group = new Document("$group", new Document()
-                .append("_id", "$Customer ID")
-                .append("customerCount", new Document("$sum", 1))
-        );
-
-        int customerCount = 0;
-        AggregateIterable<Document> results = purchases.aggregate(Arrays.asList(match, group));
-        for (Document doc : results) {
-            customerCount = doc.getInteger("customerCount");
-        }
-        return customerCount;
+		lblDashHome = new JLabel("Home");
+		lblDashHome.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblDashHome.setBounds(53, 0, 145, 38);
+		panelHomeMenu.add(lblDashHome);
+		
+		lblHomeLogo = new JLabel("");
+		lblHomeLogo.setIcon(homeBlackIcon);
+		lblHomeLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblHomeLogo.setBounds(5, 0, 35, 35);
+		panelHomeMenu.add(lblHomeLogo);
+		
+		panelStoreMenu = new JPanel();
+		panelStoreMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				lightMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeBlackIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelStores);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelStoreMenu.setBackground(new Color(0, 0, 0));
+		panelStoreMenu.setLayout(null);
+		panelStoreMenu.setBounds(0, 127, 198, 35);
+		panelDashboardMenu.add(panelStoreMenu);
+		
+		lblDashStore = new JLabel("Stores");
+		lblDashStore.setForeground(new Color(255, 255, 255));
+		lblDashStore.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblDashStore.setBounds(53, 0, 145, 38);
+		panelStoreMenu.add(lblDashStore);
+		
+		lblStoreLogo = new JLabel("");
+		lblStoreLogo.setIcon(storeWhiteIcon);
+		lblStoreLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStoreLogo.setBounds(5, 0, 35, 35);
+		panelStoreMenu.add(lblStoreLogo);
+		
+		panelPurchaseMenu = new JPanel();
+		panelPurchaseMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				lightMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseBlackIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelPurchaseHistory);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelPurchaseMenu.setBackground(new Color(0, 0, 0));
+		panelPurchaseMenu.setLayout(null);
+		panelPurchaseMenu.setBounds(0, 162, 198, 35);
+		panelDashboardMenu.add(panelPurchaseMenu);
+		
+		lblPurchaseHistory = new JLabel("Purchase History");
+		lblPurchaseHistory.setForeground(new Color(255, 255, 255));
+		lblPurchaseHistory.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblPurchaseHistory.setBounds(53, 0, 145, 38);
+		panelPurchaseMenu.add(lblPurchaseHistory);
+		
+		lblPurchaseLogo = new JLabel("");
+		lblPurchaseLogo.setIcon(purchaseWhiteIcon);
+		lblPurchaseLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPurchaseLogo.setBounds(5, 0, 35, 35);
+		panelPurchaseMenu.add(lblPurchaseLogo);
+		
+		panelSegmentMenu = new JPanel();
+		panelSegmentMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				lightMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentBlackIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelSegmentation);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelSegmentMenu.setBackground(new Color(0, 0, 0));
+		panelSegmentMenu.setLayout(null);
+		panelSegmentMenu.setBounds(0, 197, 198, 35);
+		panelDashboardMenu.add(panelSegmentMenu);
+		
+		lblDashSegment = new JLabel("Segmentation");
+		lblDashSegment.setForeground(new Color(255, 255, 255));
+		lblDashSegment.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblDashSegment.setBounds(53, 0, 145, 38);
+		panelSegmentMenu.add(lblDashSegment);
+		
+		lblSegmentLogo = new JLabel("");
+		lblSegmentLogo.setIcon(segmentWhiteIcon);
+		lblSegmentLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSegmentLogo.setBounds(5, 0, 35, 35);
+		panelSegmentMenu.add(lblSegmentLogo);
+		
+		panelDemographicsMenu = new JPanel();
+		panelDemographicsMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				lightMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoBlackIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelDemographics);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelDemographicsMenu.setBackground(new Color(0, 0, 0));
+		panelDemographicsMenu.setLayout(null);
+		panelDemographicsMenu.setBounds(0, 232, 198, 35);
+		panelDashboardMenu.add(panelDemographicsMenu);
+		
+		lblDashDemographics = new JLabel("Demographics");
+		lblDashDemographics.setForeground(new Color(255, 255, 255));
+		lblDashDemographics.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblDashDemographics.setBounds(53, 0, 145, 38);
+		panelDemographicsMenu.add(lblDashDemographics);
+		
+		lblDemographicsLogo = new JLabel("");
+		lblDemographicsLogo.setIcon(demoWhiteIcon);
+		lblDemographicsLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDemographicsLogo.setBounds(5, 0, 35, 35);
+		panelDemographicsMenu.add(lblDemographicsLogo);
+		
+		panelGeographicMenu = new JPanel();
+		panelGeographicMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				lightMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoBlackIcon);
+				darkMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactWhiteIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelGeographics);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelGeographicMenu.setBackground(new Color(0, 0, 0));
+		panelGeographicMenu.setLayout(null);
+		panelGeographicMenu.setBounds(0, 267, 198, 35);
+		panelDashboardMenu.add(panelGeographicMenu);
+		
+		lblDashGeographic = new JLabel("Geographic");
+		lblDashGeographic.setForeground(new Color(255, 255, 255));
+		lblDashGeographic.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblDashGeographic.setBounds(53, 0, 145, 38);
+		panelGeographicMenu.add(lblDashGeographic);
+		
+		lblGeographicLogo = new JLabel("");
+		lblGeographicLogo.setIcon(geoWhiteIcon);
+		lblGeographicLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGeographicLogo.setBounds(5, 0, 35, 35);
+		panelGeographicMenu.add(lblGeographicLogo);
+		
+		panelTransactionMenu = new JPanel();
+		panelTransactionMenu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				darkMenuColor(panelHomeMenu, lblDashHome, lblHomeLogo, homeWhiteIcon);
+				darkMenuColor(panelStoreMenu, lblDashStore, lblStoreLogo, storeWhiteIcon);
+				darkMenuColor(panelPurchaseMenu, lblPurchaseHistory, lblPurchaseLogo, purchaseWhiteIcon);
+				darkMenuColor(panelSegmentMenu, lblDashSegment, lblSegmentLogo, segmentWhiteIcon);
+				darkMenuColor(panelDemographicsMenu, lblDashDemographics, lblDemographicsLogo, demoWhiteIcon);
+				darkMenuColor(panelGeographicMenu, lblDashGeographic, lblGeographicLogo, geoWhiteIcon);
+				lightMenuColor(panelTransactionMenu, lblDashTransaction, lblTransactionLogo, transactBlackIcon);
+				
+				layeredPane.removeAll();
+				layeredPane.add(panelTransactionHistory);
+				layeredPane.repaint();
+				layeredPane.revalidate();
+			}
+		});
+		panelTransactionMenu.setBackground(new Color(0, 0, 0));
+		panelTransactionMenu.setLayout(null);
+		panelTransactionMenu.setBounds(0, 302, 198, 35);
+		panelDashboardMenu.add(panelTransactionMenu);
+		
+		lblDashTransaction = new JLabel("Transactional");
+		lblDashTransaction.setForeground(new Color(255, 255, 255));
+		lblDashTransaction.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblDashTransaction.setBounds(53, 0, 145, 38);
+		panelTransactionMenu.add(lblDashTransaction);
+		
+		lblTransactionLogo = new JLabel("");
+		lblTransactionLogo.setIcon(transactWhiteIcon);
+		lblTransactionLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTransactionLogo.setBounds(5, 0, 35, 35);
+		panelTransactionMenu.add(lblTransactionLogo);
+		
+		JLabel lblLogOut = new JLabel("");
+		lblLogOut.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblLogOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				SignInPage logOut;
+				try {
+					logOut = new SignInPage();
+					logOut.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		lblLogOut.setIcon(exitIcon);
+		lblLogOut.setBounds(0, 695, 50, 40);
+		panelDashboardMenu.add(lblLogOut);
+		
 	
-	}
-	
-    public ChartPanel customerTrend() {
-    	DefaultCategoryDataset customerTrend = new DefaultCategoryDataset();
-    	addValue(customerTrend, activeCustomersPerYear(2022, 2023), "Active", "2022");
-        addValue(customerTrend, activeCustomersPerYear(2023, 2024), "Active", "2023");
-        addValue(customerTrend, activeCustomersPerYear(2024, 2025), "Active", "2024");
+		JLabel lblAccount = new JLabel("");
+		lblAccount.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblAccount.setIcon(accountIcon);
+		lblAccount.setBounds(130, 690, 50, 40);
+		panelDashboardMenu.add(lblAccount);
+		
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(198, 0, 1153, 755);
+		contentPane.add(layeredPane);
+		layeredPane.setLayout(new CardLayout(0, 0));
+		
+		panelHome = new JPanel();
+		layeredPane.add(panelHome, "name_1237592797291700");
+		panelHome.setLayout(null);
+		
+		JLabel lblDashboardTitle = new JLabel("Dashboard");
+		lblDashboardTitle.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblDashboardTitle.setBounds(35, 36, 263, 56);
+		panelHome.add(lblDashboardTitle);
+		
+		lblSales = new JLabel("Sales");
+		lblSales.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				underlineBorder(lblSales, lblCustomer);
+				
+				layeredPaneHomePage.removeAll();
+				layeredPaneHomePage.add(panelSales);
+				layeredPaneHomePage.repaint();
+				layeredPaneHomePage.revalidate();
+			}
+		});
+		lblSales.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		lblSales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSales.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblSales.setBounds(308, 58, 80, 25);
+		panelHome.add(lblSales);
+		
+		lblCustomer = new JLabel("Customer");
+		lblCustomer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				underlineBorder(lblCustomer, lblSales);
+				
+				layeredPaneHomePage.removeAll();
+				layeredPaneHomePage.add(panelCustomer);
+				layeredPaneHomePage.repaint();
+				layeredPaneHomePage.revalidate();
+			}
+		});
+		lblCustomer.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomer.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblCustomer.setBounds(398, 58, 100, 25);
+		panelHome.add(lblCustomer);
+		
+		layeredPaneHomePage = new JLayeredPane();
+		layeredPaneHomePage.setBounds(35, 116, 1100, 630);
+		panelHome.add(layeredPaneHomePage);
+		layeredPaneHomePage.setLayout(new CardLayout(0, 0));
+		
+		panelSales = new JPanel();
+		layeredPaneHomePage.add(panelSales, "name_1304946628987100");
+		panelSales.setLayout(null);
+		
+		panelTotalSales = new JPanel();
+		panelTotalSales.setBackground(new Color(255, 255, 255));
+		panelTotalSales.setBounds(0, 0, 220, 150);
+		panelSales.add(panelTotalSales);
+		panelTotalSales.setLayout(null);
+		
+		JLabel lblTotalSales = new JLabel("TOTAL SALES");
+		lblTotalSales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalSales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalSales.setBounds(0, 10, 220, 40);
+		panelTotalSales.add(lblTotalSales);
+		
+		JLabel lblTotalSalesAmount = new JLabel("$" + "240" + "M");
+		lblTotalSalesAmount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalSalesAmount.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblTotalSalesAmount.setBounds(0, 50, 220, 60);
+		panelTotalSales.add(lblTotalSalesAmount);
+		
+		lblSalesPercentIncrease = new JLabel("(+2.31%)");
+		lblSalesPercentIncrease.setForeground(new Color(0, 255, 0));
+		lblSalesPercentIncrease.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSalesPercentIncrease.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblSalesPercentIncrease.setBounds(0, 100, 220, 40);
+		panelTotalSales.add(lblSalesPercentIncrease);
+		
+		panelTotalProfit = new JPanel();
+		panelTotalProfit.setBackground(Color.WHITE);
+		panelTotalProfit.setBounds(230, 0, 220, 150);
+		panelSales.add(panelTotalProfit);
+		panelTotalProfit.setLayout(null);
+		
+		lblTotalOrders = new JLabel("TOTAL ORDERS");
+		lblTotalOrders.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalOrders.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalOrders.setBounds(0, 10, 220, 40);
+		panelTotalProfit.add(lblTotalOrders);
+		
+		lblSumOrders = new JLabel("$240M");
+		lblSumOrders.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSumOrders.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblSumOrders.setBounds(0, 50, 220, 60);
+		panelTotalProfit.add(lblSumOrders);
+		
+		lblOrderIncrease = new JLabel("(+2.31%)");
+		lblOrderIncrease.setHorizontalAlignment(SwingConstants.CENTER);
+		lblOrderIncrease.setForeground(Color.GREEN);
+		lblOrderIncrease.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblOrderIncrease.setBounds(0, 100, 220, 40);
+		panelTotalProfit.add(lblOrderIncrease);
+		
+		panelProfitMargin = new JPanel();
+		panelProfitMargin.setBackground(Color.WHITE);
+		panelProfitMargin.setBounds(460, 0, 220, 150);
+		panelSales.add(panelProfitMargin);
+		panelProfitMargin.setLayout(null);
+		
+		lblTotalProfit = new JLabel("TOTAL PROFIT");
+		lblTotalProfit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalProfit.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTotalProfit.setBounds(0, 10, 220, 40);
+		panelProfitMargin.add(lblTotalProfit);
+		
+		lblSumProfit = new JLabel("$240M");
+		lblSumProfit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSumProfit.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblSumProfit.setBounds(0, 50, 220, 60);
+		panelProfitMargin.add(lblSumProfit);
+		
+		lblProfitIncrease = new JLabel("(+2.31%)");
+		lblProfitIncrease.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProfitIncrease.setForeground(Color.GREEN);
+		lblProfitIncrease.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblProfitIncrease.setBounds(0, 100, 220, 40);
+		panelProfitMargin.add(lblProfitIncrease);
+		
+		panelSalesAndProfitTrend = new JPanel();
+		panelSalesAndProfitTrend.setBackground(Color.WHITE);
+		panelSalesAndProfitTrend.setBounds(0, 160, 680, 215);
+		panelSales.add(panelSalesAndProfitTrend);
+		panelSalesAndProfitTrend.setLayout(null);
+		
+//		SalesDashboard salesDashboard = new SalesDashboard();
+//		ChartPanel salesProfitTrend = salesDashboard.salesTrend();
+//		panelSalesAndProfitTrend.add(salesProfitTrend);
+		
+		panelTopTenProducts = new JPanel();
+		panelTopTenProducts.setBackground(Color.WHITE);
+		panelTopTenProducts.setBounds(0, 385, 680, 215);
+		panelSales.add(panelTopTenProducts);
+		panelTopTenProducts.setLayout(null);
+		
+//		ChartPanel productsTrend = salesDashboard.productsTrend();
+//		panelTopTenProducts.add(productsTrend);
+		
+		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
+		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopTenProductsBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopTenProductsBySales.setBounds(0, 10, 680, 40);
+		panelTopTenProducts.add(lblTopTenProductsBySales);
+		
+//		ChartPanel salesProfitTrend1 = salesDashboard.salesTrend();
+//		panelSalesAndProfitTrend.add(salesProfitTrend1);
+		
+		panelTopTenProducts = new JPanel();
+		panelTopTenProducts.setBackground(Color.WHITE);
+		panelTopTenProducts.setBounds(0, 385, 680, 215);
+		panelSales.add(panelTopTenProducts);
+		panelTopTenProducts.setLayout(null);
+		
+//		ChartPanel productsTrend1 = salesDashboard.productsTrend();
+//		panelTopTenProducts.add(productsTrend1);
+		
+		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
+		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopTenProductsBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopTenProductsBySales.setBounds(0, 10, 680, 40);
+		panelTopTenProducts.add(lblTopTenProductsBySales);
+		
+		panelSalesPerCountry = new JPanel();
+		panelSalesPerCountry.setBackground(Color.WHITE);
+		panelSalesPerCountry.setBounds(690, 0, 400, 295);
+		panelSales.add(panelSalesPerCountry);
+		panelSalesPerCountry.setLayout(null);
+		
+		panelTopTenStoresBySales = new JPanel();
+		panelTopTenStoresBySales.setBackground(Color.WHITE);
+		panelTopTenStoresBySales.setBounds(690, 305, 400, 295);
+		panelSales.add(panelTopTenStoresBySales);
+		panelTopTenStoresBySales.setLayout(null);
+		
+		panelTopTenStoresBySales = new JPanel();
+		panelTopTenStoresBySales.setBackground(Color.WHITE);
+		panelTopTenStoresBySales.setBounds(690, 305, 400, 295);
+		panelSales.add(panelTopTenStoresBySales);
+		panelTopTenStoresBySales.setLayout(null);
+		
+		lblTopFifteenStoresBySales = new JLabel("TOP 15 STORES BY SALES");
+		lblTopFifteenStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopFifteenStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopFifteenStoresBySales.setBounds(0, 10, 400, 40);
+		panelTopTenStoresBySales.add(lblTopFifteenStoresBySales);
+		
+		scrollPaneT10SBS = new JScrollPane();
+		scrollPaneT10SBS.setBounds(10, 50, 380, 230);
+		panelTopTenStoresBySales.add(scrollPaneT10SBS);
+			
+		tableT10SBS = new JTable();
+		scrollPaneT10SBS.setViewportView(tableT10SBS);
+		DefaultTableModel tableModelT20SBS = new DefaultTableModel(
+	            new Object[][] {},
+	            new String[] { "Store", "Region", "Revenue ($)" }  
+	        ){
+            /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
-        JFreeChart chart = createChart("ACTIVE CUSTOMERS TREND", "CATEGORY", "FREQUENCY", customerTrend);
-        ChartPanel customerTrendPanel = new ChartPanel(chart);
-        customerTrendPanel.setPreferredSize(new Dimension(670, 200));
-        customerTrendPanel.setBackground(new Color(255, 255, 255));
-        customerTrendPanel.setBounds(5, 5, 670, 200);
-        
-        return customerTrendPanel;
-    }
-    
-    public int femaleCustomers (int startAge, int endAge) {
-    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-    	MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customers = db.getCollection("customers");
-
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startBirthDate = currentDate.minusYears(endAge + 1).plusDays(1);
-        LocalDate endBirthDate = currentDate.minusYears(startAge);
-
-        Date startBirthDateAsDate = Date.from(startBirthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endBirthDateAsDate = Date.from(endBirthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-        Document match = new Document("$match", new Document()
-                .append("Sex", "F")
-                .append("Birthday", new Document("$gte", startBirthDateAsDate)
-                        .append("$lt", endBirthDateAsDate))
-        );
-
-        Document group = new Document("$group", new Document()
-                .append("_id", "$Customer ID")
-                .append("LastName", new Document("$first", "$Last Name"))
-                .append("FirstName", new Document("$first", "$First Name"))
-                .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$Last Name", ", ", "$First Name"))))
-        );
-        
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(match, group));
-
-        int customerCount = 0;
-        for (Document doc : results) {
-        	String customerId = doc.getString("_id");
-        	String customerName = doc.getString("Customer Name");
-        	
-        	addSegment("APSEG001", "Demographic - Female", customerId, customerName);
-        	ageGroups(startAge, endAge, customerId, customerName);
-        	customerCount++;
-        }
-        mongo.close();
-        return customerCount;
-    }
-    
-    public int maleCustomers (int startAge, int endAge) {
-    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-    	MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customers = db.getCollection("customers");
-
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startBirthDate = currentDate.minusYears(endAge + 1).plusDays(1);
-        LocalDate endBirthDate = currentDate.minusYears(startAge);
-
-        Date startBirthDateAsDate = Date.from(startBirthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endBirthDateAsDate = Date.from(endBirthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-        Document match = new Document("$match", new Document()
-                .append("Sex", "M")
-                .append("Birthday", new Document("$gte", startBirthDateAsDate)
-                        .append("$lt", endBirthDateAsDate))
-        );
-
-        Document group = new Document("$group", new Document()
-                .append("_id", "$Customer ID")
-                .append("LastName", new Document("$first", "$Last Name"))
-                .append("FirstName", new Document("$first", "$First Name"))
-                .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$Last Name", ", ", "$First Name"))))
-        );
-        
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(match, group));
-        
-        int customerCount = 0;
-        for (Document doc : results) {
-        	String customerId = doc.getString("_id");
-        	String customerName = doc.getString("Customer Name");
-        	
-        	addSegment("APSEG002", "Demographic - Male", customerId, customerName);
-        	ageGroups(startAge, endAge, customerId, customerName);
-        	customerCount++;
-        }
-        mongo.close();
-        return customerCount;
-    }   
-    
-    public void ageGroups(int startAge, int endAge, String customerId, String customerName) {
-    	String segmentId;
-        if (startAge < 18) {
-            segmentId = "APSEG003";          
-        } else if (startAge >= 18 && endAge <= 28) {
-            segmentId = "APSEG004";
-        } else if (startAge >= 29 && endAge <= 38) {
-            segmentId = "APSEG005";
-        } else if (startAge >= 39 && endAge <= 48) {
-            segmentId = "APSEG006";
-        } else if (startAge >= 49 && endAge <= 58) {
-            segmentId = "APSEG007";
-        } else {
-            segmentId = "APSEG008";
-        }
-        String segmentType = getSegmentType(segmentId);
-        addSegment(segmentId, segmentType, customerId, customerName);
-    }
-    
-    public void countries(String country, String customerId, String customerName) {
-    	String[] Asia = {"China", "Hong Kong", "India", "Japan", "Macau", "Singapore", "South Korea", "Taiwan", "Thailand", "UAE", "Philippines", "Malaysia"};
-    	String[] Europe = {"Vienna", "Brussels", "Paris", "Berlin", "Amsterdam"};
-    	String[] US = {"Los Angeles", "Washington", "California", "Michigan", "New York"};
-    	String[] Canada = {"Ontario", "Alberta"};
-    	String[] Australia = {"Australian Capital Territory", "Queensland", "Victoria", "Victora", "New South Wales"};
-    	
-        String segmentId = "";
-        String[][] countries = {Asia, Europe, US, Canada, Australia};
-        
-        // Iterate through each array of countries
-        for (int i = 0; i < countries.length; i++) {
-            String[] locations = countries[i];
-            if (isInCountry(locations, country)) {
-                // Assign segment ID based on the index
-                switch (i) {
-                    case 0:
-                        segmentId = "APSEG009"; // Geographic - Asia
-                        break;
-                    case 1:
-                        segmentId = "APSEG010"; // Geographic - Europe
-                        break;
-                    case 2:
-                        segmentId = "APSEG011"; // Geographic - US
-                        break;
-                    case 3:
-                        segmentId = "APSEG012"; // Geographic - Canada
-                        break;
-                    case 4:
-                        segmentId = "APSEG013"; // Geographic - Australia
-                        break;
-                }
-                break; 
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make the table uneditable
             }
-        }
-        String segmentType = getSegmentType(segmentId);
-        addSegment(segmentId, segmentType, customerId, customerName);
-    }
-
-    public boolean isInCountry(String[] array, String country) {
-        for (String location : array) {
-            if (location.equalsIgnoreCase(country)) {
-                return true;
-            }
-        }
-        return false;
-    }
-       
-    public ChartPanel demographicChart() {
-    	DefaultCategoryDataset demographicData = new DefaultCategoryDataset();
-    	addValue(demographicData, femaleCustomers(0, 17), "Female", "<18");
-        addValue(demographicData, femaleCustomers(18, 28), "Female", "18-28");
-        addValue(demographicData, femaleCustomers(29, 38), "Female", "29-38");
-        addValue(demographicData, femaleCustomers(39, 48), "Female", "39-48");
-        addValue(demographicData, femaleCustomers(49, 58), "Female", "49-58");
-        addValue(demographicData, femaleCustomers(59, 150), "Female", ">58");
-        addValue(demographicData, maleCustomers(0, 17), "Male", "<18");
-        addValue(demographicData, maleCustomers(18, 28), "Male", "18-28");
-        addValue(demographicData, maleCustomers(29, 38), "Male", "29-38");
-        addValue(demographicData, maleCustomers(39, 48), "Male", "39-48");
-        addValue(demographicData, maleCustomers(49, 58), "Male", "49-58");
-        addValue(demographicData, maleCustomers(59, 150), "Male", ">58");
-
-        JFreeChart chart = createChart("DEMOGRAPHIC SEGMENTATION", "AGE & SEX", "FREQUENCY", demographicData);
-        
-        ChartPanel demographicPanel = new ChartPanel(chart);
-        demographicPanel.setPreferredSize(new Dimension(350,210));
-        demographicPanel.setBackground(new Color(255, 255, 255));
-        demographicPanel.setBounds(10, 10, 350, 210);
-        
-        return demographicPanel;
-    }
-
-    public ArrayList<String> top10Countries() {	
-    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-    	MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customers = db.getCollection("customers");
-    	
-        AggregateIterable<Document> results = customers.aggregate(Arrays.asList(
-                new Document("$lookup", new Document()
-                        .append("from", "purchases")
-                        .append("localField", "Customer ID")
-                        .append("foreignField", "Customer ID")
-                        .append("as", "customerPurchases")
-                ),
-                new Document("$match", new Document("customerPurchases.Date and Time", new Document()
-                        .append("$gte", new Date(122, 0, 1))
-                        .append("$lt", new Date(125, 0, 1))
-                )),
-                new Document("$group", new Document()
-                        .append("_id", "$City/Country")
-                        .append("customerCount", new Document("$sum", 1))
-                ),
-                new Document("$sort", new Document("customerCount", -1)),
-                new Document("$limit", 10)
-        ));
-
-        ArrayList<String> top10 = new ArrayList<>();
-        for (Document doc : results) {
-            String country = doc.getString("_id"); 
-            top10.add(country); 
-        }
-
-        mongo.close();
-        return top10;
-    }
-    
-    
-    public ChartPanel geographicChart() {
-    	DefaultCategoryDataset geographicData = new DefaultCategoryDataset(); 	
-    	
-        for (String country : top10Countries()) {           
-            int newCustomers = newCustomersPerCountry(country);
-            int allCustomers = CustomersPerCountry(country);
-            addValue(geographicData, newCustomers, "New", country);
-            addValue(geographicData, allCustomers, "All", country);   
-        }
-             
-        JFreeChart chart = createChart("GEOGRAPHIC SEGMENTATION", "COUNTRIES", "FREQUENCY", geographicData);
-        
-        ChartPanel geographicPanel = new ChartPanel(chart);
-        geographicPanel.setPreferredSize(new Dimension(350,210));
-        geographicPanel.setBackground(new Color(255, 255, 255));
-        geographicPanel.setBounds(380, 10, 350, 210);
-        
-        return geographicPanel;
-    }
-    
-    public int productsVsCustomers(String category) {
-    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-    	MongoDatabase db = mongo.getDatabase("iTrack");
-    	MongoCollection<Document> purchases = db.getCollection("purchases");
-    	MongoCollection<Document> products = db.getCollection("products");
-
-    	Document matchProducts = new Document("$match", new Document("Category", category));
-
-	    Document lookupTransactions = new Document("$lookup", new Document()
-	            .append("from", "transactions")
-	            .append("localField", "Product ID")
-	            .append("foreignField", "Product ID")
-	            .append("as", "productTransactions")
-	    );
-
-	    Document unwindTransactions = new Document("$unwind", "$productTransactions");
-
-	    Document lookupPurchases = new Document("$lookup", new Document()
-	            .append("from", "purchases")
-	            .append("localField", "productTransactions.Purchase ID")
-	            .append("foreignField", "Purchase ID")
-	            .append("as", "transactionPurchases")
-	    );
-
-	    Document unwindPurchases = new Document("$unwind", "$transactionPurchases");
-
-	    Document lookupCustomerDetails = new Document("$lookup", new Document()
-	            .append("from", "customers")
-	            .append("localField", "transactionPurchases.Customer ID")
-	            .append("foreignField", "Customer ID")
-	            .append("as", "customerDetails")
-	    );
-
-	    Document unwindCustomerDetails = new Document("$unwind", "$customerDetails");
-
-	    Document groupCustomers = new Document("$group", new Document()
-	            .append("_id", "$transactionPurchases.Customer ID")
-	            .append("Customer Name", new Document("$first", new Document("$concat", Arrays.asList("$customerDetails.Last Name", ", ", "$customerDetails.First Name"))))
-	    );
-	    
-	  AggregateIterable<Document> results = products.aggregate(Arrays.asList(matchProducts, lookupTransactions, unwindTransactions,lookupPurchases, unwindPurchases, lookupCustomerDetails, unwindCustomerDetails, groupCustomers));
-
-      int customerCount = 0;
-      for (Document doc : results) {
-    	      String customerId = doc.getString("_id");
-    	      String customerName = doc.getString("Customer Name");
-    	      String segmentId = productCategory(category);
-    	      String segmentType = getSegmentType(segmentId);
-    	      addSegment(segmentId, segmentType, customerId, customerName);
-    	      customerCount++;
-    	  }
-    	  mongo.close();
-    	  return customerCount;
-     }
-    
-    public String productCategory(String product) { 
-    	String segmentId = "";
-    	switch (product) {
-    		case "iPhone":
-    			segmentId = "APSEG017";
-    			break;
-    		case "iPad":
-    			segmentId = "APSEG018";
-    			break;
-    		case "Mac":
-    			segmentId = "APSEG019";
-    			break;
-    		case "Watch":
-    			segmentId = "APSEG020";
-    			break;
-    		case "TV & Home":
-    			segmentId = "APSEG021";
-    			break;
-    		case "AirPods":
-    			segmentId = "APSEG022";
-    			break;
-    		case "Vision":
-    			segmentId = "APSEG023";
-    			break;
-    		default:
-    			segmentId = "null";
-    	}
-    	return segmentId;
-    }
-    
-    
-    public ChartPanel transactionalChart() {
-    	DefaultCategoryDataset transactionalData = new DefaultCategoryDataset();
-    	addValue(transactionalData, productsVsCustomers("iPhone"), "Customers", "iPhone");
-        addValue(transactionalData, productsVsCustomers("iPad"), "Customers", "iPad");
-        addValue(transactionalData, productsVsCustomers("Watch"), "Customers", "Watch");
-        addValue(transactionalData, productsVsCustomers("Mac"), "Customers", "Mac");
-        addValue(transactionalData, productsVsCustomers("TV & Home"), "Customers", "TV & Home");
-        addValue(transactionalData, productsVsCustomers("AirPods"), "Customers", "AirPods");
-        addValue(transactionalData, productsVsCustomers("Vision"), "Customers", "Vision");
-  
-        JFreeChart chart = createChart("TRANSACTIONAL SEGMENTATION", "PRODUCTS", "FREQUENCY", transactionalData);
-        
-        ChartPanel transactionalPanel = new ChartPanel(chart);
-        transactionalPanel.setPreferredSize(new Dimension(350,210));
-        transactionalPanel.setBackground(new Color(255, 255, 255));
-        transactionalPanel.setBounds(740, 10, 350, 210);
-        
-        return transactionalPanel;
-    }
-    
-    public String getSegmentType(String segmentId) {
-    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-    	MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> segments = db.getCollection("segment");
-        
-        Document segmentDoc = segments.find(Filters.eq("Segment ID", segmentId)).first();
-        if (segmentDoc != null) {
-        	mongo.close();
-            return segmentDoc.getString("Segment Type");
-        } else {
-        	mongo.close();
-            return "Unknown";
-        }
-    }
-    
-    public void addSegment(String segmentID, String type, String customerID, String name) {
-    	MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongo.getDatabase("iTrack");
-        MongoCollection<Document> customerSegment = db.getCollection("customersegment");
-        
-        Document newCustomerSegment = new Document("Segment ID", segmentID)
-                .append("Segment Type", type)
-                .append("Customer ID", customerID)  
-                .append("Customer Name", name);
-        
-        customerSegment.insertOne(newCustomerSegment);
-        mongo.close();
-    }
-    
-    private static double computeIncrease(double current, double previous) {
-		if (previous != 0) {
-			// Calculate the increase percentage
-			double increasePercentage = ((current - previous) / previous);
-	        return increasePercentage * 100;
-        } else if (current == 0 || previous == 0) {
-        	return 0;
-        } else {
-        	return 100;
-        }
+        };
+		tableT10SBS.setModel(tableModelT20SBS);
+		tableT10SBS.setFont(new Font("Poppins", Font.PLAIN, 9));
+		changeTableHeaderColor(tableT10SBS, 9);
 		
-	}
-    
-    private void addValue(DefaultCategoryDataset dataset, double value, String categ, String column) {
-    	dataset.addValue(value, categ, column);
-    }
-    
-    private JFreeChart createChart(String title, String Xaxis, String Yaxis, DefaultCategoryDataset dataset) {
-        JFreeChart chart = ChartFactory.createBarChart(title, Xaxis, Yaxis, dataset, PlotOrientation.VERTICAL, true, true, false);
-        chart.setBackgroundPaint(Color.white);
-        chart.setTitle(new TextTitle(title, new Font("Poppins", Font.BOLD, 16)));
-        chart.getLegend().setPosition(RectangleEdge.RIGHT);
+		panelCustomer = new JPanel();
+		layeredPaneHomePage.add(panelCustomer, "name_1304958910393200");
+		panelCustomer.setLayout(null);
+		
+		panelTotalActiveCustomers = new JPanel();
+		panelTotalActiveCustomers.setLayout(null);
+		panelTotalActiveCustomers.setBackground(Color.WHITE);
+		panelTotalActiveCustomers.setBounds(0, 0, 220, 150);
+		panelCustomer.add(panelTotalActiveCustomers);
+		
+		lblTotalActive = new JLabel("TOTAL ACTIVE");
+		lblTotalActive.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalActive.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblTotalActive.setBounds(0, 10, 220, 40);
+		panelTotalActiveCustomers.add(lblTotalActive);
+		
+		lblNumberOfActiveCustomers = new JLabel("240M");
+		lblNumberOfActiveCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfActiveCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfActiveCustomers.setBounds(0, 70, 220, 60);
+		panelTotalActiveCustomers.add(lblNumberOfActiveCustomers);
+			
+		
+		lblActiveCustomers = new JLabel("CUSTOMERS");
+		lblActiveCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblActiveCustomers.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblActiveCustomers.setBounds(0, 30, 220, 40);
+		panelTotalActiveCustomers.add(lblActiveCustomers);
+		
+		panelTotalNew = new JPanel();
+		panelTotalNew.setLayout(null);
+		panelTotalNew.setBackground(Color.WHITE);
+		panelTotalNew.setBounds(230, 0, 220, 150);
+		panelCustomer.add(panelTotalNew);
+		
+		lblTotalNew = new JLabel("TOTAL NEW");
+		lblTotalNew.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTotalNew.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblTotalNew.setBounds(0, 0, 220, 40);
+		panelTotalNew.add(lblTotalNew);
+		
+		lblNumberOfNewCustomers = new JLabel("240M");
+		lblNumberOfNewCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfNewCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfNewCustomers.setBounds(0, 55, 220, 60);
+		panelTotalNew.add(lblNumberOfNewCustomers);
+		
+		lblNewPercentage = new JLabel("");
+		lblNewPercentage.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewPercentage.setForeground(Color.GREEN);
+		lblNewPercentage.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblNewPercentage.setBounds(0, 105, 220, 40);
+		panelTotalNew.add(lblNewPercentage);
+		
+		lblCustomers = new JLabel("CUSTOMERS");
+		lblCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomers.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblCustomers.setBounds(0, 20, 220, 40);
+		panelTotalNew.add(lblCustomers);
+		
+		panelCustomerGrowth = new JPanel();
+		panelCustomerGrowth.setLayout(null);
+		panelCustomerGrowth.setBackground(Color.WHITE);
+		panelCustomerGrowth.setBounds(460, 0, 220, 150);
+		panelCustomer.add(panelCustomerGrowth);
+		
+		lblCustomerGrowth = new JLabel("CUSTOMER");
+		lblCustomerGrowth.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerGrowth.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblCustomerGrowth.setBounds(0, 10, 220, 40);
+		panelCustomerGrowth.add(lblCustomerGrowth);
+		
+		lblPercentageCustomerGrowth = new JLabel("");
+		lblPercentageCustomerGrowth.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPercentageCustomerGrowth.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblPercentageCustomerGrowth.setBounds(0, 70, 220, 60);
+		panelCustomerGrowth.add(lblPercentageCustomerGrowth);
+		
+		
+		lblActiveCustomers_2 = new JLabel("GROWTH");
+		lblActiveCustomers_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblActiveCustomers_2.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblActiveCustomers_2.setBounds(0, 30, 220, 40);
+		panelCustomerGrowth.add(lblActiveCustomers_2);
+		
+		panelCustomerTrend = new JPanel();
+		panelCustomerTrend.setLayout(null);
+		panelCustomerTrend.setBackground(Color.WHITE);
+		panelCustomerTrend.setBounds(0, 160, 680, 215);
+		panelCustomer.add(panelCustomerTrend);
+		
 
-        CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-        plot.setInsets(new RectangleInsets(2, 2, 2, 2));
-        plot.getDomainAxis().setLowerMargin(1);
-        plot.getDomainAxis().setUpperMargin(1);
-        
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setTickLabelFont(new Font("Poppins", Font.PLAIN, 10));
-        domainAxis.setTickLabelInsets(new RectangleInsets(0.5, 0.5, 0.5, 0.5));
-        domainAxis.setLowerMargin(0.01);
-        domainAxis.setUpperMargin(0.01);
-        domainAxis.setCategoryMargin(0.1);
-        domainAxis.setLabelFont(domainAxis.getLabelFont().deriveFont(12f));
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-        
-        ValueAxis rangeAxis = plot.getRangeAxis();
-        rangeAxis.setTickLabelFont(new Font("Poppins", Font.BOLD, 10));
-        rangeAxis.setLabelFont(rangeAxis.getLabelFont().deriveFont(12f));
-        
-        BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setSeriesPaint(0, Color.black);
-        renderer.setSeriesPaint(1, Color.DARK_GRAY);
-        renderer.setItemMargin(0);
-        
-        LegendTitle legend = chart.getLegend();
-        legend.setItemFont(new Font("Poppins", Font.ITALIC, 10));
-        
-        CategoryItemRenderer rendererCateg = plot.getRenderer();
-        rendererCateg.setDefaultItemLabelFont(new Font("Poppins", Font.PLAIN, 10));
-    	
-		return chart;  	
-    }   
+		
+		panelCustomerSegmentationGraphs = new JPanel();
+		panelCustomerSegmentationGraphs.setLayout(null);
+		panelCustomerSegmentationGraphs.setBackground(Color.WHITE);
+		panelCustomerSegmentationGraphs.setBounds(0, 387, 1100, 225);
+		panelCustomer.add(panelCustomerSegmentationGraphs);
+		
+		panelCustomerVolumeByCountry = new JPanel();
+		panelCustomerVolumeByCountry.setLayout(null);
+		panelCustomerVolumeByCountry.setBackground(Color.WHITE);
+		panelCustomerVolumeByCountry.setBounds(700, 0, 400, 374);
+		panelCustomer.add(panelCustomerVolumeByCountry);
+		
+		lblCustomerVolumeByCountry = new JLabel("CUSTOMERS PER COUNTRY");
+		lblCustomerVolumeByCountry.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomerVolumeByCountry.setFont(new Font("Poppins", Font.BOLD, 22));
+		lblCustomerVolumeByCountry.setBounds(0, 10, 400, 40);
+		panelCustomerVolumeByCountry.add(lblCustomerVolumeByCountry);
+		
+		scrollPaneCVBC = new JScrollPane();
+		scrollPaneCVBC.setBounds(10, 50, 380, 310);
+		panelCustomerVolumeByCountry.add(scrollPaneCVBC);
+		
+		tableCVBC = new JTable();
+		scrollPaneCVBC.setViewportView(tableCVBC);
+		tableCVBC.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+					"Country", "All Customers", "New Customers", "Active Customers"
+				}
+		));
+		tableCVBC.setFont(new Font("Poppins", Font.PLAIN, 10));
+		tableCVBC.getTableHeader().setPreferredSize(new Dimension(0, 30));
+		changeTableHeaderColor(tableCVBC, 9);
+		
+		DefaultTableModel customerPerRegion = customerDash.customerPerCountryTable();
+		tableCVBC.setModel(customerPerRegion);
+		
+		lblExport = new JLabel("Export");
+		lblExport.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
+		lblExport.setHorizontalAlignment(SwingConstants.CENTER);
+		lblExport.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblExport.setBounds(1045, 58, 80, 20);
+		panelHome.add(lblExport);
+		
+		lblRefresh = new JLabel("Refresh");
+		lblRefresh.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefresh.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefresh.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefresh.setBounds(955, 58, 80, 20);
+		panelHome.add(lblRefresh);
+		
+		panelStores = new JPanel();
+		layeredPane.add(panelStores, "name_1237607726469500");
+		panelStores.setLayout(null);
+		
+		JLabel lblStoreTitle = new JLabel("Stores");
+		lblStoreTitle.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblStoreTitle.setBounds(35, 36, 263, 56);
+		panelStores.add(lblStoreTitle);
+		
+		layeredPaneStores = new JLayeredPane();
+		layeredPaneStores.setBounds(35, 116, 1100, 630);
+		panelStores.add(layeredPaneStores);
+		layeredPaneStores.setLayout(new CardLayout(0, 0));
+		
+		panelStoreSummary = new JPanel();
+		layeredPaneStores.add(panelStoreSummary, "name_1311031875153600");
+		panelStoreSummary.setLayout(null);
+		
+		panelStoreInformation = new JPanel();
+		panelStoreInformation.setLayout(null);
+		panelStoreInformation.setBackground(Color.WHITE);
+		panelStoreInformation.setBounds(0, 0, 540, 300);
+		panelStoreSummary.add(panelStoreInformation);
+		
+		lblStoreInformation = new JLabel("STORE INFORMATION");
+		lblStoreInformation.setHorizontalAlignment(SwingConstants.LEFT);
+		lblStoreInformation.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblStoreInformation.setBounds(40, 15, 270, 40);
+		panelStoreInformation.add(lblStoreInformation);
+		
+		JLabel lblStoreID = new JLabel("STORE ID:");
+		lblStoreID.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreID.setBounds(40, 70, 100, 30);
+		panelStoreInformation.add(lblStoreID);
+		
+		lblStoreName = new JLabel("STORE:");
+		lblStoreName.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreName.setBounds(40, 100, 100, 30);
+		panelStoreInformation.add(lblStoreName);
+		
+		lblStoreAddress = new JLabel("ADDRESS:");
+		lblStoreAddress.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreAddress.setBounds(40, 130, 100, 30);
+		panelStoreInformation.add(lblStoreAddress);
+		
+		lblStoreCountry = new JLabel("COUNTRY:");
+		lblStoreCountry.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreCountry.setBounds(40, 160, 100, 30);
+		panelStoreInformation.add(lblStoreCountry);
+		
+		lblStoreContactNumber = new JLabel("CONTACT NUMBER:");
+		lblStoreContactNumber.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreContactNumber.setBounds(40, 190, 180, 30);
+		panelStoreInformation.add(lblStoreContactNumber);
+		
+		lblStoreType = new JLabel("TYPE:");
+		lblStoreType.setFont(new Font("Poppins", Font.BOLD, 18));
+		lblStoreType.setBounds(40, 220, 100, 30);
+		panelStoreInformation.add(lblStoreType);
+		
+		lblStoreIDDetail = new JLabel("");
+		lblStoreIDDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreIDDetail.setBounds(134, 70, 370, 30);
+		panelStoreInformation.add(lblStoreIDDetail);
+		
+		lblStoreNameDetail = new JLabel("");
+		lblStoreNameDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreNameDetail.setBounds(113, 100, 370, 30);
+		panelStoreInformation.add(lblStoreNameDetail);
+		
+		lblStoreAddressDetail = new JLabel("");
+		lblStoreAddressDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreAddressDetail.setBounds(134, 130, 370, 30);
+		panelStoreInformation.add(lblStoreAddressDetail);
+		
+		lblStoreCountryDetail = new JLabel("");
+		lblStoreCountryDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreCountryDetail.setBounds(140, 160, 370, 30);
+		panelStoreInformation.add(lblStoreCountryDetail);
+		
+		lblStoreTypeDetail = new JLabel("");
+		lblStoreTypeDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreTypeDetail.setBounds(93, 220, 370, 30);
+		panelStoreInformation.add(lblStoreTypeDetail);
+		
+		lblStoreContactDetail = new JLabel("");
+		lblStoreContactDetail.setFont(new Font("Poppins", Font.PLAIN, 18));
+		lblStoreContactDetail.setBounds(219, 190, 300, 30);
+		panelStoreInformation.add(lblStoreContactDetail);
+		
+		JComboBox<String> comboBoxStores = new JComboBox<String>();
+		comboBoxStores.addItem("");
+		comboBoxStores.setSelectedIndex(0);
+		SalesMongoDriver.populateStoreNames(comboBoxStores);
+//		comboBoxStores.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				String selectedItem = (String) comboBoxStores.getSelectedItem();
+//                if (selectedItem != null) {
+//                	SalesMongoDriver.retrieveAndDisplayStoreInfo(selectedItem, lblStoreIDDetail, lblStoreNameDetail, lblStoreAddressDetail, lblStoreCountryDetail, lblStoreContactDetail, lblStoreTypeDetail);
+//                	
+//                	ChartPanel salesProfitTrend2;
+//					try {
+//						salesProfitTrend2 = salesDashboard.StoreTopProducts(lblStoreIDDetail.getText().toString());
+//						panelTopSalesOfStore.add(salesProfitTrend2);
+//						panelTopSalesOfStore.removeAll(); // Clear existing chart panel contents
+//			            panelTopSalesOfStore.add(salesProfitTrend2);
+//			            panelTopSalesOfStore.revalidate(); // Refresh the panel
+//			            panelTopSalesOfStore.repaint(); // Repaint the panel
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//                	
+//                	DefaultTableModel tableModelTPH = new DefaultTableModel(
+//            	            new Object[][] {},
+//            	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
+//            }  
+//            	        ){
+//                        /**
+//            				 * 
+//            				 */
+//            				private static final long serialVersionUID = 1L;
+//
+//            			@Override
+//                        public boolean isCellEditable(int row, int column) {
+//                            return false; // Make the table uneditable
+//                        }
+//                    };
+//                    tablePurchaseHistory.setModel(tableModelTPH);
+//                    SalesMongoDriver.retrieveAndDisplayStorepurchases(selectedItem, tableModelTPH);
+//                }
+//			}
+//		});
+		comboBoxStores.setBounds(320, 20, 190, 25);
+		panelStoreInformation.add(comboBoxStores);
+		
+		panelTopSalesOfStore = new JPanel();
+		panelTopSalesOfStore.setLayout(null);
+		panelTopSalesOfStore.setBackground(Color.WHITE);
+		panelTopSalesOfStore.setBounds(560, 0, 540, 300);
+		panelStoreSummary.add(panelTopSalesOfStore);
+			
+		lblTopStoresBySales = new JLabel("TOP 10 STORES BY SALES");
+		lblTopStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopStoresBySales.setBounds(0, 10, 540, 40);
+		panelTopSalesOfStore.add(lblTopStoresBySales);
+		
+		scrollPaneT10SBS2 = new JScrollPane();
+		scrollPaneT10SBS2.setBounds(10, 50, 520, 235);
+		panelTopSalesOfStore.add(scrollPaneT10SBS2);
+		
+		tableT10SBS2 = new JTable();
+		scrollPaneT10SBS2.setViewportView(tableT10SBS2);
+		tableT10SBS2.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Rank", "Store", "Sales Volume", "Revenue", "Profit", "Profit Margin"
+			}
+		));
+		tableT10SBS2.setFont(new Font("Poppins", Font.PLAIN, 9));
+		TableColumnModel columnModel = tableT10SBS2.getColumnModel();
+	    TableColumn targetColumn = columnModel.getColumn(0);
+	    targetColumn.setPreferredWidth(10);
+		changeTableHeaderColor(tableT10SBS2, 9);
+		
+		panelPurchaseHistoryTable = new JPanel();
+		panelPurchaseHistoryTable.setLayout(null);
+		panelPurchaseHistoryTable.setBackground(Color.WHITE);
+		panelPurchaseHistoryTable.setBounds(0, 310, 1100, 310);
+		panelStoreSummary.add(panelPurchaseHistoryTable);
+		
+		lblPurchaseHistoryTable = new JLabel("PURCHASE HISTORY");
+		lblPurchaseHistoryTable.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPurchaseHistoryTable.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblPurchaseHistoryTable.setBounds(0, 10, 1100, 40);
+		panelPurchaseHistoryTable.add(lblPurchaseHistoryTable);
+		
+		scrollPanePurchaseHistory = new JScrollPane();
+		scrollPanePurchaseHistory.setBounds(10, 50, 1080, 250);
+		panelPurchaseHistoryTable.add(scrollPanePurchaseHistory);
+		
+		tablePurchaseHistory = new JTable();
+		scrollPanePurchaseHistory.setViewportView(tablePurchaseHistory);
+		tablePurchaseHistory.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Purchase ID", "Store ID", "Customer ID", "Date", "Time", "Total Spent"
+			}
+		));
+		tablePurchaseHistory.setFont(new Font("Poppins", Font.PLAIN, 9));
+		changeTableHeaderColor(tablePurchaseHistory, 9);
+		
+		panelStoresSales = new JPanel();
+		panelStoresSales.setBackground(new Color(255, 255, 255));
+		layeredPaneStores.add(panelStoresSales, "name_1311043919383900");
+		panelStoresSales.setLayout(null);
+		
+		lblStoresBySales = new JLabel("STORES BY SALES");
+		lblStoresBySales.setHorizontalAlignment(SwingConstants.LEFT);
+		lblStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblStoresBySales.setBounds(10, 10, 540, 40);
+		panelStoresSales.add(lblStoresBySales);
+		
+		scrollPaneOverallSBS = new JScrollPane();
+		scrollPaneOverallSBS.setBounds(10, 50, 1080, 565);
+		panelStoresSales.add(scrollPaneOverallSBS);
+		
+		tableOverallSBS = new JTable();
+		scrollPaneOverallSBS.setViewportView(tableOverallSBS);
+		tableOverallSBS.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Store", "Sales Volume", "Revenue", "Profit", "Profit Margin"
+			}
+		));
+		tableOverallSBS.setFont(new Font("Poppins", Font.PLAIN, 12));
+		changeTableHeaderColor(tableOverallSBS, 12);
+		
+		lblRefreshSales = new JLabel("Refresh");
+		lblRefreshSales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshSales.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshSales.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshSales.setBounds(1045, 58, 80, 20);
+		panelStores.add(lblRefreshSales);
+		
+		panelPurchaseHistory = new JPanel();
+		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
+		panelPurchaseHistory.setLayout(null);
+		
+		JLabel lblStoresTitle = new JLabel("Stores");
+		lblStoresTitle.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblStoresTitle.setBounds(35, 36, 263, 56);
+		panelPurchaseHistory.add(lblStoresTitle);
+		
+		panelStoresSales_1 = new JPanel();
+		panelStoresSales_1.setLayout(null);
+		panelStoresSales_1.setBackground(Color.WHITE);
+		panelStoresSales_1.setBounds(35, 115, 1100, 630);
+		panelPurchaseHistory.add(panelStoresSales_1);
+		
+		lblPurchaseHistorySummary = new JLabel("PURCHASE HISTORY");
+		lblPurchaseHistorySummary.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPurchaseHistorySummary.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblPurchaseHistorySummary.setBounds(10, 10, 540, 40);
+		panelStoresSales_1.add(lblPurchaseHistorySummary);
+		
+		scrollPaneOverallPurchaseHistory = new JScrollPane();
+		scrollPaneOverallPurchaseHistory.setBounds(10, 50, 1080, 565);
+		panelStoresSales_1.add(scrollPaneOverallPurchaseHistory);
+		
+		tablePurchaseHistoryOverall = new JTable();
+		scrollPaneOverallPurchaseHistory.setViewportView(tablePurchaseHistoryOverall);
+		tablePurchaseHistoryOverall.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Purchase ID", "Store ID", "Customer ID", "Date and Time", "Total Spent"
+			}
+		));
+		tablePurchaseHistoryOverall.setFont(new Font("Poppins", Font.PLAIN, 12));
+		changeTableHeaderColor(tablePurchaseHistoryOverall, 12);
+		
+		DefaultTableModel purchase = purchaseHistory.purchaseHistory();
+		tablePurchaseHistoryOverall.setModel(purchase);
+		
+		lblRefreshPurchase = new JLabel("Refresh");
+		lblRefreshPurchase.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshPurchase.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshPurchase.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshPurchase.setBounds(1045, 58, 80, 20);
+		panelPurchaseHistory.add(lblRefreshPurchase);
+		
+		panelSegmentation = new JPanel();
+		panelSegmentation.setFont(new Font("Poppins", Font.BOLD, 17));
+		layeredPane.add(panelSegmentation, "name_1237637193320800");
+		panelSegmentation.setLayout(null);
+		
+		JLabel lblCustomerSegment1 = new JLabel("Customer Segmentation");
+		lblCustomerSegment1.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment1.setBounds(35, 36, 609, 56);
+		panelSegmentation.add(lblCustomerSegment1);
+		
+		JLayeredPane layeredCustomerSegmentation = new JLayeredPane();
+		layeredCustomerSegmentation.setBounds(10, 95, 1133, 649);
+		panelSegmentation.add(layeredCustomerSegmentation);
+		layeredCustomerSegmentation.setLayout(new CardLayout(0, 0));
+		
+		panelCustomerSegmentation = new JPanel();
+		layeredCustomerSegmentation.add(panelCustomerSegmentation, "name_9606951641900");
+		panelCustomerSegmentation.setLayout(null);
+		
+		demoPanel = new JPanel();
+		demoPanel.setBackground(Color.WHITE);
+		demoPanel.setBounds(22, 24, 534, 285);
+		panelCustomerSegmentation.add(demoPanel);
+		demoPanel.setLayout(null);
+		
+		geoPanel = new JPanel();
+		geoPanel.setBackground(Color.WHITE);
+		geoPanel.setBounds(570, 24, 534, 285);
+		panelCustomerSegmentation.add(geoPanel);
+		geoPanel.setLayout(null);
+		
+		transPanel = new JPanel();
+		transPanel.setBackground(Color.WHITE);
+		transPanel.setBounds(22, 320, 1082, 318);
+		panelCustomerSegmentation.add(transPanel);
+		transPanel.setLayout(null);
+		
+		CustomerSegmentation customerSegment = new CustomerSegmentation();
+		
+		ChartPanel DemographicPanel2 = customerSegment.demographicChart();
+		demoPanel.add(DemographicPanel2);
+		
+		ChartPanel GeographicPanel2 = customerSegment.geographicChart();
+		geoPanel.add(GeographicPanel2);
+		
+		ChartPanel TransactionalPanel2 = customerSegment.transactionalChart();
+		transPanel.add(TransactionalPanel2);
+		
+		lblRefreshCS = new JLabel("Refresh");
+		lblRefreshCS.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshCS.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshCS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshCS.setBounds(945, 73, 80, 20);
+		panelSegmentation.add(lblRefreshCS);
+		
+		lblExportCS = new JLabel("Export");
+		lblExportCS.setHorizontalAlignment(SwingConstants.CENTER);
+		lblExportCS.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblExportCS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblExportCS.setBounds(1035, 73, 80, 19);
+		panelSegmentation.add(lblExportCS);
+		
+		panelDemographics = new JPanel();
+		layeredPane.add(panelDemographics, "name_1237649696174600");
+		panelDemographics.setLayout(null);
+		
+		JLabel lblCustomerSegment2 = new JLabel("Customer Segmentation");
+		lblCustomerSegment2.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment2.setBounds(35, 36, 609, 56);
+		panelDemographics.add(lblCustomerSegment2);
+		
+		JLayeredPane layeredPaneDemographics = new JLayeredPane();
+		layeredPaneDemographics.setBounds(35, 103, 1092, 620);
+		panelDemographics.add(layeredPaneDemographics);
+		layeredPaneDemographics.setLayout(new CardLayout(0, 0));
+		
+		JPanel panelDemographic = new JPanel();
+		panelDemographic.setBackground(Color.WHITE);
+		layeredPaneDemographics.add(panelDemographic, "name_12966667586300");
+		panelDemographic.setLayout(null);
+		
+		String[] Demographic = {"Customer ID", "Customer Name", "Birthday", "Gender", "Contact Number"};
+	        DefaultTableModel DemographicModel = new DefaultTableModel(Demographic, 0);
+	        
+		JLabel lblDemoSegmentation = new JLabel("DEMOGRAPHIC SEGMENTATION");
+		lblDemoSegmentation.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblDemoSegmentation.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblDemoSegmentation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDemoSegmentation.setBounds(218, 0, 632, 43);
+		panelDemographic.add(lblDemoSegmentation);
+		
+		JComboBox cmbFinder = new JComboBox();
+		cmbFinder.setFont(new Font("Poppins", Font.PLAIN, 12));
+		cmbFinder.setName("");
+		cmbFinder.setBounds(963, 17, 105, 17);
+		panelDemographic.add(cmbFinder);
+		
+		scrollPaneDemoSegmentation = new JScrollPane();
+		scrollPaneDemoSegmentation.setAutoscrolls(true);
+		scrollPaneDemoSegmentation.setBackground(Color.WHITE);
+		scrollPaneDemoSegmentation.setBounds(29, 38, 1023, 552);
+		panelDemographic.add(scrollPaneDemoSegmentation);
+		scrollPaneDemoSegmentation.setBorder(null);
+	
+		tableDemoSegmentation = new JTable();
+		tableDemoSegmentation.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
+		tableDemoSegmentation.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Customer ID", "Customer Name", "Birthday", "Gender", "Contact Number"
+			}
+		));
+		scrollPaneDemoSegmentation.setViewportView(tableDemoSegmentation);
+		
+		DemographicSegmentation demog = new DemographicSegmentation();
+		tableDemoSegmentation.setModel(demog.addToTable());
+		
+		 changeTableHeaderColor(tableDemoSegmentation, 12);
+
+	        scrollPaneDemoSegmentation.setViewportView(tableDemoSegmentation);
+	        
+	        lblRefreshDS = new JLabel("Refresh");
+	        lblRefreshDS.setBounds(1047, 72, 80, 20);
+	        panelDemographics.add(lblRefreshDS);
+	        lblRefreshDS.setHorizontalAlignment(SwingConstants.CENTER);
+	        lblRefreshDS.setFont(new Font("Poppins", Font.PLAIN, 12));
+	        lblRefreshDS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+
+	        scrollPaneDemoSegmentation.setVisible(true);
+		
+		panelGeographics = new JPanel();
+		layeredPane.add(panelGeographics, "name_1237653177687600");
+		panelGeographics.setLayout(null);
+		
+		JLabel lblCustomerSegment3 = new JLabel("Customer Segmentation");
+		lblCustomerSegment3.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment3.setBounds(35, 36, 609, 56);
+		panelGeographics.add(lblCustomerSegment3);
+		
+		lblRefreshGS = new JLabel("Refresh");
+		lblRefreshGS.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshGS.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshGS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshGS.setBounds(1047, 72, 80, 20);
+		panelGeographics.add(lblRefreshGS);
+		
+		JLayeredPane layeredPaneGeographicSegmentation = new JLayeredPane();
+		layeredPaneGeographicSegmentation.setBounds(35, 103, 1092, 620);
+		panelGeographics.add(layeredPaneGeographicSegmentation);
+		layeredPaneGeographicSegmentation.setLayout(new CardLayout(0, 0));
+		
+		panelGeographicSegmentation = new JPanel();
+		panelGeographicSegmentation.setBackground(Color.WHITE);
+		layeredPaneGeographicSegmentation.add(panelGeographicSegmentation, "name_8803048947500");
+		panelGeographicSegmentation.setLayout(null);
+		
+		lblGeographicSegmentation = new JLabel("GEOGRAPHIC SEGMENTATION");
+		lblGeographicSegmentation.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblGeographicSegmentation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGeographicSegmentation.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblGeographicSegmentation.setBounds(218, 0, 632, 43);
+		panelGeographicSegmentation.add(lblGeographicSegmentation);
+		
+		cmbAscDesc = new JComboBox();
+		cmbAscDesc.addItem("A-Z");
+		cmbAscDesc.setName("Z-A");
+		cmbAscDesc.setFont(new Font("Poppins", Font.PLAIN, 12));
+		cmbAscDesc.setBounds(963, 17, 105, 17);
+		panelGeographicSegmentation.add(cmbAscDesc);
+		
+		scrollPaneGeographicSegmentation = new JScrollPane();
+		scrollPaneGeographicSegmentation.setBounds(29, 38, 1023, 552);
+		panelGeographicSegmentation.add(scrollPaneGeographicSegmentation);
+		
+		tableGeographicSegmentation = new JTable();
+		scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
+		tableGeographicSegmentation.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Customer ID", "Customer Name","Address", "Country", "Region"
+			}
+		));
+		scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
+		
+		GeographicSegmentation geo = new GeographicSegmentation();
+		tableGeographicSegmentation.setModel(geo.addToTable());
+		
+		changeTableHeaderColor(tableGeographicSegmentation, 12);
+
+	    scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
+
+	    scrollPaneGeographicSegmentation.setVisible(true);
+	
+		panelTransactionHistory = new JPanel();
+		layeredPane.add(panelTransactionHistory, "name_1237656709540000");
+		panelTransactionHistory.setLayout(null);
+		
+		JLabel lblCustomerSegment4 = new JLabel("Customer Segmentation");
+		lblCustomerSegment4.setFont(new Font("Poppins", Font.BOLD, 40));
+		lblCustomerSegment4.setBounds(35, 36, 609, 56);
+		panelTransactionHistory.add(lblCustomerSegment4);
+		
+		lblRefreshTS = new JLabel("Refresh");
+		lblRefreshTS.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRefreshTS.setFont(new Font("Poppins", Font.PLAIN, 12));
+		lblRefreshTS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
+		lblRefreshTS.setBounds(1047, 72, 80, 20);
+		panelTransactionHistory.add(lblRefreshTS);
+		
+		layeredPaneTransactionalSegmentation = new JLayeredPane();
+		layeredPaneTransactionalSegmentation.setBounds(35, 103, 1092, 620);
+		panelTransactionHistory.add(layeredPaneTransactionalSegmentation);
+		layeredPaneTransactionalSegmentation.setLayout(new CardLayout(0, 0));
+		
+		panelTransactionalSegmentation = new JPanel();
+		panelTransactionalSegmentation.setBackground(Color.WHITE);
+		layeredPaneTransactionalSegmentation.add(panelTransactionalSegmentation, "name_11672254942800");
+		panelTransactionalSegmentation.setLayout(null);
+		
+		lblTransactionalSegmentation = new JLabel("TRANSACTIONAL SEGMENTATION");
+		lblTransactionalSegmentation.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTransactionalSegmentation.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblTransactionalSegmentation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTransactionalSegmentation.setBounds(218, 0, 632, 43);
+		panelTransactionalSegmentation.add(lblTransactionalSegmentation);
+		
+		cmbAscDesc_1 = new JComboBox();
+		cmbAscDesc_1.addItem("ascending");
+		cmbAscDesc_1.addItem("descending");
+		cmbAscDesc_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedItem = (String) cmbAscDesc_1.getSelectedItem();
+				if (selectedItem != null) {
+					 if (selectedItem.equals("ascending")) {
+						 tableTransactionalSegmentation.setModel(transacSegment.transactional(true));
+					 }
+					 else {
+						 tableTransactionalSegmentation.setModel(transacSegment.transactional(false));
+					 }
+				}
+			}
+		});
+		cmbAscDesc_1.setName("");
+		cmbAscDesc_1.setFont(new Font("Poppins", Font.PLAIN, 12));
+		cmbAscDesc_1.setBounds(963, 17, 105, 17);
+		panelTransactionalSegmentation.add(cmbAscDesc_1);
+		
+		
+		scrollPaneTransactionalSegmentation = new JScrollPane();
+		scrollPaneTransactionalSegmentation.setBounds(29, 38, 1023, 552);
+		panelTransactionalSegmentation.add(scrollPaneTransactionalSegmentation);
+		
+		 tableTransactionalSegmentation = new JTable();
+	     tableTransactionalSegmentation.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
+	     tableTransactionalSegmentation.setModel(new DefaultTableModel(
+	            new Object[][] {},
+	            new String[] {
+	                "Customer ID", "Customer Name", "Total Number of Transactions", "Total Number of Unit Purchased", "Total Amount of Purchases"
+	            }
+	        ));
+	     scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
+
+	     changeTableHeaderColor(tableTransactionalSegmentation, 12);
+
+	     scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
+	     scrollPaneTransactionalSegmentation.setVisible(true);
+	         
+	     
+	     // All methods for Customer Dashboard and Customer Segmentation
+	     
+			int totalActive = customerDash.totalActive();
+			lblNumberOfActiveCustomers.setText(Integer.toString(totalActive));	
+			
+			int totalNew = customerDash.totalNew2024();
+			lblNumberOfNewCustomers.setText(Integer.toString(totalNew));
+			
+			double newPercentage = CustomerDashboard.computeIncrease(customerDash.totalNew2024(), customerDash.totalNew2023());
+			lblNewPercentage.setText("(" + String.format("%.2f", newPercentage) + "%)");
+			if (newPercentage < 0) {
+				lblNewPercentage.setForeground(Color.RED);
+			} else {
+				lblNewPercentage.setForeground(Color.GREEN);
+			}
+			
+			double customerGrowth = CustomerDashboard.customerGrowth();
+			lblPercentageCustomerGrowth.setText(String.format("%.2f", customerGrowth) + "%");
+			
+			if (customerGrowth < 0) {
+				lblPercentageCustomerGrowth.setForeground(Color.RED);
+			} else {
+				lblPercentageCustomerGrowth.setForeground(Color.BLACK);
+			}
+			
+			ChartPanel NewCurrentTrend = customerDash.customerTrend();
+			panelCustomerTrend.add(NewCurrentTrend);
+			
+			ChartPanel DemographicPanel = customerDash.demographicChart();
+			panelCustomerSegmentationGraphs.add(DemographicPanel);
+			
+			ChartPanel GeographicPanel = customerDash.geographicChart();
+			panelCustomerSegmentationGraphs.add(GeographicPanel);
+			
+			ChartPanel TransactionalPanel = customerDash.transactionalChart();
+			panelCustomerSegmentationGraphs.add(TransactionalPanel);
+	     
+	}
+	      
+	public void changeTableHeaderColor (JTable table, int fontSize) {
+		JTableHeader tableHeaderThree = table.getTableHeader();
+        tableHeaderThree.setFont(new Font("Poppins", Font.BOLD, fontSize));
+        tableHeaderThree.setBackground(Color.BLACK);
+        tableHeaderThree.setForeground(Color.WHITE);
+	}
+
+	public void underlineBorder(JLabel lined, JLabel unlined) {
+		lined.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		unlined.setBorder(new MatteBorder(0, 0, 0, 0, Color.BLACK));
+	}
+	
+	public void lightMenuColor(JPanel panel1, JLabel menu1, JLabel logo1, ImageIcon icon1) {
+		panel1.setBackground(new Color(240, 240, 240));
+		menu1.setForeground(Color.black);
+		logo1.setIcon(icon1);;
+	}
+	
+	public void darkMenuColor(JPanel panel1, JLabel menu1, JLabel logo1, ImageIcon icon1) {
+		panel1.setBackground(Color.black);
+		menu1.setForeground(Color.white);
+		logo1.setIcon(icon1);
+	}
 }
-
-
-
-
