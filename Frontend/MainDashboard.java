@@ -13,6 +13,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
+
 
 import org.jfree.chart.ChartPanel;
 
@@ -30,30 +35,31 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class MainDashboard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	ImageIcon appleIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\apple-dash.png");
-	ImageIcon homeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-white.png");
-	ImageIcon homeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\home-black.png");
-	ImageIcon storeWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-white.png");
-	ImageIcon storeBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\store-black.png");
-	ImageIcon purchaseWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-white.png");
-	ImageIcon purchaseBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\purchase-black.png");
-	ImageIcon segmentWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-white.png");
-	ImageIcon segmentBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\segment-black.png");
-	ImageIcon demoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-white.png");
-	ImageIcon demoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\demo-black.png");
-	ImageIcon geoWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-white.png");
-	ImageIcon geoBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\geo-black.png");
-	ImageIcon transactWhiteIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-white.png");
-	ImageIcon transactBlackIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\transaction-black.png");
-	ImageIcon accountIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\account.png");
-	ImageIcon exitIcon = new ImageIcon("C:\\Users\\jeric\\eclipse-workspace\\iTrack\\src\\exit.png");
+	private ImageIcon appleIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/apple-dash.png");
+	ImageIcon homeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-white.png");
+	ImageIcon homeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/home-black.png");
+	ImageIcon storeWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-white.png");
+	ImageIcon storeBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/store-black.png");
+	ImageIcon purchaseWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-white.png");
+	ImageIcon purchaseBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/purchase-black.png");
+	ImageIcon segmentWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-white.png");
+	ImageIcon segmentBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/segment-black.png");
+	ImageIcon demoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-white.png");
+	ImageIcon demoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/demo-black.png");
+	ImageIcon geoWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-white.png");
+	ImageIcon geoBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/geo-black.png");
+	ImageIcon transactWhiteIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-white.png");
+	ImageIcon transactBlackIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/transaction-black.png");
+	ImageIcon accountIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/account.png");
+	ImageIcon exitIcon = new ImageIcon("/Users/yscalify/eclipse-workspace/iTrack/exit.png");
+	
+	CustomerDashboard customerDash = new CustomerDashboard();
+	PurchaseHistory purchaseHistory = new PurchaseHistory();
+	TransactionalSegmentation transacSegment = new TransactionalSegmentation();
 	
 	private JPanel contentPane;
 	private JLayeredPane layeredPane;
@@ -164,6 +170,17 @@ public class MainDashboard extends JFrame {
 	private JLabel lblStoreTypeDetail;
 	private JLabel lblStoreContactDetail;
 	private JLabel lblOverall;
+	private JLabel lblNumberOfActiveCustomers;
+	private JLabel lblNumberOfNewCustomers;
+	private JLabel lblNewPercentage;
+	private JLabel lblCustomers;
+	private JLabel lblPercentageCustomerGrowth;
+	private JPanel panelCustomerGrowth;
+	private JPanel panelTotalNew;
+	private JLabel lblTopStoresBySales;
+	private JPanel panelTopStoresBySales;
+	private JScrollPane scrollPaneT10SBS2;
+	private JTable tableT10SBS2;
 	
 	/**
 	 * Launch the application.
@@ -462,9 +479,16 @@ public class MainDashboard extends JFrame {
 		lblLogOut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				SignInPage logOut = new SignInPage();
-				logOut.setVisible(true);
-				dispose();
+				SignInPage logOut;
+				try {
+					logOut = new SignInPage();
+					logOut.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		lblLogOut.setIcon(exitIcon);
@@ -548,7 +572,7 @@ public class MainDashboard extends JFrame {
 		lblTotalSales.setBounds(0, 10, 220, 40);
 		panelTotalSales.add(lblTotalSales);
 		
-		JLabel lblTotalSalesAmount = new JLabel("$");
+		JLabel lblTotalSalesAmount = new JLabel("$" + "240" + "M");
 		lblTotalSalesAmount.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTotalSalesAmount.setFont(new Font("Poppins", Font.PLAIN, 50));
 		lblTotalSalesAmount.setBounds(0, 50, 220, 60);
@@ -617,9 +641,9 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelSalesAndProfitTrend);
 		panelSalesAndProfitTrend.setLayout(null);
 		
-		SalesDashboard salesDashboard = new SalesDashboard();
-		ChartPanel salesProfitTrend = salesDashboard.salesTrend();
-		panelSalesAndProfitTrend.add(salesProfitTrend);
+//		SalesDashboard salesDashboard = new SalesDashboard();
+//		ChartPanel salesProfitTrend = salesDashboard.salesTrend();
+//		panelSalesAndProfitTrend.add(salesProfitTrend);
 		
 		panelTopTenProducts = new JPanel();
 		panelTopTenProducts.setBackground(Color.WHITE);
@@ -627,8 +651,26 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelTopTenProducts);
 		panelTopTenProducts.setLayout(null);
 		
-		ChartPanel productsTrend = salesDashboard.productsTrend();
-		panelTopTenProducts.add(productsTrend);
+//		ChartPanel productsTrend = salesDashboard.productsTrend();
+//		panelTopTenProducts.add(productsTrend);
+		
+		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
+		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopTenProductsBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopTenProductsBySales.setBounds(0, 10, 680, 40);
+		panelTopTenProducts.add(lblTopTenProductsBySales);
+		
+//		ChartPanel salesProfitTrend1 = salesDashboard.salesTrend();
+//		panelSalesAndProfitTrend.add(salesProfitTrend1);
+		
+		panelTopTenProducts = new JPanel();
+		panelTopTenProducts.setBackground(Color.WHITE);
+		panelTopTenProducts.setBounds(0, 385, 680, 215);
+		panelSales.add(panelTopTenProducts);
+		panelTopTenProducts.setLayout(null);
+		
+//		ChartPanel productsTrend1 = salesDashboard.productsTrend();
+//		panelTopTenProducts.add(productsTrend1);
 		
 		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
 		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
@@ -648,6 +690,12 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelTopTenStoresBySales);
 		panelTopTenStoresBySales.setLayout(null);
 		
+		panelTopTenStoresBySales = new JPanel();
+		panelTopTenStoresBySales.setBackground(Color.WHITE);
+		panelTopTenStoresBySales.setBounds(690, 305, 400, 295);
+		panelSales.add(panelTopTenStoresBySales);
+		panelTopTenStoresBySales.setLayout(null);
+		
 		lblTopFifteenStoresBySales = new JLabel("TOP 15 STORES BY SALES");
 		lblTopFifteenStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTopFifteenStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
@@ -657,8 +705,7 @@ public class MainDashboard extends JFrame {
 		scrollPaneT10SBS = new JScrollPane();
 		scrollPaneT10SBS.setBounds(10, 50, 380, 230);
 		panelTopTenStoresBySales.add(scrollPaneT10SBS);
-		
-		
+			
 		tableT10SBS = new JTable();
 		scrollPaneT10SBS.setViewportView(tableT10SBS);
 		DefaultTableModel tableModelT20SBS = new DefaultTableModel(
@@ -692,89 +739,77 @@ public class MainDashboard extends JFrame {
 		lblTotalActive = new JLabel("TOTAL ACTIVE");
 		lblTotalActive.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTotalActive.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblTotalActive.setBounds(0, 0, 220, 40);
+		lblTotalActive.setBounds(0, 10, 220, 40);
 		panelTotalActiveCustomers.add(lblTotalActive);
 		
-		lblNumberOfCustomers = new JLabel("240M");
-		lblNumberOfCustomers.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNumberOfCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
-		lblNumberOfCustomers.setBounds(0, 55, 220, 60);
-		panelTotalActiveCustomers.add(lblNumberOfCustomers);
-		
-		lblCustomerGrowthPercentage = new JLabel("(+2.31%)");
-		lblCustomerGrowthPercentage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCustomerGrowthPercentage.setForeground(Color.GREEN);
-		lblCustomerGrowthPercentage.setFont(new Font("Poppins", Font.PLAIN, 16));
-		lblCustomerGrowthPercentage.setBounds(0, 105, 220, 40);
-		panelTotalActiveCustomers.add(lblCustomerGrowthPercentage);
+		lblNumberOfActiveCustomers = new JLabel("240M");
+		lblNumberOfActiveCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfActiveCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfActiveCustomers.setBounds(0, 70, 220, 60);
+		panelTotalActiveCustomers.add(lblNumberOfActiveCustomers);
+			
 		
 		lblActiveCustomers = new JLabel("CUSTOMERS");
 		lblActiveCustomers.setHorizontalAlignment(SwingConstants.CENTER);
 		lblActiveCustomers.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblActiveCustomers.setBounds(0, 20, 220, 40);
+		lblActiveCustomers.setBounds(0, 30, 220, 40);
 		panelTotalActiveCustomers.add(lblActiveCustomers);
 		
-		panelTotalActiveCustomers_1 = new JPanel();
-		panelTotalActiveCustomers_1.setLayout(null);
-		panelTotalActiveCustomers_1.setBackground(Color.WHITE);
-		panelTotalActiveCustomers_1.setBounds(230, 0, 220, 150);
-		panelCustomer.add(panelTotalActiveCustomers_1);
+		panelTotalNew = new JPanel();
+		panelTotalNew.setLayout(null);
+		panelTotalNew.setBackground(Color.WHITE);
+		panelTotalNew.setBounds(230, 0, 220, 150);
+		panelCustomer.add(panelTotalNew);
 		
 		lblTotalNew = new JLabel("TOTAL NEW");
 		lblTotalNew.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTotalNew.setFont(new Font("Poppins", Font.BOLD, 20));
 		lblTotalNew.setBounds(0, 0, 220, 40);
-		panelTotalActiveCustomers_1.add(lblTotalNew);
+		panelTotalNew.add(lblTotalNew);
 		
-		lblNumberOfCustomers_1 = new JLabel("240M");
-		lblNumberOfCustomers_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNumberOfCustomers_1.setFont(new Font("Poppins", Font.PLAIN, 50));
-		lblNumberOfCustomers_1.setBounds(0, 55, 220, 60);
-		panelTotalActiveCustomers_1.add(lblNumberOfCustomers_1);
+		lblNumberOfNewCustomers = new JLabel("240M");
+		lblNumberOfNewCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumberOfNewCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblNumberOfNewCustomers.setBounds(0, 55, 220, 60);
+		panelTotalNew.add(lblNumberOfNewCustomers);
 		
-		lblCustomerGrowthPercentage_1 = new JLabel("(+2.31%)");
-		lblCustomerGrowthPercentage_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCustomerGrowthPercentage_1.setForeground(Color.GREEN);
-		lblCustomerGrowthPercentage_1.setFont(new Font("Poppins", Font.PLAIN, 16));
-		lblCustomerGrowthPercentage_1.setBounds(0, 105, 220, 40);
-		panelTotalActiveCustomers_1.add(lblCustomerGrowthPercentage_1);
+		lblNewPercentage = new JLabel("");
+		lblNewPercentage.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewPercentage.setForeground(Color.GREEN);
+		lblNewPercentage.setFont(new Font("Poppins", Font.PLAIN, 16));
+		lblNewPercentage.setBounds(0, 105, 220, 40);
+		panelTotalNew.add(lblNewPercentage);
 		
-		lblActiveCustomers_1 = new JLabel("CUSTOMERS");
-		lblActiveCustomers_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblActiveCustomers_1.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblActiveCustomers_1.setBounds(0, 20, 220, 40);
-		panelTotalActiveCustomers_1.add(lblActiveCustomers_1);
+		lblCustomers = new JLabel("CUSTOMERS");
+		lblCustomers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCustomers.setFont(new Font("Poppins", Font.BOLD, 20));
+		lblCustomers.setBounds(0, 20, 220, 40);
+		panelTotalNew.add(lblCustomers);
 		
-		panelTotalActiveCustomers_2 = new JPanel();
-		panelTotalActiveCustomers_2.setLayout(null);
-		panelTotalActiveCustomers_2.setBackground(Color.WHITE);
-		panelTotalActiveCustomers_2.setBounds(460, 0, 220, 150);
-		panelCustomer.add(panelTotalActiveCustomers_2);
+		panelCustomerGrowth = new JPanel();
+		panelCustomerGrowth.setLayout(null);
+		panelCustomerGrowth.setBackground(Color.WHITE);
+		panelCustomerGrowth.setBounds(460, 0, 220, 150);
+		panelCustomer.add(panelCustomerGrowth);
 		
-		lblCustomerGrowth = new JLabel("TOTAL ACTIVE");
+		lblCustomerGrowth = new JLabel("CUSTOMER");
 		lblCustomerGrowth.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCustomerGrowth.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblCustomerGrowth.setBounds(0, 0, 220, 40);
-		panelTotalActiveCustomers_2.add(lblCustomerGrowth);
+		lblCustomerGrowth.setBounds(0, 10, 220, 40);
+		panelCustomerGrowth.add(lblCustomerGrowth);
 		
-		lblNumberOfCustomers_2 = new JLabel("24%");
-		lblNumberOfCustomers_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNumberOfCustomers_2.setFont(new Font("Poppins", Font.PLAIN, 50));
-		lblNumberOfCustomers_2.setBounds(0, 55, 220, 60);
-		panelTotalActiveCustomers_2.add(lblNumberOfCustomers_2);
+		lblPercentageCustomerGrowth = new JLabel("");
+		lblPercentageCustomerGrowth.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPercentageCustomerGrowth.setFont(new Font("Poppins", Font.PLAIN, 50));
+		lblPercentageCustomerGrowth.setBounds(0, 70, 220, 60);
+		panelCustomerGrowth.add(lblPercentageCustomerGrowth);
 		
-		lblCustomerGrowthPercentage_2 = new JLabel("(+2.31%)");
-		lblCustomerGrowthPercentage_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCustomerGrowthPercentage_2.setForeground(Color.GREEN);
-		lblCustomerGrowthPercentage_2.setFont(new Font("Poppins", Font.PLAIN, 16));
-		lblCustomerGrowthPercentage_2.setBounds(0, 105, 220, 40);
-		panelTotalActiveCustomers_2.add(lblCustomerGrowthPercentage_2);
 		
-		lblActiveCustomers_2 = new JLabel("CUSTOMERS");
+		lblActiveCustomers_2 = new JLabel("GROWTH");
 		lblActiveCustomers_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblActiveCustomers_2.setFont(new Font("Poppins", Font.BOLD, 20));
-		lblActiveCustomers_2.setBounds(0, 20, 220, 40);
-		panelTotalActiveCustomers_2.add(lblActiveCustomers_2);
+		lblActiveCustomers_2.setBounds(0, 30, 220, 40);
+		panelCustomerGrowth.add(lblActiveCustomers_2);
 		
 		panelCustomerTrend = new JPanel();
 		panelCustomerTrend.setLayout(null);
@@ -782,9 +817,7 @@ public class MainDashboard extends JFrame {
 		panelCustomerTrend.setBounds(0, 160, 680, 215);
 		panelCustomer.add(panelCustomerTrend);
 		
-		CustomerDashboard CustomerDashboard = new CustomerDashboard();
-		ChartPanel NewCurrentTrend = CustomerDashboard.customerTrend();
-		panelCustomerTrend.add(NewCurrentTrend);
+
 		
 		panelCustomerSegmentationGraphs = new JPanel();
 		panelCustomerSegmentationGraphs.setLayout(null);
@@ -792,22 +825,13 @@ public class MainDashboard extends JFrame {
 		panelCustomerSegmentationGraphs.setBounds(0, 387, 1100, 225);
 		panelCustomer.add(panelCustomerSegmentationGraphs);
 		
-		ChartPanel DemographicPanel = CustomerDashboard.demographicChart();
-		panelCustomerSegmentationGraphs.add(DemographicPanel);
-		
-		ChartPanel GeographicPanel = CustomerDashboard.geographicChart();
-		panelCustomerSegmentationGraphs.add(GeographicPanel);
-		
-		ChartPanel TransactionalPanel = CustomerDashboard.transactionalChart();
-		panelCustomerSegmentationGraphs.add(TransactionalPanel);
-		
 		panelCustomerVolumeByCountry = new JPanel();
 		panelCustomerVolumeByCountry.setLayout(null);
 		panelCustomerVolumeByCountry.setBackground(Color.WHITE);
 		panelCustomerVolumeByCountry.setBounds(700, 0, 400, 374);
 		panelCustomer.add(panelCustomerVolumeByCountry);
 		
-		lblCustomerVolumeByCountry = new JLabel("CUSTOMER VOLUME BY COUNTRY");
+		lblCustomerVolumeByCountry = new JLabel("CUSTOMERS PER COUNTRY");
 		lblCustomerVolumeByCountry.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCustomerVolumeByCountry.setFont(new Font("Poppins", Font.BOLD, 22));
 		lblCustomerVolumeByCountry.setBounds(0, 10, 400, 40);
@@ -823,12 +847,15 @@ public class MainDashboard extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"Country", "<html><center>Customer<br>Volume</html>", "<html><center>New<br>Customers</html>", "<html><center>Active<br>Customers</html>"
-			}
+					"Country", "All Customers", "New Customers", "Active Customers"
+				}
 		));
-		tableCVBC.setFont(new Font("Poppins", Font.PLAIN, 7));
-		tableCVBC.getTableHeader().setPreferredSize(new Dimension(0, 35));
+		tableCVBC.setFont(new Font("Poppins", Font.PLAIN, 10));
+		tableCVBC.getTableHeader().setPreferredSize(new Dimension(0, 30));
 		changeTableHeaderColor(tableCVBC, 9);
+		
+		DefaultTableModel customerPerRegion = customerDash.customerPerCountryTable();
+		tableCVBC.setModel(customerPerRegion);
 		
 		lblExport = new JLabel("Export");
 		lblExport.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
@@ -850,7 +877,7 @@ public class MainDashboard extends JFrame {
 		
 		JLabel lblStoreTitle = new JLabel("Stores");
 		lblStoreTitle.setFont(new Font("Poppins", Font.BOLD, 40));
-		lblStoreTitle.setBounds(35, 36, 150, 56);
+		lblStoreTitle.setBounds(35, 36, 263, 56);
 		panelStores.add(lblStoreTitle);
 		
 		layeredPaneStores = new JLayeredPane();
@@ -934,50 +961,49 @@ public class MainDashboard extends JFrame {
 		lblStoreContactDetail.setBounds(219, 190, 300, 30);
 		panelStoreInformation.add(lblStoreContactDetail);
 		
-		
 		JComboBox<String> comboBoxStores = new JComboBox<String>();
 		comboBoxStores.addItem("");
 		comboBoxStores.setSelectedIndex(0);
 		SalesMongoDriver.populateStoreNames(comboBoxStores);
-		comboBoxStores.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String selectedItem = (String) comboBoxStores.getSelectedItem();
-                if (selectedItem != null) {
-                	SalesMongoDriver.retrieveAndDisplayStoreInfo(selectedItem, lblStoreIDDetail, lblStoreNameDetail, lblStoreAddressDetail, lblStoreCountryDetail, lblStoreContactDetail, lblStoreTypeDetail);
-                	
-                	ChartPanel salesProfitTrend2;
-					try {
-						salesProfitTrend2 = salesDashboard.StoreTopProducts(lblStoreIDDetail.getText().toString());
-						panelTopSalesOfStore.add(salesProfitTrend2);
-						panelTopSalesOfStore.removeAll(); // Clear existing chart panel contents
-			            panelTopSalesOfStore.add(salesProfitTrend2);
-			            panelTopSalesOfStore.revalidate(); // Refresh the panel
-			            panelTopSalesOfStore.repaint(); // Repaint the panel
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-                	
-                	DefaultTableModel tableModelTPH = new DefaultTableModel(
-            	            new Object[][] {},
-            	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
-            }  
-            	        ){
-                        /**
-            				 * 
-            				 */
-            				private static final long serialVersionUID = 1L;
-
-            			@Override
-                        public boolean isCellEditable(int row, int column) {
-                            return false; // Make the table uneditable
-                        }
-                    };
-                    tablePurchaseHistory.setModel(tableModelTPH);
-                    SalesMongoDriver.retrieveAndDisplayStorePurchaseHistory(selectedItem, tableModelTPH);
-                }
-			}
-		});
+//		comboBoxStores.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				String selectedItem = (String) comboBoxStores.getSelectedItem();
+//                if (selectedItem != null) {
+//                	SalesMongoDriver.retrieveAndDisplayStoreInfo(selectedItem, lblStoreIDDetail, lblStoreNameDetail, lblStoreAddressDetail, lblStoreCountryDetail, lblStoreContactDetail, lblStoreTypeDetail);
+//                	
+//                	ChartPanel salesProfitTrend2;
+//					try {
+//						salesProfitTrend2 = salesDashboard.StoreTopProducts(lblStoreIDDetail.getText().toString());
+//						panelTopSalesOfStore.add(salesProfitTrend2);
+//						panelTopSalesOfStore.removeAll(); // Clear existing chart panel contents
+//			            panelTopSalesOfStore.add(salesProfitTrend2);
+//			            panelTopSalesOfStore.revalidate(); // Refresh the panel
+//			            panelTopSalesOfStore.repaint(); // Repaint the panel
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//                	
+//                	DefaultTableModel tableModelTPH = new DefaultTableModel(
+//            	            new Object[][] {},
+//            	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
+//            }  
+//            	        ){
+//                        /**
+//            				 * 
+//            				 */
+//            				private static final long serialVersionUID = 1L;
+//
+//            			@Override
+//                        public boolean isCellEditable(int row, int column) {
+//                            return false; // Make the table uneditable
+//                        }
+//                    };
+//                    tablePurchaseHistory.setModel(tableModelTPH);
+//                    SalesMongoDriver.retrieveAndDisplayStorepurchases(selectedItem, tableModelTPH);
+//                }
+//			}
+//		});
 		comboBoxStores.setBounds(320, 20, 190, 25);
 		panelStoreInformation.add(comboBoxStores);
 		
@@ -986,6 +1012,31 @@ public class MainDashboard extends JFrame {
 		panelTopSalesOfStore.setBackground(Color.WHITE);
 		panelTopSalesOfStore.setBounds(560, 0, 540, 300);
 		panelStoreSummary.add(panelTopSalesOfStore);
+			
+		lblTopStoresBySales = new JLabel("TOP 10 STORES BY SALES");
+		lblTopStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTopStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
+		lblTopStoresBySales.setBounds(0, 10, 540, 40);
+		panelTopSalesOfStore.add(lblTopStoresBySales);
+		
+		scrollPaneT10SBS2 = new JScrollPane();
+		scrollPaneT10SBS2.setBounds(10, 50, 520, 235);
+		panelTopSalesOfStore.add(scrollPaneT10SBS2);
+		
+		tableT10SBS2 = new JTable();
+		scrollPaneT10SBS2.setViewportView(tableT10SBS2);
+		tableT10SBS2.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Rank", "Store", "Sales Volume", "Revenue", "Profit", "Profit Margin"
+			}
+		));
+		tableT10SBS2.setFont(new Font("Poppins", Font.PLAIN, 9));
+		TableColumnModel columnModel = tableT10SBS2.getColumnModel();
+	    TableColumn targetColumn = columnModel.getColumn(0);
+	    targetColumn.setPreferredWidth(10);
+		changeTableHeaderColor(tableT10SBS2, 9);
 		
 		panelPurchaseHistoryTable = new JPanel();
 		panelPurchaseHistoryTable.setLayout(null);
@@ -1005,23 +1056,13 @@ public class MainDashboard extends JFrame {
 		
 		tablePurchaseHistory = new JTable();
 		scrollPanePurchaseHistory.setViewportView(tablePurchaseHistory);
-		DefaultTableModel tableModelTPH = new DefaultTableModel(
-	            new Object[][] {},
-	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
-}  
-	        ){
-            /**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-			@Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make the table uneditable
-            }
-        };
-        tablePurchaseHistory.setModel(tableModelTPH);
-        
+		tablePurchaseHistory.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Purchase ID", "Store ID", "Customer ID", "Date", "Time", "Total Spent"
+			}
+		));
 		tablePurchaseHistory.setFont(new Font("Poppins", Font.PLAIN, 9));
 		changeTableHeaderColor(tablePurchaseHistory, 9);
 		
@@ -1052,48 +1093,12 @@ public class MainDashboard extends JFrame {
 		tableOverallSBS.setFont(new Font("Poppins", Font.PLAIN, 12));
 		changeTableHeaderColor(tableOverallSBS, 12);
 		
-		
 		lblRefreshSales = new JLabel("Refresh");
 		lblRefreshSales.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRefreshSales.setFont(new Font("Poppins", Font.PLAIN, 12));
 		lblRefreshSales.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
 		lblRefreshSales.setBounds(1045, 58, 80, 20);
 		panelStores.add(lblRefreshSales);
-		
-		JLabel lblStoresInfo = new JLabel("Stores");
-		lblStoresInfo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				underlineBorder(lblStoresInfo, lblOverall);
-				
-				layeredPaneStores.removeAll();
-				layeredPaneStores.add(panelStoreSummary);
-				layeredPaneStores.repaint();
-				layeredPaneStores.revalidate();
-			}
-		});
-		lblStoresInfo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblStoresInfo.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblStoresInfo.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		lblStoresInfo.setBounds(206, 53, 80, 25);
-		panelStores.add(lblStoresInfo);
-		
-		lblOverall = new JLabel("Overall");
-		lblOverall.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				underlineBorder(lblOverall, lblStoresInfo);
-				
-				layeredPaneStores.removeAll();
-				layeredPaneStores.add(panelStoresSales);
-				layeredPaneStores.repaint();
-				layeredPaneStores.revalidate();
-			}
-		});
-		lblOverall.setHorizontalAlignment(SwingConstants.CENTER);
-		lblOverall.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblOverall.setBounds(296, 53, 100, 25);
-		panelStores.add(lblOverall);
 		
 		panelPurchaseHistory = new JPanel();
 		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
@@ -1126,11 +1131,14 @@ public class MainDashboard extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"Purchase ID", "Store ID", "Customer ID", "Date", "Time", "Total Spent"
+				"Purchase ID", "Store ID", "Customer ID", "Date and Time", "Total Spent"
 			}
 		));
 		tablePurchaseHistoryOverall.setFont(new Font("Poppins", Font.PLAIN, 12));
 		changeTableHeaderColor(tablePurchaseHistoryOverall, 12);
+		
+		DefaultTableModel purchase = purchaseHistory.purchaseHistory();
+		tablePurchaseHistoryOverall.setModel(purchase);
 		
 		lblRefreshPurchase = new JLabel("Refresh");
 		lblRefreshPurchase.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1254,6 +1262,9 @@ public class MainDashboard extends JFrame {
 		));
 		scrollPaneDemoSegmentation.setViewportView(tableDemoSegmentation);
 		
+		DemographicSegmentation demog = new DemographicSegmentation();
+		tableDemoSegmentation.setModel(demog.addToTable());
+		
 		 changeTableHeaderColor(tableDemoSegmentation, 12);
 
 	        scrollPaneDemoSegmentation.setViewportView(tableDemoSegmentation);
@@ -1301,7 +1312,8 @@ public class MainDashboard extends JFrame {
 		panelGeographicSegmentation.add(lblGeographicSegmentation);
 		
 		cmbAscDesc = new JComboBox();
-		cmbAscDesc.setName("");
+		cmbAscDesc.addItem("A-Z");
+		cmbAscDesc.setName("Z-A");
 		cmbAscDesc.setFont(new Font("Poppins", Font.PLAIN, 12));
 		cmbAscDesc.setBounds(963, 17, 105, 17);
 		panelGeographicSegmentation.add(cmbAscDesc);
@@ -1321,14 +1333,15 @@ public class MainDashboard extends JFrame {
 		));
 		scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
 		
-		 changeTableHeaderColor(tableGeographicSegmentation, 12);
-
-	        scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
-
-	        scrollPaneGeographicSegmentation.setVisible(true);
-
+		GeographicSegmentation geo = new GeographicSegmentation();
+		tableGeographicSegmentation.setModel(geo.addToTable());
 		
-		
+		changeTableHeaderColor(tableGeographicSegmentation, 12);
+
+	    scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
+
+	    scrollPaneGeographicSegmentation.setVisible(true);
+	
 		panelTransactionHistory = new JPanel();
 		layeredPane.add(panelTransactionHistory, "name_1237656709540000");
 		panelTransactionHistory.setLayout(null);
@@ -1363,37 +1376,84 @@ public class MainDashboard extends JFrame {
 		panelTransactionalSegmentation.add(lblTransactionalSegmentation);
 		
 		cmbAscDesc_1 = new JComboBox();
+		cmbAscDesc_1.addItem("ascending");
+		cmbAscDesc_1.addItem("descending");
+		cmbAscDesc_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedItem = (String) cmbAscDesc_1.getSelectedItem();
+				if (selectedItem != null) {
+					 if (selectedItem.equals("ascending")) {
+						 tableTransactionalSegmentation.setModel(transacSegment.transactional(true));
+					 }
+					 else {
+						 tableTransactionalSegmentation.setModel(transacSegment.transactional(false));
+					 }
+				}
+			}
+		});
 		cmbAscDesc_1.setName("");
 		cmbAscDesc_1.setFont(new Font("Poppins", Font.PLAIN, 12));
 		cmbAscDesc_1.setBounds(963, 17, 105, 17);
 		panelTransactionalSegmentation.add(cmbAscDesc_1);
 		
+		
 		scrollPaneTransactionalSegmentation = new JScrollPane();
 		scrollPaneTransactionalSegmentation.setBounds(29, 38, 1023, 552);
 		panelTransactionalSegmentation.add(scrollPaneTransactionalSegmentation);
 		
-		 JTable tableTransactionalSegmentation = new JTable();
-	        tableTransactionalSegmentation.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
-	        tableTransactionalSegmentation.setModel(new DefaultTableModel(
+		 tableTransactionalSegmentation = new JTable();
+	     tableTransactionalSegmentation.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
+	     tableTransactionalSegmentation.setModel(new DefaultTableModel(
 	            new Object[][] {},
 	            new String[] {
 	                "Customer ID", "Customer Name", "Total Number of Transactions", "Total Number of Unit Purchased", "Total Amount of Purchases"
 	            }
 	        ));
-	        scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
+	     scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
 
-	        changeTableHeaderColor(tableTransactionalSegmentation, 12);
+	     changeTableHeaderColor(tableTransactionalSegmentation, 12);
 
-	        scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
-	        scrollPaneTransactionalSegmentation.setVisible(true);
-	        
-	        SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
-	        SalesMainBackend.TotalSalesDisplay(lblSumProfit, lblProfitIncrease);
-	        SalesMainBackend.TotalOrdersDisplay(lblSumOrders, lblOrderIncrease);
-	        SalesMongoDriver.displayTopTenStores(tableModelT20SBS);
-	        
-	        ChartPanel salesProfitTrend1 = salesDashboard.salesVolume();
-			panelSalesPerCountry.add(salesProfitTrend1);	
+	     scrollPaneTransactionalSegmentation.setViewportView(tableTransactionalSegmentation);
+	     scrollPaneTransactionalSegmentation.setVisible(true);
+	         
+	     
+	     // All methods for Customer Dashboard and Customer Segmentation
+	     
+			int totalActive = customerDash.totalActive();
+			lblNumberOfActiveCustomers.setText(Integer.toString(totalActive));	
+			
+			int totalNew = customerDash.totalNew2024();
+			lblNumberOfNewCustomers.setText(Integer.toString(totalNew));
+			
+			double newPercentage = CustomerDashboard.computeIncrease(customerDash.totalNew2024(), customerDash.totalNew2023());
+			lblNewPercentage.setText("(" + String.format("%.2f", newPercentage) + "%)");
+			if (newPercentage < 0) {
+				lblNewPercentage.setForeground(Color.RED);
+			} else {
+				lblNewPercentage.setForeground(Color.GREEN);
+			}
+			
+			double customerGrowth = CustomerDashboard.customerGrowth();
+			lblPercentageCustomerGrowth.setText(String.format("%.2f", customerGrowth) + "%");
+			
+			if (customerGrowth < 0) {
+				lblPercentageCustomerGrowth.setForeground(Color.RED);
+			} else {
+				lblPercentageCustomerGrowth.setForeground(Color.BLACK);
+			}
+			
+			ChartPanel NewCurrentTrend = customerDash.customerTrend();
+			panelCustomerTrend.add(NewCurrentTrend);
+			
+			ChartPanel DemographicPanel = customerDash.demographicChart();
+			panelCustomerSegmentationGraphs.add(DemographicPanel);
+			
+			ChartPanel GeographicPanel = customerDash.geographicChart();
+			panelCustomerSegmentationGraphs.add(GeographicPanel);
+			
+			ChartPanel TransactionalPanel = customerDash.transactionalChart();
+			panelCustomerSegmentationGraphs.add(TransactionalPanel);
+	     
 	}
 	      
 	public void changeTableHeaderColor (JTable table, int fontSize) {
