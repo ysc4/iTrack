@@ -1,0 +1,114 @@
+// totalNew2023 / totalNew2024
+db.purchases.aggregate([
+  {
+    "$facet": {
+      "customers2022": [
+        { "$match": { "Date and Time": { "$gte": ISODate("2022-01-01"), "$lt": ISODate("2023-01-01") } }},
+        { "$group": { "_id": "$Customer ID" }}
+      ],
+      "customers2023": [
+        { "$match": { "Date and Time": { "$gte": ISODate("2023-01-01"), "$lt": ISODate("2024-01-01") } }},
+        { "$group": { "_id": "$Customer ID" }}
+      ]
+    }
+  },
+  { "$project": { "customers2022": "$customers2022._id", "customers2023": "$customers2023._id" }},
+  { "$project": { "newCustomers2023": { "$setDifference": ["$customers2023", "$customers2022"] }}},
+  { "$project": { "total_count": { "$size": "$newCustomers2023" }}}
+]);
+
+// totalActive
+db.purchases.aggregate([
+  { "$match": { "Date and Time": { "$gte": ISODate("2022-01-01"), "$lt": ISODate("2025-01-01") }}},
+  { "$group": { "_id": "$Customer ID", "count": { "$sum": 1 }}},
+  { "$group": { "_id": null, "total_count": { "$sum": "$count" }}}
+]);
+
+// total Customer Growth
+db.purchases.aggregate([
+  {
+    "$facet": {
+      "customers2023": [
+        { "$match": { "Date and Time": { "$gte": ISODate("2023-01-01"), "$lt": ISODate("2024-01-01") } }},
+        { "$group": { "_id": "$Customer ID" }},
+        { "$group": { "_id": null, "total_count": { "$sum": 1 }}}
+      ],
+      "customers2024": [
+        { "$match": { "Date and Time": { "$gte": ISODate("2024-01-01"), "$lt": ISODate("2025-01-01") } }},
+        { "$group": { "_id": "$Customer ID" }},
+        { "$group": { "_id": null, "total_count": { "$sum": 1 }}}
+      ]
+    }
+  },
+  { "$project": { "customers2023": { "$arrayElemAt": ["$customers2023.total_count", 0] }, "customers2024": { "$arrayElemAt": ["$customers2024.total_count", 0] }}}
+]);
+
+// CustomersPerCountry
+db.customers.aggregate([
+  { "$match": { "City/Country": country }},
+  { "$group": { "_id": "$Customer ID", "LastName": { "$first": "$Last Name" }, "FirstName": { "$first": "$First Name" }, "CustomerName": { "$first": { "$concat": ["$Last Name", ", ", "$First Name"] }}, "customerCount": { "$sum": 1 }}}
+]);
+
+// Customers Per Year
+db.collection.aggregate([
+  { "$match": { "Date and Time": { "$gte": new Date(startYear - 1900, 0, 1), "$lt": new Date(endYear - 1900, 0, 1) }}},
+  { "$group": { "_id": "$Customer ID", "customerCount": { "$sum": 1 }}}
+]);
+
+// femaleCustomers / male Customers
+db.customers.aggregate([
+  { "$match": { "Sex": "F", "Birthday": { "$gte": startBirthDateAsDate, "$lt": endBirthDateAsDate }}},
+  { "$group": { "_id": "$Customer ID", "LastName": { "$first": "$Last Name" }, "FirstName": { "$first": "$First Name" }, "CustomerName": { "$first": { "$concat": ["$Last Name", ", ", "$First Name"] }}}}
+]);
+
+// New customers per country
+db.customers.aggregate([
+  { "$match": { "Region": "Asia" }},
+  { "$lookup": { "from": "purchases", "localField": "Customer ID", "foreignField": "Customer ID", "as": "customerPurchases" }},
+  { "$unwind": "$customerPurchases" },
+  { "$match": { "customerPurchases.Date and Time": { "$gte": ISODate("2024-01-01T00:00:00.000Z"), "$lt": ISODate("2025-01-01T00:00:00.000Z") }}},
+  { "$group": { "_id": "$_id" }},
+  { "$count": "newCustomerCount" }
+]);
+
+// Active customers per country
+db.customers.aggregate([
+  { "$match": { "Region": "Asia" }},
+  { "$lookup": { "from": "purchases", "localField": "Customer ID", "foreignField": "Customer ID", "as": "customerPurchases" }},
+  { "$unwind": "$customerPurchases" },
+  { "$match": { "customerPurchases.Date and Time": { "$gte": ISODate("2022-01-01T00:00:00.000Z"), "$lt": ISODate("2025-01-01T00:00:00.000Z") }}},
+  { "$group": { "_id": "$_id" }},
+  { "$count": "newCustomerCount" }
+]);
+
+// top 10 countries
+db.customers.aggregate([
+  { "$lookup": { "from": "purchases", "localField": "Customer ID", "foreignField": "Customer ID", "as": "customerPurchases" }},
+  { "$match": { "customerPurchases.Date and Time": { "$gte": new Date(2022, 0, 1), "$lt": new Date(2025, 0, 1) }}},
+  { "$group": { "_id": "$City/Country", "customerCount": { "$sum": 1 }}},
+  { "$sort": { "customerCount": -1 }},
+  { "$limit": 10 }
+]);
+
+// products vs. customers
+db.products.aggregate([
+  { "$match": { "Category": category }},
+  { "$lookup": { "from": "transactions", "localField": "Product ID", "foreignField": "Product ID", "as": "productTransactions" }},
+  { "$unwind": "$productTransactions" },
+  { "$lookup": { "from": "purchases", "localField": "productTransactions.Purchase ID", "foreignField": "Purchase ID", "as": "transactionPurchases" }},
+  { "$unwind": "$transactionPurchases" },
+  { "$lookup": { "from": "customers", "localField": "transactionPurchases.Customer ID", "foreignField": "Customer ID", "as": "customerDetails" }},
+  { "$unwind": "$customerDetails" },
+  { "$group": { "_id": "$transactionPurchases.Customer ID", "CustomerName": { "$first": { "$concat": ["$customerDetails.Last Name", ", ", "$customerDetails.First Name"] }}}}
+]);
+
+// segment type
+db.segment.findOne({ "Segment ID": "APSEG002" });
+
+// customer segment
+db.customersegment.insertOne({
+  "Segment ID": segmentID,
+  "Segment Type": type,
+  "Customer ID": customerID,
+  "Customer Name": name
+});
