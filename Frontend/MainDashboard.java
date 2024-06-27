@@ -88,8 +88,6 @@ public class MainDashboard extends JFrame {
 	private JLabel lblSalesAndProfitTrend;
 	private JLabel lblTopTenProductsBySales;
 	private JLabel lblTopFifteenStoresBySales;
-	private JLabel lblExport;
-	private JLabel lblRefresh;
 	private JPanel panelTotalActiveCustomers;
 	private JLabel lblTotalActive;
 	private JLabel lblNumberOfCustomers;
@@ -115,19 +113,15 @@ public class MainDashboard extends JFrame {
 	private JPanel panelStoreInformation;
 	private JLabel lblStoreInformation;
 	private JPanel panelTopSalesOfStore;
-	private JLabel lblRefreshSales;
 	private JPanel panelPurchaseHistoryTable;
 	private JLabel lblPurchaseHistoryTable;
 	private JLabel lblStoresBySales;
 	private JPanel panelStoresSales_1;
 	private JLabel lblPurchaseHistorySummary;
-	private JLabel lblRefreshPurchase;
 	private JPanel panelCustomerSegmentation;
 	private JPanel demoPanel;
 	private JPanel geoPanel;
 	private JPanel transPanel;
-	private JLabel lblRefreshCS;
-	private JLabel lblExportCS;
 	private JTable tableGeographic;
 	private JTable tableDemoSegmentation;
 	private JScrollPane scrollPaneDemoSegmentation;
@@ -137,10 +131,7 @@ public class MainDashboard extends JFrame {
 	private JLabel lblGeographicSegmentation;
 	private JTable tableGeographicSegmentation;
 	private JScrollPane scrollPaneGeographicSegmentation;
-	private JLabel lblRefreshDS;
-	private JLabel lblRefreshGS;
 	private JComboBox cmbAscDesc;
-	private JLabel lblRefreshTS;
 	private JLayeredPane layeredPaneTransactionalSegmentation;
 	private JPanel panelTransactionalSegmentation;
 	private JLabel lblTransactionalSegmentation;
@@ -641,9 +632,10 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelSalesAndProfitTrend);
 		panelSalesAndProfitTrend.setLayout(null);
 		
-//		SalesDashboard salesDashboard = new SalesDashboard();
-//		ChartPanel salesProfitTrend = salesDashboard.salesTrend();
-//		panelSalesAndProfitTrend.add(salesProfitTrend);
+		SalesDashboard salesDashboard = new SalesDashboard();
+		
+		ChartPanel salesProfitTrend = salesDashboard.salesTrend();
+		panelSalesAndProfitTrend.add(salesProfitTrend);
 		
 		panelTopTenProducts = new JPanel();
 		panelTopTenProducts.setBackground(Color.WHITE);
@@ -651,26 +643,8 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelTopTenProducts);
 		panelTopTenProducts.setLayout(null);
 		
-//		ChartPanel productsTrend = salesDashboard.productsTrend();
-//		panelTopTenProducts.add(productsTrend);
-		
-		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
-		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTopTenProductsBySales.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblTopTenProductsBySales.setBounds(0, 10, 680, 40);
-		panelTopTenProducts.add(lblTopTenProductsBySales);
-		
-//		ChartPanel salesProfitTrend1 = salesDashboard.salesTrend();
-//		panelSalesAndProfitTrend.add(salesProfitTrend1);
-		
-		panelTopTenProducts = new JPanel();
-		panelTopTenProducts.setBackground(Color.WHITE);
-		panelTopTenProducts.setBounds(0, 385, 680, 215);
-		panelSales.add(panelTopTenProducts);
-		panelTopTenProducts.setLayout(null);
-		
-//		ChartPanel productsTrend1 = salesDashboard.productsTrend();
-//		panelTopTenProducts.add(productsTrend1);
+		ChartPanel productsTrend = salesDashboard.productsTrend();
+		panelTopTenProducts.add(productsTrend);
 		
 		lblTopTenProductsBySales = new JLabel("TOP 10 PRODUCTS BY SALES");
 		lblTopTenProductsBySales.setHorizontalAlignment(SwingConstants.CENTER);
@@ -684,11 +658,8 @@ public class MainDashboard extends JFrame {
 		panelSales.add(panelSalesPerCountry);
 		panelSalesPerCountry.setLayout(null);
 		
-		panelTopTenStoresBySales = new JPanel();
-		panelTopTenStoresBySales.setBackground(Color.WHITE);
-		panelTopTenStoresBySales.setBounds(690, 305, 400, 295);
-		panelSales.add(panelTopTenStoresBySales);
-		panelTopTenStoresBySales.setLayout(null);
+		ChartPanel salesVolume = salesDashboard.salesVolume();
+		panelSalesPerCountry.add(salesVolume);
 		
 		panelTopTenStoresBySales = new JPanel();
 		panelTopTenStoresBySales.setBackground(Color.WHITE);
@@ -726,6 +697,8 @@ public class MainDashboard extends JFrame {
 		tableT10SBS.setFont(new Font("Poppins", Font.PLAIN, 9));
 		changeTableHeaderColor(tableT10SBS, 9);
 		
+		SalesMongoDriver.displayTopTenStores(tableModelT20SBS);
+		
 		panelCustomer = new JPanel();
 		layeredPaneHomePage.add(panelCustomer, "name_1304958910393200");
 		panelCustomer.setLayout(null);
@@ -747,8 +720,7 @@ public class MainDashboard extends JFrame {
 		lblNumberOfActiveCustomers.setFont(new Font("Poppins", Font.PLAIN, 50));
 		lblNumberOfActiveCustomers.setBounds(0, 70, 220, 60);
 		panelTotalActiveCustomers.add(lblNumberOfActiveCustomers);
-			
-		
+					
 		lblActiveCustomers = new JLabel("CUSTOMERS");
 		lblActiveCustomers.setHorizontalAlignment(SwingConstants.CENTER);
 		lblActiveCustomers.setFont(new Font("Poppins", Font.BOLD, 20));
@@ -804,7 +776,6 @@ public class MainDashboard extends JFrame {
 		lblPercentageCustomerGrowth.setBounds(0, 70, 220, 60);
 		panelCustomerGrowth.add(lblPercentageCustomerGrowth);
 		
-		
 		lblActiveCustomers_2 = new JLabel("GROWTH");
 		lblActiveCustomers_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblActiveCustomers_2.setFont(new Font("Poppins", Font.BOLD, 20));
@@ -816,9 +787,7 @@ public class MainDashboard extends JFrame {
 		panelCustomerTrend.setBackground(Color.WHITE);
 		panelCustomerTrend.setBounds(0, 160, 680, 215);
 		panelCustomer.add(panelCustomerTrend);
-		
-
-		
+				
 		panelCustomerSegmentationGraphs = new JPanel();
 		panelCustomerSegmentationGraphs.setLayout(null);
 		panelCustomerSegmentationGraphs.setBackground(Color.WHITE);
@@ -856,20 +825,6 @@ public class MainDashboard extends JFrame {
 		
 		DefaultTableModel customerPerRegion = customerDash.customerPerCountryTable();
 		tableCVBC.setModel(customerPerRegion);
-		
-		lblExport = new JLabel("Export");
-		lblExport.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
-		lblExport.setHorizontalAlignment(SwingConstants.CENTER);
-		lblExport.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblExport.setBounds(1045, 58, 80, 20);
-		panelHome.add(lblExport);
-		
-		lblRefresh = new JLabel("Refresh");
-		lblRefresh.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRefresh.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblRefresh.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblRefresh.setBounds(955, 58, 80, 20);
-		panelHome.add(lblRefresh);
 		
 		panelStores = new JPanel();
 		layeredPane.add(panelStores, "name_1237607726469500");
@@ -965,45 +920,45 @@ public class MainDashboard extends JFrame {
 		comboBoxStores.addItem("");
 		comboBoxStores.setSelectedIndex(0);
 		SalesMongoDriver.populateStoreNames(comboBoxStores);
-//		comboBoxStores.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				String selectedItem = (String) comboBoxStores.getSelectedItem();
-//                if (selectedItem != null) {
-//                	SalesMongoDriver.retrieveAndDisplayStoreInfo(selectedItem, lblStoreIDDetail, lblStoreNameDetail, lblStoreAddressDetail, lblStoreCountryDetail, lblStoreContactDetail, lblStoreTypeDetail);
-//                	
-//                	ChartPanel salesProfitTrend2;
-//					try {
-//						salesProfitTrend2 = salesDashboard.StoreTopProducts(lblStoreIDDetail.getText().toString());
-//						panelTopSalesOfStore.add(salesProfitTrend2);
-//						panelTopSalesOfStore.removeAll(); // Clear existing chart panel contents
-//			            panelTopSalesOfStore.add(salesProfitTrend2);
-//			            panelTopSalesOfStore.revalidate(); // Refresh the panel
-//			            panelTopSalesOfStore.repaint(); // Repaint the panel
-//					} catch (Exception e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//                	
-//                	DefaultTableModel tableModelTPH = new DefaultTableModel(
-//            	            new Object[][] {},
-//            	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
-//            }  
-//            	        ){
-//                        /**
-//            				 * 
-//            				 */
-//            				private static final long serialVersionUID = 1L;
-//
-//            			@Override
-//                        public boolean isCellEditable(int row, int column) {
-//                            return false; // Make the table uneditable
-//                        }
-//                    };
-//                    tablePurchaseHistory.setModel(tableModelTPH);
-//                    SalesMongoDriver.retrieveAndDisplayStorepurchases(selectedItem, tableModelTPH);
-//                }
-//			}
-//		});
+		comboBoxStores.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedItem = (String) comboBoxStores.getSelectedItem();
+                if (selectedItem != null) {
+                	SalesMongoDriver.retrieveAndDisplayStoreInfo(selectedItem, lblStoreIDDetail, lblStoreNameDetail, lblStoreAddressDetail, lblStoreCountryDetail, lblStoreContactDetail, lblStoreTypeDetail);
+                	
+                	ChartPanel salesProfitTrend2;
+					try {
+						salesProfitTrend2 = salesDashboard.StoreTopProducts(lblStoreIDDetail.getText().toString());
+						panelTopSalesOfStore.add(salesProfitTrend2);
+						panelTopSalesOfStore.removeAll(); // Clear existing chart panel contents
+			            panelTopSalesOfStore.add(salesProfitTrend2);
+			            panelTopSalesOfStore.revalidate(); // Refresh the panel
+			            panelTopSalesOfStore.repaint(); // Repaint the panel
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                	
+                	DefaultTableModel tableModelTPH = new DefaultTableModel(
+            	            new Object[][] {},
+            	            new String[] { "Purchase ID", "Customer ID", "Date and Time", "Total Spent"
+            }  
+            	        ){
+                        /**
+            				 * 
+            				 */
+            				private static final long serialVersionUID = 1L;
+
+            			@Override
+                        public boolean isCellEditable(int row, int column) {
+                            return false; // Make the table uneditable
+                        }
+                    };
+                    tablePurchaseHistory.setModel(tableModelTPH);
+                    SalesMongoDriver.retrieveAndDisplayStorepurchases(selectedItem, tableModelTPH);
+                }
+			}
+		});
 		comboBoxStores.setBounds(320, 20, 190, 25);
 		panelStoreInformation.add(comboBoxStores);
 		
@@ -1012,31 +967,6 @@ public class MainDashboard extends JFrame {
 		panelTopSalesOfStore.setBackground(Color.WHITE);
 		panelTopSalesOfStore.setBounds(560, 0, 540, 300);
 		panelStoreSummary.add(panelTopSalesOfStore);
-			
-		lblTopStoresBySales = new JLabel("TOP 10 STORES BY SALES");
-		lblTopStoresBySales.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTopStoresBySales.setFont(new Font("Poppins", Font.BOLD, 25));
-		lblTopStoresBySales.setBounds(0, 10, 540, 40);
-		panelTopSalesOfStore.add(lblTopStoresBySales);
-		
-		scrollPaneT10SBS2 = new JScrollPane();
-		scrollPaneT10SBS2.setBounds(10, 50, 520, 235);
-		panelTopSalesOfStore.add(scrollPaneT10SBS2);
-		
-		tableT10SBS2 = new JTable();
-		scrollPaneT10SBS2.setViewportView(tableT10SBS2);
-		tableT10SBS2.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Rank", "Store", "Sales Volume", "Revenue", "Profit", "Profit Margin"
-			}
-		));
-		tableT10SBS2.setFont(new Font("Poppins", Font.PLAIN, 9));
-		TableColumnModel columnModel = tableT10SBS2.getColumnModel();
-	    TableColumn targetColumn = columnModel.getColumn(0);
-	    targetColumn.setPreferredWidth(10);
-		changeTableHeaderColor(tableT10SBS2, 9);
 		
 		panelPurchaseHistoryTable = new JPanel();
 		panelPurchaseHistoryTable.setLayout(null);
@@ -1093,13 +1023,6 @@ public class MainDashboard extends JFrame {
 		tableOverallSBS.setFont(new Font("Poppins", Font.PLAIN, 12));
 		changeTableHeaderColor(tableOverallSBS, 12);
 		
-		lblRefreshSales = new JLabel("Refresh");
-		lblRefreshSales.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRefreshSales.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblRefreshSales.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblRefreshSales.setBounds(1045, 58, 80, 20);
-		panelStores.add(lblRefreshSales);
-		
 		panelPurchaseHistory = new JPanel();
 		layeredPane.add(panelPurchaseHistory, "name_1237611265977400");
 		panelPurchaseHistory.setLayout(null);
@@ -1139,13 +1062,6 @@ public class MainDashboard extends JFrame {
 		
 		DefaultTableModel purchase = purchaseHistory.purchaseHistory();
 		tablePurchaseHistoryOverall.setModel(purchase);
-		
-		lblRefreshPurchase = new JLabel("Refresh");
-		lblRefreshPurchase.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRefreshPurchase.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblRefreshPurchase.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblRefreshPurchase.setBounds(1045, 58, 80, 20);
-		panelPurchaseHistory.add(lblRefreshPurchase);
 		
 		panelSegmentation = new JPanel();
 		panelSegmentation.setFont(new Font("Poppins", Font.BOLD, 17));
@@ -1195,20 +1111,6 @@ public class MainDashboard extends JFrame {
 		ChartPanel TransactionalPanel2 = customerSegment.transactionalChart();
 		transPanel.add(TransactionalPanel2);
 		
-		lblRefreshCS = new JLabel("Refresh");
-		lblRefreshCS.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRefreshCS.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblRefreshCS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblRefreshCS.setBounds(945, 73, 80, 20);
-		panelSegmentation.add(lblRefreshCS);
-		
-		lblExportCS = new JLabel("Export");
-		lblExportCS.setHorizontalAlignment(SwingConstants.CENTER);
-		lblExportCS.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblExportCS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblExportCS.setBounds(1035, 73, 80, 19);
-		panelSegmentation.add(lblExportCS);
-		
 		panelDemographics = new JPanel();
 		layeredPane.add(panelDemographics, "name_1237649696174600");
 		panelDemographics.setLayout(null);
@@ -1238,11 +1140,7 @@ public class MainDashboard extends JFrame {
 		lblDemoSegmentation.setBounds(218, 0, 632, 43);
 		panelDemographic.add(lblDemoSegmentation);
 		
-		JComboBox cmbFinder = new JComboBox();
-		cmbFinder.setFont(new Font("Poppins", Font.PLAIN, 12));
-		cmbFinder.setName("");
-		cmbFinder.setBounds(963, 17, 105, 17);
-		panelDemographic.add(cmbFinder);
+		DemographicSegmentation demog = new DemographicSegmentation();
 		
 		scrollPaneDemoSegmentation = new JScrollPane();
 		scrollPaneDemoSegmentation.setAutoscrolls(true);
@@ -1261,22 +1159,39 @@ public class MainDashboard extends JFrame {
 			}
 		));
 		scrollPaneDemoSegmentation.setViewportView(tableDemoSegmentation);
-		
-		DemographicSegmentation demog = new DemographicSegmentation();
-		tableDemoSegmentation.setModel(demog.addToTable());
-		
-		 changeTableHeaderColor(tableDemoSegmentation, 12);
+		changeTableHeaderColor(tableDemoSegmentation, 12);
 
-	        scrollPaneDemoSegmentation.setViewportView(tableDemoSegmentation);
-	        
-	        lblRefreshDS = new JLabel("Refresh");
-	        lblRefreshDS.setBounds(1047, 72, 80, 20);
-	        panelDemographics.add(lblRefreshDS);
-	        lblRefreshDS.setHorizontalAlignment(SwingConstants.CENTER);
-	        lblRefreshDS.setFont(new Font("Poppins", Font.PLAIN, 12));
-	        lblRefreshDS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-
-	        scrollPaneDemoSegmentation.setVisible(true);
+		JComboBox cmbFinder = new JComboBox();
+		cmbFinder.addItem("");
+		cmbFinder.addItem("A-Z");
+		cmbFinder.addItem("Z-A");
+		cmbFinder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedItem = (String) cmbFinder.getSelectedItem();
+				if (selectedItem != null) {
+					 if (selectedItem.equals("A-Z")) {
+						 try {
+							tableDemoSegmentation.setModel(demog.fetchData(true));
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					 }
+					 else {
+						 try {
+							tableDemoSegmentation.setModel(demog.fetchData(false));
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					 }
+				}
+			}
+		});
+		cmbFinder.setFont(new Font("Poppins", Font.PLAIN, 12));
+		cmbFinder.setName("");
+		cmbFinder.setBounds(963, 17, 105, 17);
+		panelDemographic.add(cmbFinder);
 		
 		panelGeographics = new JPanel();
 		layeredPane.add(panelGeographics, "name_1237653177687600");
@@ -1286,13 +1201,6 @@ public class MainDashboard extends JFrame {
 		lblCustomerSegment3.setFont(new Font("Poppins", Font.BOLD, 40));
 		lblCustomerSegment3.setBounds(35, 36, 609, 56);
 		panelGeographics.add(lblCustomerSegment3);
-		
-		lblRefreshGS = new JLabel("Refresh");
-		lblRefreshGS.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRefreshGS.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblRefreshGS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblRefreshGS.setBounds(1047, 72, 80, 20);
-		panelGeographics.add(lblRefreshGS);
 		
 		JLayeredPane layeredPaneGeographicSegmentation = new JLayeredPane();
 		layeredPaneGeographicSegmentation.setBounds(35, 103, 1092, 620);
@@ -1311,12 +1219,7 @@ public class MainDashboard extends JFrame {
 		lblGeographicSegmentation.setBounds(218, 0, 632, 43);
 		panelGeographicSegmentation.add(lblGeographicSegmentation);
 		
-		cmbAscDesc = new JComboBox();
-		cmbAscDesc.addItem("A-Z");
-		cmbAscDesc.setName("Z-A");
-		cmbAscDesc.setFont(new Font("Poppins", Font.PLAIN, 12));
-		cmbAscDesc.setBounds(963, 17, 105, 17);
-		panelGeographicSegmentation.add(cmbAscDesc);
+		GeographicSegmentation geoSegment = new GeographicSegmentation();
 		
 		scrollPaneGeographicSegmentation = new JScrollPane();
 		scrollPaneGeographicSegmentation.setBounds(29, 38, 1023, 552);
@@ -1332,16 +1235,42 @@ public class MainDashboard extends JFrame {
 			}
 		));
 		scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
-		
-		GeographicSegmentation geo = new GeographicSegmentation();
-		tableGeographicSegmentation.setModel(geo.addToTable());
-		
+			
 		changeTableHeaderColor(tableGeographicSegmentation, 12);
 
-	    scrollPaneGeographicSegmentation.setViewportView(tableGeographicSegmentation);
-
 	    scrollPaneGeographicSegmentation.setVisible(true);
-	
+		
+		JComboBox cmbAscDesc = new JComboBox();
+		cmbAscDesc.addItem("");
+		cmbAscDesc.addItem("A-Z");
+		cmbAscDesc.addItem("Z-A");
+		cmbAscDesc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedItem = (String) cmbAscDesc.getSelectedItem();
+				if (selectedItem != null) {
+					 if (selectedItem.equals("A-Z")) {
+						 try {
+							tableGeographicSegmentation.setModel(geoSegment.fetchData(true));
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					 }
+					 else {
+						 try {
+							tableGeographicSegmentation.setModel(geoSegment.fetchData(false));
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					 }
+				}
+			}
+		});
+		cmbAscDesc.setFont(new Font("Poppins", Font.PLAIN, 12));
+		cmbAscDesc.setBounds(963, 17, 105, 17);
+		panelGeographicSegmentation.add(cmbAscDesc);
+		
 		panelTransactionHistory = new JPanel();
 		layeredPane.add(panelTransactionHistory, "name_1237656709540000");
 		panelTransactionHistory.setLayout(null);
@@ -1350,13 +1279,6 @@ public class MainDashboard extends JFrame {
 		lblCustomerSegment4.setFont(new Font("Poppins", Font.BOLD, 40));
 		lblCustomerSegment4.setBounds(35, 36, 609, 56);
 		panelTransactionHistory.add(lblCustomerSegment4);
-		
-		lblRefreshTS = new JLabel("Refresh");
-		lblRefreshTS.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRefreshTS.setFont(new Font("Poppins", Font.PLAIN, 12));
-		lblRefreshTS.setBorder(new MatteBorder( 1, 1, 1, 1, Color.black));
-		lblRefreshTS.setBounds(1047, 72, 80, 20);
-		panelTransactionHistory.add(lblRefreshTS);
 		
 		layeredPaneTransactionalSegmentation = new JLayeredPane();
 		layeredPaneTransactionalSegmentation.setBounds(35, 103, 1092, 620);
@@ -1375,7 +1297,8 @@ public class MainDashboard extends JFrame {
 		lblTransactionalSegmentation.setBounds(218, 0, 632, 43);
 		panelTransactionalSegmentation.add(lblTransactionalSegmentation);
 		
-		cmbAscDesc_1 = new JComboBox();
+		JComboBox cmbAscDesc_1 = new JComboBox();
+		cmbAscDesc_1.addItem("");
 		cmbAscDesc_1.addItem("ascending");
 		cmbAscDesc_1.addItem("descending");
 		cmbAscDesc_1.addActionListener(new ActionListener() {
@@ -1453,7 +1376,12 @@ public class MainDashboard extends JFrame {
 			
 			ChartPanel TransactionalPanel = customerDash.transactionalChart();
 			panelCustomerSegmentationGraphs.add(TransactionalPanel);
-	     
+			
+			SalesMainBackend.TotalSalesDisplay(lblTotalSalesAmount, lblSalesPercentIncrease);
+			SalesMainBackend.TotalOrdersDisplay(lblSumOrders, lblOrderIncrease);
+			SalesMainBackend.TotalSalesDisplay(lblSumProfit, lblProfitIncrease);
+			SalesMongoDriver.displayTopTenStores(tableModelT20SBS);
+
 	}
 	      
 	public void changeTableHeaderColor (JTable table, int fontSize) {
